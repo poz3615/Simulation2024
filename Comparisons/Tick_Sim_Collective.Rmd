@@ -1,0 +1,2027 @@
+---
+title: "Collection of Tick Simulation"
+author: "Piper Zimmerman"
+date: "December 12, 2023"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+
+```{r plot.a.wide}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+
+df.a <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[1]))
+)
+df.a$x <- factor(df.a$x, levels = desired_order)
+a.plot <- ggplot(df.a, aes(x, Mean))+
+  geom_point(col="blue") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="A",x="Method")+
+  geom_hline(yintercept = true.a, linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+a.plot
+```
+
+```{r plot.b.wide}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+
+df.b <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[1]))
+)
+df.b$x <- factor(df.b$x, levels = desired_order)
+b.plot <- ggplot(df.b, aes(x, Mean))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="B",x="Method")+
+  geom_hline(yintercept = true.b, linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+b.plot
+```
+
+```{r plot.c.wide}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+
+df.c <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c((mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1]))))),
+  upper = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[2])),
+  lower = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[1]))
+)
+df.c$x <- factor(df.c$x, levels = desired_order)
+c.plot <- ggplot(df.c, aes(x, Mean))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="C",x="Method")+
+  geom_hline(yintercept = true.c, linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+c.plot
+```
+
+```{r plot.a.wide.nt}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+
+df.a_notrunc <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list3_notrunc[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list4_notrunc[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list5_notrunc[[1]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[1]))
+)
+df.a_notrunc$x <- factor(df.a_notrunc$x, levels = desired_order)
+a_notrunc.plot <- ggplot(df.a_notrunc, aes(x, Mean))+
+  geom_point(col="blue") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="A",x="Method")+
+  geom_hline(yintercept = true.a, linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+a_notrunc.plot
+```
+
+```{r plot.b.wide.nt}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+
+df.b_notrunc <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list3_notrunc[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list4_notrunc[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list5_notrunc[[2]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[1]))
+)
+df.b_notrunc$x <- factor(df.b_notrunc$x, levels = desired_order)
+b_notrunc.plot <- ggplot(df.b_notrunc, aes(x, Mean))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="B",x="Method")+
+  geom_hline(yintercept = true.b, linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+b_notrunc.plot
+```
+
+```{r plot.c.wide.nt}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+
+df.c_notrunc <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c((mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list3_notrunc[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list4_notrunc[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list5_notrunc[[3]], function(matrix) matrix[, 1]))))),
+  upper = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[2])),
+  lower = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[1]))
+)
+df.c_notrunc$x <- factor(df.c_notrunc$x, levels = desired_order)
+c_notrunc.plot <- ggplot(df.c_notrunc, aes(x, Mean))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="C",x="Method")+
+  geom_hline(yintercept = true.c, linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+c_notrunc.plot
+```
+
+```{r plot.a.wide.log}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+
+log_df.a <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[1]))
+)
+log_df.a$x <- factor(log_df.a$x, levels = desired_order)
+log_a.plot <- ggplot(log_df.a, aes(x, log(Mean)))+
+  geom_point(col="blue") + geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="A",x="Method")+
+  geom_hline(yintercept = log(true.a), linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+log_a.plot
+```
+
+```{r plot.b.wide.log}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+
+log_df.b <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[1]))
+)
+log_df.b$x <- factor(log_df.b$x, levels = desired_order)
+log_b.plot <- ggplot(log_df.b, aes(x, log(Mean)))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="B",x="Method")+
+  geom_hline(yintercept = log(true.b), linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+log_b.plot
+```
+
+```{r plot.c.wide.log}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+
+log_df.c <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c((mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1]))))),
+  upper = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[2])),
+  lower = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[1]))
+)
+log_df.c$x <- factor(log_df.c$x, levels = desired_order)
+log_c.plot <- ggplot(log_df.c, aes(x, log(Mean)))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="C",x="Method")+
+  geom_hline(yintercept = log(true.c), linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+log_c.plot
+```
+
+```{r plot.a.wide.nt.log}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+log_df.a_notrunc <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list3_notrunc[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list4_notrunc[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list5_notrunc[[1]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[1]))
+)
+log_df.a_notrunc$x <- factor(log_df.a_notrunc$x, levels = desired_order)
+log_a_notrunc.plot <- ggplot(log_df.a_notrunc, aes(x, log(Mean)))+
+  geom_point(col="blue") + geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="A",x="Method")+
+  geom_hline(yintercept = log(true.a), linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+log_a_notrunc.plot
+```
+
+```{r plot.b.wide.nt.log}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+log_df.b_notrunc <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list3_notrunc[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list4_notrunc[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list5_notrunc[[2]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[1]))
+)
+log_df.b_notrunc$x <- factor(log_df.b_notrunc$x, levels = desired_order)
+log_b_notrunc.plot <- ggplot(log_df.b_notrunc, aes(x, log(Mean)))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="B",x="Method")+
+  geom_hline(yintercept = log(true.b), linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+log_b_notrunc.plot
+```
+
+```{r plot.c.wide.nt.log}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+log_df.c_notrunc <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c((mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list3_notrunc[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list4_notrunc[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list5_notrunc[[3]], function(matrix) matrix[, 1]))))),
+  upper = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[2])),
+  lower = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[1]))
+)
+log_df.c_notrunc$x <- factor(log_df.c_notrunc$x, levels = desired_order)
+log_c_notrunc.plot <- ggplot(log_df.c_notrunc, aes(x, log(Mean)))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="C",x="Method")+
+  geom_hline(yintercept = log(true.c), linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+log_c_notrunc.plot
+```
+
+
+
+```{r plot.a.narrow}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+N_df.a <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list3[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list4[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list5[[1]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list3[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list4[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list5[[1]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list3[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list4[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list5[[1]], function(matrix) matrix[, 1])))[1]))
+)
+N_df.a$x <- factor(N_df.a$x, levels = desired_order)
+
+N_a.plot <- ggplot(N_df.a, aes(x, Mean))+
+  geom_point(col="blue") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="A",x="Method")+
+  geom_hline(yintercept = true.a, linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+N_a.plot
+```
+
+```{r plot.b.narrow}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+N_df.b <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list3[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list4[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list5[[2]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list3[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list4[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list5[[2]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list3[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list4[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list5[[2]], function(matrix) matrix[, 1])))[1]))
+)
+N_df.b$x <- factor(N_df.b$x, levels = desired_order)
+
+N_b.plot <- ggplot(N_df.b, aes(x, Mean))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="B",x="Method")+
+  geom_hline(yintercept = true.b, linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+N_b.plot
+```
+
+```{r plot.c.narrow}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+N_df.c <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c((mean(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list3[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list4[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list5[[3]], function(matrix) matrix[, 1]))))),
+  upper = c((hdi(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list3[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list4[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list5[[3]], function(matrix) matrix[, 1])))[2])),
+  lower = c((hdi(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list3[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list4[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list5[[3]], function(matrix) matrix[, 1])))[1]))
+)
+N_df.c$x <- factor(N_df.c$x, levels = desired_order)
+
+N_c.plot <- ggplot(N_df.c, aes(x, Mean))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="C",x="Method")+
+  geom_hline(yintercept = true.c, linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+N_c.plot
+```
+
+```{r plot.a.narrow.nt}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+N_df.a_notrunc <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[1]))
+)
+N_df.a_notrunc$x <- factor(N_df.a_notrunc$x, levels = desired_order)
+
+N_a_notrunc.plot <- ggplot(N_df.a, aes(x, Mean))+
+  geom_point(col="blue") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="A",x="Method")+
+  geom_hline(yintercept = true.a, linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+N_a_notrunc.plot
+```
+
+```{r plot.b.narrow.nt}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+N_df.b_notrunc <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[1]))
+)
+N_df.b_notrunc$x <- factor(N_df.b_notrunc$x, levels = desired_order)
+
+N_b_notrunc.plot <- ggplot(N_df.b, aes(x, Mean))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="B",x="Method")+
+  geom_hline(yintercept = true.b, linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+N_b_notrunc.plot
+```
+
+```{r plot.c.narrow.nt}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+N_df.c_notrunc <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c((mean(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1]))))),
+  upper = c((hdi(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[2])),
+  lower = c((hdi(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[1]))
+)
+N_df.c_notrunc$x <- factor(N_df.c_notrunc$x, levels = desired_order)
+
+N_c_notrunc.plot <- ggplot(N_df.c, aes(x, Mean))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="C",x="Method")+
+  geom_hline(yintercept = true.c, linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+N_c_notrunc.plot
+```
+
+```{r plot.a.narrow.log}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+log_N_df.a <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list3[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list4[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list5[[1]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list3[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list4[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list5[[1]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list3[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list4[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list5[[1]], function(matrix) matrix[, 1])))[1]))
+)
+log_N_df.a$x <- factor(log_N_df.a$x, levels = desired_order)
+
+log_N_a.plot <- ggplot(log_N_df.a, aes(x, log(Mean)))+
+  geom_point(col="blue") + geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="A",x="Method")+
+  geom_hline(yintercept = log(true.a), linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+log_N_a.plot
+```
+
+```{r plot.b.narrow.log}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+log_N_df.b <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list3[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list4[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list5[[2]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list3[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list4[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list5[[2]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list3[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list4[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list5[[2]], function(matrix) matrix[, 1])))[1]))
+)
+log_N_df.b$x <- factor(log_N_df.b$x, levels = desired_order)
+
+log_N_b.plot <- ggplot(log_N_df.b, aes(x, log(Mean)))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="B",x="Method")+
+  geom_hline(yintercept = log(true.b), linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+log_N_b.plot
+```
+
+```{r plot.c.narrow.log}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+log_N_df.c <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c((mean(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list3[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list4[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list5[[3]], function(matrix) matrix[, 1]))))),
+  upper = c((hdi(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list3[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list4[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list5[[3]], function(matrix) matrix[, 1])))[2])),
+  lower = c((hdi(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list3[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list4[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list5[[3]], function(matrix) matrix[, 1])))[1]))
+)
+log_N_df.c$x <- factor(log_N_df.c$x, levels = desired_order)
+
+log_N_c.plot <- ggplot(log_N_df.c, aes(x, log(Mean)))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="C",x="Method")+
+  geom_hline(yintercept = log(true.c), linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+log_N_c.plot
+```
+
+```{r plot.a.narrow.nt.log}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+log_N_df.a_notrunc <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[1]))
+)
+log_N_df.a_notrunc$x <- factor(log_N_df.a_notrunc$x, levels = desired_order)
+
+log_N_a_notrunc.plot <- ggplot(log_N_df.a, aes(x, log(Mean)))+
+  geom_point(col="blue") + geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="A",x="Method")+
+  geom_hline(yintercept = log(true.a), linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+log_N_a_notrunc.plot
+```
+
+```{r plot.b.narrow.nt.log}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+log_N_df.b_notrunc <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c(exp(mean(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[1]))
+)
+log_N_df.b_notrunc$x <- factor(log_N_df.b_notrunc$x, levels = desired_order)
+
+log_N_b_notrunc.plot <- ggplot(log_N_df.b, aes(x, log(Mean)))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="B",x="Method")+
+  geom_hline(yintercept = log(true.b), linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+log_N_b_notrunc.plot
+```
+
+```{r plot.c.narrow.nt.log}
+desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
+                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+log_N_df.c_notrunc <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
+  Mean = c((mean(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1]))))),
+  upper = c((hdi(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[2])),
+  lower = c((hdi(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[1]))
+)
+log_N_df.c_notrunc$x <- factor(log_N_df.c_notrunc$x, levels = desired_order)
+
+log_N_c_notrunc.plot <- ggplot(log_N_df.c, aes(x, log(Mean)))+
+  geom_point(col="blue")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="C",x="Method")+
+  geom_hline(yintercept = log(true.c), linetype = "dashed", color = "darkorchid")+
+  theme_classic()+
+  coord_flip()
+log_N_c_notrunc.plot
+```
+
+
+
+```{r plot.a.wide.wb}
+desired_order.wb <- c("WB Data, WB Model", "Inverse Mean WB Data, Exp Model", "Mean Inverse WB Data, Exp Model",
+                      "Individual Inverse WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual WB Data, Exp Model")
+
+df.a.wb <- data.frame(
+  x = factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
+               "Mean Inverse WB Data, Exp Model","Inverse Mean WB Data, Exp Model","WB Data, WB Model")),
+  Mean = c(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[1]))
+)
+df.a.wb$x <- factor(df.a.wb$x, levels = desired_order.wb)
+a.wb.plot <- ggplot(df.a.wb, aes(x, Mean))+
+  geom_point(col="orange") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="A",x="Method")+
+  geom_hline(yintercept = true.exp.a, linetype = "dashed", color = "slateblue3")+
+  theme_classic()+
+  coord_flip()
+a.wb.plot
+```
+
+```{r plot.b.wide.wb}
+desired_order.wb <- c("WB Data, WB Model", "Inverse Mean WB Data, Exp Model", "Mean Inverse WB Data, Exp Model",
+                      "Individual Inverse WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual WB Data, Exp Model")
+
+df.b.wb <- data.frame(
+  x = factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
+               "Mean Inverse WB Data, Exp Model","Inverse Mean WB Data, Exp Model","WB Data, WB Model")),
+  Mean = c(mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))),
+           mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))),
+           mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))),
+           mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))),
+           mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))),
+           mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))),
+  upper = c(hdi(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))[2],
+            hdi(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))[2],
+            hdi(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))[2],
+            hdi(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))[2],
+            hdi(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))[2],
+            hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[2]),
+  lower = c(hdi(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))[1],
+            hdi(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))[1],
+            hdi(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))[1],
+            hdi(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))[1],
+            hdi(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))[1],
+            hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[1])
+)
+df.b.wb$x <- factor(df.b.wb$x, levels = desired_order.wb)
+b.wb.plot <- ggplot(df.b.wb, aes(x, Mean))+
+  geom_point(col="orange")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="B",x="Method")+
+  geom_hline(yintercept = true.exp.b, linetype = "dashed", color = "slateblue3")+
+  theme_classic()+
+  coord_flip()
+b.wb.plot
+```
+
+```{r plot.c.wide.wb}
+desired_order.wb <- c("WB Data, WB Model", "Inverse Mean WB Data, Exp Model", "Mean Inverse WB Data, Exp Model",
+                      "Individual Inverse WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual WB Data, Exp Model")
+df.c.wb <- data.frame(
+  x = factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
+               "Mean Inverse WB Data, Exp Model","Inverse Mean WB Data, Exp Model","WB Data, WB Model")),
+  Mean = c((mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))),
+  upper = c((hdi(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[2])),
+  lower = c((hdi(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[1]))
+)
+df.c.wb$x <- factor(df.c.wb$x, levels = desired_order.wb)
+c.wb.plot <- ggplot(df.c.wb, aes(x, Mean))+
+  geom_point(col="orange")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="C",x="Method")+
+  geom_hline(yintercept = true.exp.c, linetype = "dashed", color = "slateblue3")+
+  theme_classic()+
+  coord_flip()
+c.wb.plot
+```
+
+```{r plot.a.wide.wb.log}
+desired_order.wb <- c("WB Data, WB Model", "Inverse Mean WB Data, Exp Model", "Mean Inverse WB Data, Exp Model",
+                      "Individual Inverse WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual WB Data, Exp Model")
+df.a.wb.log <- data.frame(
+  x = factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
+               "Mean Inverse WB Data, Exp Model","Inverse Mean WB Data, Exp Model","WB Data, WB Model")),
+  Mean = c(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))),
+  upper = c(exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[2])),
+  lower = c(exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[1]))
+)
+df.a.wb.log$x <- factor(df.a.wb.log$x, levels = desired_order.wb)
+a.wb.log.plot <- ggplot(df.a.wb.log, aes(x, log(Mean)))+
+  geom_point(col="orange") + geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="A",x="Method")+
+  geom_hline(yintercept = log(true.exp.a), linetype = "dashed", color = "slateblue3")+
+  theme_classic()+
+  coord_flip()
+a.wb.log.plot
+```
+
+```{r plot.b.wide.wb.log}
+desired_order.wb <- c("WB Data, WB Model", "Inverse Mean WB Data, Exp Model", "Mean Inverse WB Data, Exp Model",
+                      "Individual Inverse WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual WB Data, Exp Model")
+df.b.wb.log <- data.frame(
+  x = factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
+               "Mean Inverse WB Data, Exp Model","Inverse Mean WB Data, Exp Model","WB Data, WB Model")),
+  Mean = c(mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))),
+           mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))),
+           mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))),
+           mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))),
+           mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))),
+           mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))),
+  upper = c(hdi(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))[2],
+            hdi(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))[2],
+            hdi(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))[2],
+            hdi(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))[2],
+            hdi(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))[2],
+            hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[2]),
+  lower = c(hdi(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))[1],
+            hdi(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))[1],
+            hdi(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))[1],
+            hdi(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))[1],
+            hdi(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))[1],
+            hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[1])
+)
+df.b.wb.log$x <- factor(df.b.wb.log$x, levels = desired_order.wb)
+b.wb.log.plot <- ggplot(df.b.wb.log, aes(x, log(Mean)))+
+  geom_point(col="orange")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="B",x="Method")+
+  geom_hline(yintercept = log(true.exp.b), linetype = "dashed", color = "slateblue3")+
+  theme_classic()+
+  coord_flip()
+b.wb.log.plot
+```
+
+```{r plot.c.wide.wb.log}
+desired_order.wb <- c("WB Data, WB Model", "Inverse Mean WB Data, Exp Model", "Mean Inverse WB Data, Exp Model",
+                      "Individual Inverse WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual WB Data, Exp Model")
+df.c.wb.log <- data.frame(
+  x = factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
+               "Mean Inverse WB Data, Exp Model","Inverse Mean WB Data, Exp Model","WB Data, WB Model")),
+  Mean = c((mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))),
+  upper = c((hdi(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[2])),
+  lower = c((hdi(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[1]))
+)
+df.c.wb.log$x <- factor(df.c.wb.log$x, levels = desired_order.wb)
+c.wb.log.plot <- ggplot(df.c.wb.log, aes(x, log(Mean)))+
+  geom_point(col="orange")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="C",x="Method")+
+  geom_hline(yintercept = log(true.exp.c), linetype = "dashed", color = "slateblue3")+
+  theme_classic()+coord_flip()
+c.wb.log.plot
+```
+
+
+
+```{r plot.a.wide.compare}
+desired_order.compare<-c("WB Data, WB Model","Inverse Mean WB Data, Exp Model","Inverse Mean Exp Data, Exp Model",
+                         "Mean Inverse WB Data, Exp Model","Mean Inverse Exp Data, Exp Model",
+                         "Individual Inverse WB Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+                         "Mean WB Data, Exp Model","Mean Exp Data, Exp Model","Individual WB Data, Exp Model","Individual Exp Data, Exp Model")
+df.a.compare <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Individual WB Data, Exp Model","Mean Exp Data, Exp Model","Mean WB Data, Exp Model",
+               "Individual Inverse Exp Data, Exp Model",  "Individual Inverse WB Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model", "Mean Inverse WB Data, Exp Model","Inverse Mean Exp Data, Exp Model",
+               "Inverse Mean WB Data, Exp Model","WB Data, WB Model")),
+  Mean = c(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1]))))-true.a,
+           exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))-true.exp.a,
+           exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1]))))-true.a,
+           exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1]))))-true.exp.a,
+           exp(mean(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1]))))-true.a,
+           exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1]))))-true.exp.a,
+           exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1]))))-true.a,
+           exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1]))))-true.exp.a,
+           exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))-true.a,
+           exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1]))))-true.exp.a,
+           exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))-true.exp.a),
+  
+  upper = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[2])-true.a,
+            exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[2])-true.exp.a,
+            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[2])-true.a,
+            exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[2])-true.exp.a,
+            exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[2])-true.a,
+            exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[2])-true.exp.a,
+            exp(hdi(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))[2])-true.a,
+            exp(hdi(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))[2])-true.exp.a,
+            exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[2])-true.a,
+            exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[2])-true.exp.a,
+            exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[2])-true.exp.a),
+  
+  lower = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[1])-true.a,
+            exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[1])-true.exp.a,
+            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[1])-true.a,
+            exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[1])-true.exp.a,
+            exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[1])-true.a,
+            exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[1])-true.exp.a,
+            exp(hdi(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))[1])-true.a,
+            exp(hdi(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))[1])-true.exp.a,
+            exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[1])-true.a,
+            exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[1])-true.exp.a,
+            exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[1])-true.exp.a)
+)
+df.a.compare$x <- factor(df.a.compare$x, levels = desired_order.compare)
+df.a.compare$upper<-ifelse(df.a.compare$upper>0.01,0.01,df.a.compare$upper)
+a.compare.plot <- ggplot(df.a.compare, aes(x, Mean))+
+  geom_point(col="magenta") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="A",x="Method")+
+  geom_hline(yintercept = 0, linetype = "dashed", color = "springgreen3")+
+  theme_classic()+
+  #ylim(-0.01,0.01)+
+  coord_flip()
+a.compare.plot
+```
+
+```{r plot.b.wide.compare}
+desired_order.compare<-c("WB Data, WB Model","Inverse Mean WB Data, Exp Model","Inverse Mean Exp Data, Exp Model",
+                         "Mean Inverse WB Data, Exp Model","Mean Inverse Exp Data, Exp Model",
+                         "Individual Inverse WB Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+                         "Mean WB Data, Exp Model","Mean Exp Data, Exp Model","Individual WB Data, Exp Model","Individual Exp Data, Exp Model")
+df.b.compare <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Individual WB Data, Exp Model","Mean Exp Data, Exp Model","Mean WB Data, Exp Model",
+               "Individual Inverse Exp Data, Exp Model",  "Individual Inverse WB Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model", "Mean Inverse WB Data, Exp Model","Inverse Mean Exp Data, Exp Model",
+               "Inverse Mean WB Data, Exp Model","WB Data, WB Model")),
+  Mean = c(exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))))-true.b,
+           (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))-true.exp.b,
+           exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))))-true.b,
+           (mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))))-true.exp.b,
+           exp(mean(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1]))))-true.b,
+           (mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))))-true.exp.b,
+           exp(mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1]))))-true.b,
+           (mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))))-true.exp.b,
+           exp(mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1]))))-true.b,
+           (mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))))-true.exp.b,
+           (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))-true.exp.b),
+  
+  upper = c(exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[2])-true.b,
+            (hdi(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))[2])-true.exp.b,
+            exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[2])-true.b,
+            (hdi(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))[2])-true.exp.b,
+            exp(hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[2])-true.b,
+            (hdi(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))[2])-true.exp.b,
+            exp(hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[2])-true.b,
+            (hdi(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))[2])-true.exp.b,
+            exp(hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[2])-true.b,
+            (hdi(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))[2])-true.exp.b,
+            (hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[2])-true.exp.b),
+  
+  lower = c(exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[1])-true.b,
+            (hdi(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))[1])-true.exp.b,
+            exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[1])-true.b,
+            (hdi(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))[1])-true.exp.b,
+            exp(hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[1])-true.b,
+            (hdi(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))[1])-true.exp.b,
+            exp(hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[1])-true.b,
+            (hdi(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))[1])-true.exp.b,
+            exp(hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[1])-true.b,
+            (hdi(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))[1])-true.exp.b,
+            (hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[1])-true.exp.b)
+)
+df.b.compare$x <- factor(df.b.compare$x, levels = desired_order.compare)
+df.b.compare$upper<-ifelse(df.b.compare$upper>0.16 & df.b.compare$lower<0.16,0.16,df.b.compare$upper)
+b.compare.plot <- ggplot(df.b.compare, aes(x, Mean))+
+  geom_point(col="magenta") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="B",x="Method")+
+  geom_hline(yintercept = 0, linetype = "dashed", color = "springgreen3")+
+  theme_classic()+
+  #ylim(-0.16,0.16)+
+  coord_flip()
+b.compare.plot
+```
+
+```{r plot.c.wide.compare}
+desired_order.compare<-c("WB Data, WB Model","Inverse Mean WB Data, Exp Model","Inverse Mean Exp Data, Exp Model",
+                         "Mean Inverse WB Data, Exp Model","Mean Inverse Exp Data, Exp Model",
+                         "Individual Inverse WB Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+                         "Mean WB Data, Exp Model","Mean Exp Data, Exp Model","Individual WB Data, Exp Model","Individual Exp Data, Exp Model")
+df.c.compare <- data.frame(
+  x = factor(c("Individual Exp Data, Exp Model","Individual WB Data, Exp Model","Mean Exp Data, Exp Model","Mean WB Data, Exp Model",
+               "Individual Inverse Exp Data, Exp Model",  "Individual Inverse WB Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model", "Mean Inverse WB Data, Exp Model","Inverse Mean Exp Data, Exp Model",
+               "Inverse Mean WB Data, Exp Model","WB Data, WB Model")),
+  Mean = c((mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))-true.c,
+           (mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))-true.exp.c,
+           (mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1]))))-true.c,
+           (mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1]))))-true.exp.c,
+           (mean(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1]))))-true.c,
+           (mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1]))))-true.exp.c,
+           (mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1]))))-true.c,
+           (mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1]))))-true.exp.c,
+           (mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1]))))-true.c,
+           (mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1]))))-true.exp.c,
+           (mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))-true.exp.c),
+  
+  upper = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[2])-true.c,
+            (hdi(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))[2])-true.exp.c,
+            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[2])-true.c,
+            (hdi(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))[2])-true.exp.c,
+            (hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[2])-true.c,
+            (hdi(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))[2])-true.exp.c,
+            (hdi(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))[2])-true.c,
+            (hdi(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))[2])-true.exp.c,
+            (hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[2])-true.c,
+            (hdi(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))[2])-true.exp.c,
+            (hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[2])-true.exp.c),
+  
+  lower = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[1])-true.c,
+            (hdi(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c,
+            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[1])-true.c,
+            (hdi(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c,
+            (hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[1])-true.c,
+            (hdi(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c,
+            (hdi(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))[1])-true.c,
+            (hdi(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c,
+            (hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[1])-true.c,
+            (hdi(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c,
+            (hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c)
+)
+df.c.compare$x <- factor(df.c.compare$x, levels = desired_order.compare)
+df.c.compare$upper<-ifelse(df.c.compare$upper>0.55,0.55,df.c.compare$upper)
+c.compare.plot <- ggplot(df.c.compare, aes(x, Mean))+
+  geom_point(col="magenta") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="C",x="Method")+
+  geom_hline(yintercept = 0, linetype = "dashed", color = "springgreen3")+
+  theme_classic()+
+  #ylim(-0.55,0.55)+
+  coord_flip()
+c.compare.plot
+```
+
+
+```{r exp.topt.maxlife.mean}
+# TRUE
+f<-function(x,a=0.001094,b=0.0488,c=0.609){
+  a*x^2-b*x+c
+}
+
+# IND EXP DATA EXP MODEL
+ind.exp<-function(x){
+  (exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1]))))*x^2-
+         exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))))*x+
+         mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))
+}
+
+# MEAN EXP DATA EXP MODEL
+mean.exp<-function(x){
+  (exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1]))))*x^2-
+         exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))))*x+
+         mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1]))))
+}
+
+# INV EXP DATA EXP MODEL
+inv.exp<-function(x){
+  (exp(mean(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1]))))*x^2-
+         exp(mean(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1]))))*x+
+         mean(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1]))))
+}
+inv.exp.trunc<-function(x){
+  ifelse(inv.exp(x) < 0, 0.01, inv.exp(x))
+}
+
+# MEAN INV EXP DATA EXP MODEL
+mean.inv.exp<-function(x){
+  (exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1]))))*x^2-
+         exp(mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1]))))*x+
+         mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1]))))
+}
+mean.inv.exp.trunc<-function(x){
+  ifelse(mean.inv.exp(x) < 0, 0.01, mean.inv.exp(x))
+}
+
+# INV MEAN EXP DATA EXP MODEL
+inv.mean.exp<-function(x){
+  (exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))*x^2-
+         exp(mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1]))))*x+
+         mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1]))))
+}
+inv.mean.exp.trunc<-function(x){
+  ifelse(inv.mean.exp(x) < 0, 0.01, inv.mean.exp(x))
+}
+
+# INV EXP DATA EXP MODEL NT
+inv.exp.nt<-function(x){
+  (exp(mean(unlist(lapply(param_list3_notrunc[[1]], function(matrix) matrix[, 1]))))*x^2-
+         exp(mean(unlist(lapply(param_list3_notrunc[[2]], function(matrix) matrix[, 1]))))*x+
+         mean(unlist(lapply(param_list3_notrunc[[3]], function(matrix) matrix[, 1]))))
+}
+inv.exp.nt.trunc<-function(x){
+  ifelse(inv.exp.nt(x) < 0, 0.01, inv.exp.nt(x))
+}
+
+# MEAN INV EXP DATA EXP MODEL NT
+mean.inv.exp.nt<-function(x){
+  (exp(mean(unlist(lapply(param_list4_notrunc[[1]], function(matrix) matrix[, 1]))))*x^2-
+         exp(mean(unlist(lapply(param_list4_notrunc[[2]], function(matrix) matrix[, 1]))))*x+
+         mean(unlist(lapply(param_list4_notrunc[[3]], function(matrix) matrix[, 1]))))
+}
+mean.inv.exp.nt.trunc<-function(x){
+  ifelse(mean.inv.exp.nt(x) < 0, 0.01, mean.inv.exp.nt(x))
+}
+
+# INV MEAN EXP DATA EXP MODEL NT
+inv.mean.exp.nt<-function(x){
+  (exp(mean(unlist(lapply(param_list5_notrunc[[1]], function(matrix) matrix[, 1]))))*x^2-
+         exp(mean(unlist(lapply(param_list5_notrunc[[2]], function(matrix) matrix[, 1]))))*x+
+         mean(unlist(lapply(param_list5_notrunc[[3]], function(matrix) matrix[, 1]))))
+}
+inv.mean.exp.nt.trunc<-function(x){
+  ifelse(inv.mean.exp.nt(x) < 0, 0.01, inv.mean.exp.nt(x))
+}
+
+topt.mean.exp<-data.frame(
+  Topt=c(optimize(f,interval = c(-100, 200))$minimum,
+         optimize(ind.exp, interval = c(-100, 200))$minimum,
+         optimize(mean.exp, interval = c(-100, 200))$minimum,
+         optimize(inv.exp.trunc, interval = c(-100, 200))$minimum,
+         optimize(mean.inv.exp.trunc, interval = c(-100, 200))$minimum,
+         optimize(inv.mean.exp.trunc, interval = c(-100, 200))$minimum,
+         optimize(inv.exp.nt.trunc, interval = c(-100, 200))$minimum,
+         optimize(mean.inv.exp.nt.trunc, interval = c(-100, 200))$minimum,
+         optimize(inv.mean.exp.nt.trunc, interval = c(-100, 200))$minimum),
+  Lifetime=c(1/optimize(f,interval = c(-100, 200))$objective,
+            1/optimize(ind.exp, interval = c(-100, 200))$objective,
+            1/optimize(mean.exp, interval = c(-100, 200))$objective,
+            1/optimize(inv.exp.trunc, interval = c(-100, 200))$objective,
+            1/optimize(mean.inv.exp.trunc, interval = c(-100, 200))$objective,
+            1/optimize(inv.mean.exp.trunc, interval = c(-100, 200))$objective,
+            1/optimize(inv.exp.nt.trunc, interval = c(-100, 200))$objective,
+            1/optimize(mean.inv.exp.nt.trunc, interval = c(-100, 200))$objective,
+            1/optimize(inv.mean.exp.nt.trunc, interval = c(-100, 200))$objective
+            ),
+  Method=factor(c("True Curve", "Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model",
+               "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model"))
+)
+
+# Center point coordinates
+center_x.exp <- topt.mean.exp$Topt[1]
+center_y.exp <- topt.mean.exp$Lifetime[1]
+
+# Plotting
+ggplot(topt.mean.exp, aes(x = Topt, y = Lifetime,color=Method)) +
+  geom_point() +
+  geom_point(x = center_x.exp, y = center_y.exp, size = 3,col="#FF61CC",shape=8) +
+  labs(title = "Lifetime vs Topt (Posterior Mean)",
+       subtitle="Data Generated from Exponential Distribution",
+       x = "Topt",
+       y = "Lifetime") +
+  theme_minimal()+
+  coord_cartesian(xlim = c(center_x.exp - 24, center_x.exp + 24), ylim = c(center_y.exp - 85, center_y.exp + 85))
+
+```
+
+```{r WB.topt.maxlife.mean}
+# TRUE
+true_curve.inv.wb <- function(x) exp(true.exp.a * x^2 - true.exp.b * x + true.exp.c)
+
+# IND WB DATA EXP MODEL
+ind.wb<-function(x){
+  exp((exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*x^2-
+         mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))*x+
+         mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))))
+}
+
+# MEAN WB DATA EXP MODEL
+mean.wb<-function(x){
+  exp((exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1]))))*x^2-
+         mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))*x+
+         mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))))
+}
+
+# INV WB DATA EXP MODEL
+inv.wb<-function(x){
+  exp((exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1]))))*x^2-
+         mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))*x+
+         mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))))
+}
+
+
+# MEAN INV WB DATA EXP MODEL
+mean.inv.wb<-function(x){
+  exp((exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1]))))*x^2-
+         mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))*x+
+         mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))))
+}
+
+
+# INV MEAN WB DATA EXP MODEL
+inv.mean.wb<-function(x){
+  exp((exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1]))))*x^2-
+         mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))*x+
+         mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))))
+}
+
+
+# IND WB DATA WB MODEL
+ind.wb.wb<-function(x){
+  exp((exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*x^2-
+         mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))*x+
+         mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))
+}
+
+topt.mean.wb<-data.frame(
+  Topt=c(optimize(true_curve.inv.wb,interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(ind.wb, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(mean.wb, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(inv.wb, interval = c(-100, 200))$minimum,
+         optimize(mean.inv.wb, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(inv.mean.wb, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(ind.wb.wb, interval = c(min(xseq), max(xseq)))$minimum),
+  Lifetime=c(1/optimize(true_curve.inv.wb,interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(ind.wb, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(mean.wb, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(inv.wb, interval = c(-100, 200))$objective,
+            1/optimize(mean.inv.wb, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(inv.mean.wb, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(ind.wb.wb, interval = c(min(xseq), max(xseq)))$objective
+            ),
+  Method=factor(c("True Curve", "Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
+               "Mean Inverse WB Data, Exp Model","Inverse Mean WB Data, Exp Model","WB Data, WB Model"))
+)
+
+# Center point coordinates
+center_x.wb <- topt.mean.wb$Topt[1]
+center_y.wb <- topt.mean.wb$Lifetime[1]
+
+blah<-function(x){
+  1/inv.wb(x)
+}
+curve(blah,from=-50,to=100)
+
+# Plotting
+ggplot(topt.mean.wb, aes(x = Topt, y = Lifetime,color=Method)) +
+  geom_point() +
+  geom_point(x = center_x.wb, y = center_y.wb, size = 3,col="#8494FF",shape=8) +
+  labs(title = "Lifetime vs Topt (Posterior Mean)",
+       subtitle="Data Generated from Weibull Distribution",
+       x = "Topt",
+       y = "Lifetime") +
+  theme_minimal()+
+  coord_cartesian(xlim = c(center_x.wb - 1, center_x.wb + 1), ylim = c(center_y.wb - 2.5, center_y.wb + 2.5))
+```
+
+```{r exp.topt.maxlife.med}
+# TRUE
+f<-function(x,a=0.001094,b=0.0488,c=0.609){
+  a*x^2-b*x+c
+}
+
+# IND EXP DATA EXP MODEL
+ind.exp.med<-function(x){
+  (exp(median(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 2]))))*x^2-
+         exp(median(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 2]))))*x+
+         median(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 2]))))
+}
+
+# MEAN EXP DATA EXP MODEL
+mean.exp.med<-function(x){
+  (exp(median(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 2]))))*x^2-
+         exp(median(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 2]))))*x+
+         median(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 2]))))
+}
+
+# INV EXP DATA EXP MODEL
+inv.exp.med<-function(x){
+  (exp(median(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 2]))))*x^2-
+         exp(median(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 2]))))*x+
+         median(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 2]))))
+}
+inv.exp.med.trunc<-function(x){
+  ifelse(inv.exp.med(x) < 0, 0.01, inv.exp.med(x))
+}
+
+# MEAN INV EXP DATA EXP MODEL
+mean.inv.exp.med<-function(x){
+  (exp(median(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 2]))))*x^2-
+         exp(median(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 2]))))*x+
+         median(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 2]))))
+}
+mean.inv.exp.med.trunc<-function(x){
+  ifelse(mean.inv.exp.med(x) < 0, 0.01, mean.inv.exp.med(x))
+}
+
+# INV MEAN EXP DATA EXP MODEL
+inv.mean.exp.med<-function(x){
+  (exp(median(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 2]))))*x^2-
+         exp(median(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 2]))))*x+
+         median(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 2]))))
+}
+inv.mean.exp.med.trunc<-function(x){
+  ifelse(inv.mean.exp.med(x) < 0, 0.01, inv.mean.exp.med(x))
+}
+
+# INV EXP DATA EXP MODEL NT
+inv.exp.med.nt<-function(x){
+  (exp(median(unlist(lapply(param_list3_notrunc[[1]], function(matrix) matrix[, 2]))))*x^2-
+         exp(median(unlist(lapply(param_list3_notrunc[[2]], function(matrix) matrix[, 2]))))*x+
+         median(unlist(lapply(param_list3_notrunc[[3]], function(matrix) matrix[, 2]))))
+}
+inv.exp.med.nt.trunc<-function(x){
+  ifelse(inv.exp.med.nt(x) < 0, 0.01, inv.exp.med.nt(x))
+}
+
+# MEAN INV EXP DATA EXP MODEL NT
+mean.inv.exp.med.nt<-function(x){
+  (exp(median(unlist(lapply(param_list4_notrunc[[1]], function(matrix) matrix[, 2]))))*x^2-
+         exp(median(unlist(lapply(param_list4_notrunc[[2]], function(matrix) matrix[, 2]))))*x+
+         median(unlist(lapply(param_list4_notrunc[[3]], function(matrix) matrix[, 2]))))
+}
+mean.inv.exp.med.nt.trunc<-function(x){
+  ifelse(mean.inv.exp.med.nt(x) < 0, 0.01, mean.inv.exp.med.nt(x))
+}
+
+# INV MEAN EXP DATA EXP MODEL NT
+inv.mean.exp.med.nt<-function(x){
+  (exp(median(unlist(lapply(param_list5_notrunc[[1]], function(matrix) matrix[, 2]))))*x^2-
+         exp(median(unlist(lapply(param_list5_notrunc[[2]], function(matrix) matrix[, 2]))))*x+
+         median(unlist(lapply(param_list5_notrunc[[3]], function(matrix) matrix[, 2]))))
+}
+inv.mean.exp.med.nt.trunc<-function(x){
+  ifelse(inv.mean.exp.med.nt(x) < 0, 0.01, inv.mean.exp.med.nt(x))
+}
+
+topt.mean.exp.med<-data.frame(
+  Topt=c(optimize(f,interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(ind.exp.med, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(mean.exp.med, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(inv.exp.med.trunc, interval = c(-100, 200))$minimum,
+         optimize(mean.inv.exp.med.trunc, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(inv.mean.exp.med.trunc, interval = c(-100, 200))$minimum,
+         optimize(inv.exp.med.nt.trunc, interval = c(-100, 200))$minimum,
+         optimize(mean.inv.exp.med.nt.trunc, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(inv.mean.exp.med.nt.trunc, interval = c(-100, 200))$minimum),
+  Lifetime=c(1/optimize(f,interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(ind.exp.med, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(mean.exp.med, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(inv.exp.med.trunc, interval = c(-100, 200))$objective,
+            1/optimize(mean.inv.exp.med.trunc, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(inv.mean.exp.med.trunc, interval = c(-100, 200))$objective,
+            1/optimize(inv.exp.med.nt.trunc, interval = c(-100, 200))$objective,
+            1/optimize(mean.inv.exp.med.nt.trunc, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(inv.mean.exp.med.nt.trunc, interval = c(-100, 200))$objective
+            ),
+  Method=factor(c("True Curve", "Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model",
+               "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model"))
+)
+
+# Center point coordinates
+center_x.exp.med <- topt.mean.exp.med$Topt[1]
+center_y.exp.med <- topt.mean.exp.med$Lifetime[1]
+
+# Plotting
+ggplot(topt.mean.exp.med, aes(x = Topt, y = Lifetime,color=Method)) +
+  geom_point() +
+  geom_point(x = center_x.exp.med, y = center_y.exp.med, size = 3,col="#FF61CC",shape=8) +
+  labs(title = "Lifetime vs Topt (Posterior Median)",
+       subtitle="Data Generated from Exponential Distribution",
+       x = "Topt",
+       y = "Lifetime") +
+  theme_minimal()+
+  coord_cartesian(xlim = c(center_x.exp.med - 0.5, center_x.exp.med + 0.5), ylim = c(center_y.exp.med - 3, center_y.exp.med + 3))
+
+```
+
+```{r WB.topt.maxlife.med}
+# TRUE
+true_curve.inv.wb <- function(x) exp(true.exp.a * x^2 - true.exp.b * x + true.exp.c)
+
+# IND WB DATA EXP MODEL
+ind.wb.med<-function(x){
+  exp((exp(median(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 2]))))*x^2-
+         median(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 2])))*x+
+         median(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 2])))))
+}
+
+# MEAN WB DATA EXP MODEL
+mean.wb.med<-function(x){
+  exp((exp(median(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 2]))))*x^2-
+         median(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 2])))*x+
+         median(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 2])))))
+}
+
+# INV WB DATA EXP MODEL
+inv.wb.med<-function(x){
+  exp((exp(median(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 2]))))*x^2-
+         median(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 2])))*x+
+         median(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 2])))))
+}
+
+# MEAN INV WB DATA EXP MODEL
+mean.inv.wb.med<-function(x){
+  exp((exp(median(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 2]))))*x^2-
+         median(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 2])))*x+
+         median(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 2])))))
+}
+
+# INV MEAN WB DATA EXP MODEL
+inv.mean.wb.med<-function(x){
+  exp((exp(median(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 2]))))*x^2-
+         median(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 2])))*x+
+         median(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 2])))))
+}
+
+# IND WB DATA WB MODEL
+ind.wb.wb.med<-function(x){
+  exp((exp(median(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 2]))))*x^2-
+         median(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 2])))*x+
+         median(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 2])))))
+}
+
+topt.mean.wb.med<-data.frame(
+  Topt=c(optimize(true_curve.inv.wb,interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(ind.wb.med, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(mean.wb.med, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(inv.wb.med, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(mean.inv.wb.med, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(inv.mean.wb.med, interval = c(min(xseq), max(xseq)))$minimum,
+         optimize(ind.wb.wb.med, interval = c(min(xseq), max(xseq)))$minimum),
+  Lifetime=c(1/optimize(true_curve.inv.wb,interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(ind.wb.med, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(mean.wb.med, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(inv.wb.med, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(mean.inv.wb.med, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(inv.mean.wb.med, interval = c(min(xseq), max(xseq)))$objective,
+            1/optimize(ind.wb.wb.med, interval = c(min(xseq), max(xseq)))$objective
+            ),
+  Method=factor(c("True Curve", "Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
+               "Mean Inverse WB Data, Exp Model","Inverse Mean WB Data, Exp Model","WB Data, WB Model"))
+)
+
+# Center point coordinates
+center_x.wb.med <- topt.mean.wb.med$Topt[1]
+center_y.wb.med <- topt.mean.wb.med$Lifetime[1]
+
+# Plotting
+ggplot(topt.mean.wb.med, aes(x = Topt, y = Lifetime,color=Method)) +
+  geom_point() +
+  geom_point(x = center_x.wb.med, y = center_y.wb.med, size = 3,col="#8494FF",shape=8) +
+  labs(title = "Lifetime vs Topt (Posterior Median)",
+       subtitle="Data Generated from Weibull Distribution",
+       x = "Topt",
+       y = "Lifetime") +
+  theme_minimal()+
+  coord_cartesian(xlim = c(center_x.wb.med - 1, center_x.wb.med + 1), ylim = c(center_y.wb.med - 3, center_y.wb.med + 3))
+```
+
+
+
+```{r exp.extreme.mean}
+x_initial <- 20
+
+#True
+x.true.low <- x_initial
+while (1/f(x.true.low) > 1) {
+  x.true.low <- x.true.low - 0.001
+}
+x.true.high <- x_initial
+while (1/f(x.true.high) > 1) {
+  x.true.high <- x.true.high + 0.001
+}
+
+
+#Individual Exp Data Mean
+x.ind.exp.low <- x_initial
+while (1/ind.exp(x.ind.exp.low) > 1) {
+  x.ind.exp.low <- x.ind.exp.low - 0.001
+}
+x.ind.exp.high <- x_initial
+while (1/ind.exp(x.ind.exp.high) > 1) {
+  x.ind.exp.high <- x.ind.exp.high + 0.001
+}
+
+#Mean Exp Data Mean
+x.mean.exp.low <- x_initial
+while (1/mean.exp(x.mean.exp.low) > 1) {
+  x.mean.exp.low <- x.mean.exp.low - 0.001
+}
+x.mean.exp.high <- x_initial
+while (1/mean.exp(x.mean.exp.high) > 1) {
+  x.mean.exp.high <- x.mean.exp.high + 0.001
+}
+
+#Inv Exp Data Mean
+x.inv.exp.low <- x_initial
+while (1/ifelse(inv.exp(x.inv.exp.low) < 0, 0.01, inv.exp(x.inv.exp.low)) > 1) {
+  x.inv.exp.low <- x.inv.exp.low - 0.001
+}
+x.inv.exp.high <- x_initial
+while (1/ifelse(inv.exp(x.inv.exp.high) < 0, 0.01, inv.exp(x.inv.exp.high)) > 1) {
+  x.inv.exp.high <- x.inv.exp.high + 0.001
+}
+
+#Mean Inv Exp Data Mean
+x.mean.inv.exp.low <- x_initial
+while (1/ifelse(mean.inv.exp(x.mean.inv.exp.low)<0,0.01,mean.inv.exp(x.mean.inv.exp.low)) > 1) {
+  x.mean.inv.exp.low <- x.mean.inv.exp.low - 0.001
+}
+x.mean.inv.exp.high <- x_initial
+while (1/ifelse(mean.inv.exp(x.mean.inv.exp.high)<0,0.01,mean.inv.exp(x.mean.inv.exp.high)) > 1) {
+  x.mean.inv.exp.high <- x.mean.inv.exp.high + 0.001
+}
+
+#Inv Mean Exp Data Mean
+x.inv.mean.exp.low <- x_initial
+while (1/ifelse(inv.mean.exp(x.inv.mean.exp.low)<0,0.01,inv.mean.exp(x.inv.mean.exp.low)) > 1) {
+  x.inv.mean.exp.low <- x.inv.mean.exp.low - 0.001
+}
+x.inv.mean.exp.high <- x_initial
+while (1/ifelse(inv.mean.exp(x.inv.mean.exp.high)<0,0.01,inv.mean.exp(x.inv.mean.exp.high)) > 1) {
+  x.inv.mean.exp.high <- x.inv.mean.exp.high + 0.001
+}
+
+#Inv NT Exp Data Mean
+x.inv.exp.nt.low <- x_initial
+while (1/ifelse(inv.exp.nt(x.inv.exp.nt.low) < 0, 0.01, inv.exp.nt(x.inv.exp.nt.low)) > 1) {
+  x.inv.exp.nt.low <- x.inv.exp.nt.low - 0.001
+}
+x.inv.exp.nt.high <- x_initial
+while (1/ifelse(inv.exp.nt(x.inv.exp.nt.high) < 0, 0.01, inv.exp.nt(x.inv.exp.nt.high)) > 1) {
+  x.inv.exp.nt.high <- x.inv.exp.nt.high + 0.001
+}
+
+#Mean Inv NT Exp Data Mean
+x.mean.inv.exp.nt.low <- x_initial
+while (1/ifelse(mean.inv.exp.nt(x.mean.inv.exp.nt.low)<0,0.01,mean.inv.exp.nt(x.mean.inv.exp.nt.low)) > 1) {
+  x.mean.inv.exp.nt.low <- x.mean.inv.exp.nt.low - 0.001
+}
+x.mean.inv.exp.nt.high <- x_initial
+while (1/ifelse(mean.inv.exp.nt(x.mean.inv.exp.nt.high)<0,0.01,mean.inv.exp.nt(x.mean.inv.exp.nt.high)) > 1) {
+  x.mean.inv.exp.nt.high <- x.mean.inv.exp.nt.high + 0.001
+}
+
+#Inv Mean NT Exp Data Mean
+x.inv.mean.exp.nt.low <- x_initial
+while (1/ifelse(inv.mean.exp.nt(x.inv.mean.exp.nt.low)<0,0.01,inv.mean.exp.nt(x.inv.mean.exp.nt.low)) > 1) {
+  x.inv.mean.exp.nt.low <- x.inv.mean.exp.nt.low - 0.001
+}
+x.inv.mean.exp.nt.high <- x_initial
+while (1/ifelse(inv.mean.exp.nt(x.inv.mean.exp.nt.high)<0,0.01,inv.mean.exp.nt(x.inv.mean.exp.nt.high)) > 1) {
+  x.inv.mean.exp.nt.high <- x.inv.mean.exp.nt.high + 0.001
+}
+
+exp.extreme.mean<-data.frame(
+    Method=factor(c("True Curve", "Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model",
+               "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model")),
+    Low=c(x.true.low,x.ind.exp.low,x.mean.exp.low,x.inv.exp.low,x.mean.inv.exp.low,
+          x.inv.mean.exp.low,x.inv.exp.nt.low,x.mean.inv.exp.nt.low,x.inv.mean.exp.nt.low),
+    High=c(x.true.high,x.ind.exp.high,x.mean.exp.high,x.inv.exp.high,x.mean.inv.exp.high,
+          x.inv.mean.exp.high,x.inv.exp.nt.high,x.mean.inv.exp.nt.high,x.inv.mean.exp.nt.high)
+)
+
+center_x.exp.extreme <- exp.extreme.mean$Low[1]
+center_y.exp.extreme <- exp.extreme.mean$High[1]
+
+# Plotting
+ggplot(exp.extreme.mean, aes(x = Low, y = High,color=Method)) +
+  geom_point() +
+  geom_point(x = center_x.exp.extreme, y = center_y.exp.extreme, size = 3,col="#FF61CC",shape=8) +
+  labs(title = "Temperatures where Predicted Lifetime Hits 1 Day (Posterior Mean)",
+       subtitle="Data Generated from Exponential Distribution",
+       x = "Low",
+       y = "High") +
+  theme_minimal()+
+  coord_cartesian(xlim = c(center_x.exp.extreme - 25, center_x.exp.extreme + 25), ylim = c(center_y.exp.extreme - 108, center_y.exp.extreme + 108))
+```
+
+```{r WB.extreme.mean}
+x_initial <- 20
+
+#True
+x.true.wb.low <- x_initial
+while (1/true_curve.inv.wb(x.true.wb.low) > 1) {
+  x.true.wb.low <- x.true.wb.low - 0.001
+}
+x.true.wb.high <- x_initial
+while (1/true_curve.inv.wb(x.true.wb.high) > 1) {
+  x.true.wb.high <- x.true.wb.high + 0.001
+}
+
+
+#Individual Exp Data Mean
+x.ind.wb.low <- x_initial
+while (1/ind.wb(x.ind.wb.low) > 1) {
+  x.ind.wb.low <- x.ind.wb.low - 0.001
+}
+x.ind.wb.high <- x_initial
+while (1/ind.wb(x.ind.wb.high) > 1) {
+  x.ind.wb.high <- x.ind.wb.high + 0.001
+}
+
+#Mean Exp Data Mean
+x.mean.wb.low <- x_initial
+while (1/mean.wb(x.mean.wb.low) > 1) {
+  x.mean.wb.low <- x.mean.wb.low - 0.001
+}
+x.mean.wb.high <- x_initial
+while (1/mean.wb(x.mean.wb.high) > 1) {
+  x.mean.wb.high <- x.mean.wb.high + 0.001
+}
+
+#Inv Exp Data Mean
+x.inv.wb.low <- x_initial
+while (1/inv.wb(x.inv.wb.low) > 1) {
+  x.inv.wb.low <- x.inv.wb.low - 0.001
+}
+x.inv.wb.high <- x_initial
+while (1/mean.wb(x.inv.wb.high) > 1) {
+  x.inv.wb.high <- x.inv.wb.high + 0.001
+}
+
+#Mean Inv Exp Data Mean
+x.mean.inv.wb.low <- x_initial
+while (1/mean.inv.wb(x.mean.inv.wb.low) > 1) {
+  x.mean.inv.wb.low <- x.mean.inv.wb.low - 0.001
+}
+x.mean.inv.wb.high <- x_initial
+while (1/mean.inv.wb(x.mean.inv.wb.high) > 1) {
+  x.mean.inv.wb.high <- x.mean.inv.wb.high + 0.001
+}
+
+#Inv Mean Exp Data Mean
+x.inv.mean.wb.low <- x_initial
+while (1/inv.mean.wb(x.inv.mean.wb.low) > 1) {
+  x.inv.mean.wb.low <- x.inv.mean.wb.low - 0.001
+}
+x.inv.mean.wb.high <- x_initial
+while (1/inv.mean.wb(x.inv.mean.wb.high) > 1) {
+  x.inv.mean.wb.high <- x.inv.mean.wb.high + 0.001
+}
+
+#Ind WB WB Data Mean
+x.ind.wb.wb.low <- x_initial
+while (1/ind.wb.wb(x.ind.wb.wb.low) > 1) {
+  x.ind.wb.wb.low <- x.ind.wb.wb.low - 0.001
+}
+x.ind.wb.wb.high <- x_initial
+while (1/ind.wb.wb(x.ind.wb.wb.high) > 1) {
+  x.ind.wb.wb.high <- x.ind.wb.wb.high + 0.001
+}
+
+wb.extreme.mean<-data.frame(
+    Method=factor(c("True Curve", "Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual WB Data, WB Model")),
+    Low=c(x.true.wb.low,x.ind.wb.low,x.mean.wb.low,x.inv.wb.low,x.mean.inv.wb.low,
+          x.inv.mean.wb.low,x.ind.wb.wb.low),
+    High=c(x.true.wb.high,x.ind.wb.high,x.mean.wb.high,x.inv.wb.high,x.mean.inv.wb.high,
+          x.inv.mean.wb.high,x.ind.wb.wb.high)
+)
+
+center_x.wb.extreme <- wb.extreme.mean$Low[1]
+center_y.wb.extreme <- wb.extreme.mean$High[1]
+
+# Plotting
+ggplot(wb.extreme.mean, aes(x = Low, y = High,color=Method)) +
+  geom_point() +
+  geom_point(x = center_x.wb.extreme, y = center_y.wb.extreme, size = 3,col="#ED68ED",shape=8) +
+  labs(title = "Temperatures where Predicted Lifetime Hits 1 Day (Posterior Mean)",
+       subtitle="Data Generated from Weibull Distribution",
+       x = "Low",
+       y = "High") +
+  theme_minimal()+
+  coord_cartesian(xlim = c(center_x.wb.extreme - 2, center_x.wb.extreme + 2), ylim = c(center_y.wb.extreme - 4, center_y.wb.extreme + 4))
+```
+
+```{r exp.extreme.med}
+x_initial <- 20
+
+#True
+x.true.low.med <- x_initial
+while (1/f(x.true.low.med) > 1) {
+  x.true.low.med <- x.true.low.med - 0.001
+}
+x.true.high.med <- x_initial
+while (1/f(x.true.high.med) > 1) {
+  x.true.high.med <- x.true.high.med + 0.001
+}
+
+
+#Individual Exp Data Mean
+x.ind.exp.low.med <- x_initial
+while (1/ind.exp.med(x.ind.exp.low.med) > 1) {
+  x.ind.exp.low.med <- x.ind.exp.low.med - 0.001
+}
+x.ind.exp.high.med <- x_initial
+while (1/ind.exp.med(x.ind.exp.high.med) > 1) {
+  x.ind.exp.high.med <- x.ind.exp.high.med + 0.001
+}
+
+#Mean Exp Data Mean
+x.mean.exp.low.med <- x_initial
+while (1/mean.exp.med(x.mean.exp.low.med) > 1) {
+  x.mean.exp.low.med <- x.mean.exp.low.med - 0.001
+}
+x.mean.exp.high.med <- x_initial
+while (1/mean.exp.med(x.mean.exp.high.med) > 1) {
+  x.mean.exp.high.med <- x.mean.exp.high.med + 0.001
+}
+
+#Inv Exp Data Mean
+x.inv.exp.low.med <- x_initial
+while (1/ifelse(inv.exp.med(x.inv.exp.low.med)<0,0.01,inv.exp.med(x.inv.exp.low.med)) > 1) {
+  x.inv.exp.low.med <- x.inv.exp.low.med - 0.001
+}
+x.inv.exp.high.med <- x_initial
+while (1/ifelse(inv.exp.med(x.inv.exp.high.med)<0,0.01,inv.exp.med(x.inv.exp.high.med)) > 1) {
+  x.inv.exp.high.med <- x.inv.exp.high.med + 0.001
+}
+
+#Mean Inv Exp Data Mean
+x.mean.inv.exp.low.med <- x_initial
+while (1/ifelse(mean.inv.exp.med(x.mean.inv.exp.low.med)<0,0.01,mean.inv.exp.med(x.mean.inv.exp.low.med)) > 1) {
+  x.mean.inv.exp.low.med <- x.mean.inv.exp.low.med - 0.001
+}
+x.mean.inv.exp.high.med <- x_initial
+while (1/ifelse(mean.inv.exp.med(x.mean.inv.exp.high.med)<0,0.01,mean.inv.exp.med(x.mean.inv.exp.high.med)) > 1)  {
+  x.mean.inv.exp.high.med <- x.mean.inv.exp.high.med + 0.001
+}
+
+#Inv Mean Exp Data Mean
+x.inv.mean.exp.low.med <- x_initial
+while (1/ifelse(inv.mean.exp.med(x.inv.mean.exp.low.med)<0,0.01,inv.mean.exp.med(x.inv.mean.exp.low.med)) > 1) {
+  x.inv.mean.exp.low.med <- x.inv.mean.exp.low.med - 0.001
+}
+x.inv.mean.exp.high.med <- x_initial
+while (1/ifelse(inv.mean.exp.med(x.inv.mean.exp.high.med)<0,0.01,inv.mean.exp.med(x.inv.mean.exp.high.med)) > 1) {
+  x.inv.mean.exp.high.med <- x.inv.mean.exp.high.med + 0.001
+}
+
+#Inv NT Exp Data Mean
+x.inv.exp.nt.low.med <- x_initial
+while (1/ifelse(inv.exp.med.nt(x.inv.exp.nt.low.med)<0,0.01,inv.exp.med.nt(x.inv.exp.nt.low.med)) > 1) {
+  x.inv.exp.nt.low.med <- x.inv.exp.nt.low.med - 0.001
+}
+x.inv.exp.nt.high.med <- x_initial
+while (1/ifelse(inv.exp.med.nt(x.inv.exp.nt.high.med)<0,0.01,inv.exp.med.nt(x.inv.exp.nt.high.med)) > 1) {
+  x.inv.exp.nt.high.med <- x.inv.exp.nt.high.med + 0.001
+}
+
+#Mean Inv NT Exp Data Mean
+x.mean.inv.exp.nt.low.med <- x_initial
+while (1/ifelse(mean.inv.exp.med.nt(x.mean.inv.exp.nt.low.med)<0,0.01,mean.inv.exp.med.nt(x.mean.inv.exp.nt.low.med)) > 1) {
+  x.mean.inv.exp.nt.low.med <- x.mean.inv.exp.nt.low.med - 0.001
+}
+x.mean.inv.exp.nt.high.med <- x_initial
+while (1/ifelse(mean.inv.exp.med.nt(x.mean.inv.exp.nt.high.med)<0,0.01,mean.inv.exp.med.nt(x.mean.inv.exp.nt.high.med)) > 1) {
+  x.mean.inv.exp.nt.high.med <- x.mean.inv.exp.nt.high.med + 0.001
+}
+
+#Inv Mean NT Exp Data Mean
+x.inv.mean.exp.nt.low.med <- x_initial
+while (1/ifelse(inv.mean.exp.med.nt(x.inv.mean.exp.nt.low.med)<0,0.01,inv.mean.exp.med.nt(x.inv.mean.exp.nt.low.med)) > 1) {
+  x.inv.mean.exp.nt.low.med <- x.inv.mean.exp.nt.low.med - 0.001
+}
+x.inv.mean.exp.nt.high.med <- x_initial
+while (1/ifelse(inv.mean.exp.med.nt(x.inv.mean.exp.nt.high.med)<0,0.01,inv.mean.exp.med.nt(x.inv.mean.exp.nt.high.med)) > 1) {
+  x.inv.mean.exp.nt.high.med <- x.inv.mean.exp.nt.high.med + 0.001
+}
+
+exp.extreme.med<-data.frame(
+    Method=factor(c("True Curve", "Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model",
+               "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model")),
+    Low=c(x.true.low.med,x.ind.exp.low.med,x.mean.exp.low.med,x.inv.exp.low.med,x.mean.inv.exp.low.med,
+          x.inv.mean.exp.low.med,x.inv.exp.nt.low.med,x.mean.inv.exp.nt.low.med,x.inv.mean.exp.nt.low.med),
+    High=c(x.true.high.med,x.ind.exp.high.med,x.mean.exp.high.med,x.inv.exp.high.med,x.mean.inv.exp.high.med,
+          x.inv.mean.exp.high.med,x.inv.exp.nt.high.med,x.mean.inv.exp.nt.high.med,x.inv.mean.exp.nt.high.med)
+)
+
+center_x.exp.extreme.med <- exp.extreme.med$Low[1]
+center_y.exp.extreme.med <- exp.extreme.med$High[1]
+
+# Plotting
+ggplot(exp.extreme.med, aes(x = Low, y = High,color=Method)) +
+  geom_point() +
+  geom_point(x = center_x.exp.extreme.med, y = center_y.exp.extreme.med, size = 3,col="#FF61CC",shape=8) +
+  labs(title = "Temperatures where Predicted Lifetime Hits 1 Day (Posterior Median)",
+       subtitle="Data Generated from Exponential Distribution",
+       x = "Low",
+       y = "High") +
+  theme_minimal()+
+  coord_cartesian(xlim = c(center_x.exp.extreme.med - 12, center_x.exp.extreme.med + 12), ylim = c(center_y.exp.extreme.med - 122, center_y.exp.extreme.med + 122))
+```
+
+```{r WB.extreme.med}
+x_initial <- 20
+
+#True
+x.true.wb.low <- x_initial
+while (1/true_curve.inv.wb(x.true.wb.low) > 1) {
+  x.true.wb.low <- x.true.wb.low - 0.001
+}
+x.true.wb.high <- x_initial
+while (1/true_curve.inv.wb(x.true.wb.high) > 1) {
+  x.true.wb.high <- x.true.wb.high + 0.001
+}
+
+
+#Individual Exp Data Mean
+x.ind.wb.low.med <- x_initial
+while (1/ind.wb.med(x.ind.wb.low.med) > 1) {
+  x.ind.wb.low.med <- x.ind.wb.low.med - 0.001
+}
+x.ind.wb.high.med <- x_initial
+while (1/ind.wb.med(x.ind.wb.high.med) > 1) {
+  x.ind.wb.high.med <- x.ind.wb.high.med + 0.001
+}
+
+#Mean Exp Data Mean
+x.mean.wb.low.med <- x_initial
+while (1/mean.wb.med(x.mean.wb.low.med) > 1) {
+  x.mean.wb.low.med <- x.mean.wb.low.med- 0.001
+}
+x.mean.wb.high.med <- x_initial
+while (1/mean.wb.med(x.mean.wb.high.med) > 1) {
+  x.mean.wb.high.med <- x.mean.wb.high.med + 0.001
+}
+
+#Inv Exp Data Mean
+x.inv.wb.low.med <- x_initial
+while (1/inv.wb.med(x.inv.wb.low.med) > 1) {
+  x.inv.wb.low.med <- x.inv.wb.low.med - 0.001
+}
+x.inv.wb.high.med <- x_initial
+while (1/mean.wb.med(x.inv.wb.high.med) > 1) {
+  x.inv.wb.high.med <- x.inv.wb.high.med + 0.001
+}
+
+#Mean Inv Exp Data Mean
+x.mean.inv.wb.low.med <- x_initial
+while (1/mean.inv.wb.med(x.mean.inv.wb.low.med) > 1) {
+  x.mean.inv.wb.low.med <- x.mean.inv.wb.low.med - 0.001
+}
+x.mean.inv.wb.high.med <- x_initial
+while (1/mean.inv.wb.med(x.mean.inv.wb.high.med) > 1) {
+  x.mean.inv.wb.high.med <- x.mean.inv.wb.high.med + 0.001
+}
+
+#Inv Mean Exp Data Mean
+x.inv.mean.wb.low.med <- x_initial
+while (1/inv.mean.wb.med(x.inv.mean.wb.low.med) > 1) {
+  x.inv.mean.wb.low.med <- x.inv.mean.wb.low.med - 0.001
+}
+x.inv.mean.wb.high.med <- x_initial
+while (1/inv.mean.wb.med(x.inv.mean.wb.high.med) > 1) {
+  x.inv.mean.wb.high.med <- x.inv.mean.wb.high.med + 0.001
+}
+
+#Ind WB WB Data Mean
+x.ind.wb.wb.low.med <- x_initial
+while (1/ind.wb.wb.med(x.ind.wb.wb.low.med) > 1) {
+  x.ind.wb.wb.low.med <- x.ind.wb.wb.low.med - 0.001
+}
+x.ind.wb.wb.high.med <- x_initial
+while (1/ind.wb.wb.med(x.ind.wb.wb.high.med) > 1) {
+  x.ind.wb.wb.high.med <- x.ind.wb.wb.high.med + 0.001
+}
+
+wb.extreme.med<-data.frame(
+    Method=factor(c("True Curve", "Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual WB Data, WB Model")),
+    Low=c(x.true.wb.low,x.ind.wb.low.med,x.mean.wb.low.med,x.inv.wb.low.med,x.mean.inv.wb.low.med,
+          x.inv.mean.wb.low.med,x.ind.wb.wb.low.med),
+    High=c(x.true.wb.high,x.ind.wb.high.med,x.mean.wb.high.med,x.inv.wb.high.med,x.mean.inv.wb.high.med,
+          x.inv.mean.wb.high.med,x.ind.wb.wb.high.med)
+)
+
+center_x.wb.extreme.med <- wb.extreme.med$Low[1]
+center_y.wb.extreme.med <- wb.extreme.med$High[1]
+
+# Plotting
+ggplot(wb.extreme.med, aes(x = Low, y = High,color=Method)) +
+  geom_point() +
+  geom_point(x = center_x.wb.extreme.med, y = center_y.wb.extreme.med, size = 3,col="#ED68ED",shape=8) +
+  labs(title = "Temperatures where Predicted Lifetime Hits 1 Day (Posterior Median)",
+       subtitle="Data Generated from Weibull Distribution",
+       x = "Low",
+       y = "High") +
+  theme_minimal()+
+  coord_cartesian(xlim = c(center_x.wb.extreme.med - 2, center_x.wb.extreme.med + 2), ylim = c(center_y.wb.extreme.med - 2, center_y.wb.extreme.med + 2))
+```
+
+
+```{r}
+inv.exp<-function(x){
+  (exp(mean(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1]))))*x^2-
+         exp(mean(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1]))))*x+
+         mean(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1]))))
+}
+
+inv.exp.trunc<-function(x){
+  ifelse(inv.exp(x) < 0, 0.01, inv.exp(x))
+}
+```
+
+
+

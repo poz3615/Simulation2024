@@ -1,0 +1,342 @@
+---
+title: "Tick Simulation Base Weibull"
+author: "Piper Zimmerman"
+date: "February 21, 2024"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(nimble)
+library(HDInterval)
+library(MCMCvis)
+library(coda) # makes diagnostic plots
+library(IDPmisc) # makes nice colored pairs plots to look at joint posteriors
+library("matrixStats")
+library("truncnorm")
+#devtools::install_github("johnwilliamsmithjr/bayesTPC")
+library(bayesTPC)
+library(rjags)
+library(R2jags)
+```
+
+```{r weibull.data}
+true.exp.a<- 0.00826
+true.exp.b<- 0.37
+true.exp.c<- 1.406
+# Making quadratic function
+my.med<-function(x,a=0.00826,b=0.37,c=1.406){
+  exp(-(a*x^2-b*x+c))
+}
+#Because it's concave up, need to flip ito be concave down
+# That function is 1/median
+# TO make median function, do 1/e^-()
+  # Flip
+# Set reasonable shape parameter
+sh.est<-3
+# Inverse lambda function
+my.lambda<-function(x,a=0.00826,b=0.37,c=1.406,sh=3){ 
+  my.med(x,a,b,c)/(log(2))^(1/sh.est) ## fx0 is the median here
+}
+# Generate data from 5 temperatures and create data frame
+T1W<-rweibull(n=100,scale=my.lambda(10),shape=sh.est)
+T2W<-rweibull(n=100,scale=my.lambda(17),shape=sh.est)
+T3W<-rweibull(n=100,scale=my.lambda(21),shape=sh.est)
+T4W<-rweibull(n=100,scale=my.lambda(25),shape=sh.est)
+T5W<-rweibull(n=100,scale=my.lambda(32),shape=sh.est)
+dfW<-data.frame(
+  T=c(rep(10,100),rep(17,100),rep(21,100),rep(25,100),rep(32,100)),
+  trait=c(T1W,T2W,T3W,T4W,T5W)
+)
+dfW<- Weibull_data.list[[100]] 
+data <- Weibull_data.list[[100]] 
+trait <- data$trait
+N.obs <- length(trait)
+temp <- data$T
+plot(dfW$T,dfW$trait)
+
+# ts<-unique(dfW$T)
+# par(mfrow=c(2,3))
+# for(i in 1:length(ts)){
+#   dat<-subset(dfW, T==ts[i])
+#   hist(dat$trait, freq=F)
+#   med<-exp(f(i))
+#   lam<-(log(2))^(1/sh.est)/(med)
+#   lines(0:40, dweibull(0:40, scale=1/lam, shape=sh.est),
+#       col=2, lty="dashed", lwd=3)
+# }
+curve(1/f(x),from=10,to=35)
+curve(my.med(x),from=10,to=35,add=TRUE,col="red")
+curve(my.lambda(x),from=10,to=35,add=TRUE,col="blue")
+```
+
+```{r mean.lambda}
+ WB_group_means <- tapply(dfW$trait, dfW$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+  })
+  WB_df.mean<- data.frame(
+    T=c(rep(10,10),rep(17,10),rep(21,10),rep(25,10),rep(32,10)),  # Extract T values as numeric
+    trait = unlist(WB_group_means)  # Extract means and unlist the result
+  )
+data <- WB_df.mean # this lets us reuse the same generic code: we only change this first line
+trait <- data$trait
+N.obs <- length(trait)
+temp <- data$T
+```
+
+```{r inv.lambda}
+data <- Weibull_data.list[[100]] 
+trait <- 1/(data$trait)
+N.obs <- length(trait)
+temp <- data$T
+```
+
+```{r inv.mean.lambda}
+dfW$inv.trait <- 1/(dfW$trait)
+  WB_group_means.inv.mean <- tapply(dfW$inv.trait, dfW$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+  })
+  WB_df.inv.mean<- data.frame(
+    T=c(rep(10,10),rep(17,10),rep(21,10),rep(25,10),rep(32,10)),  # Extract T values as numeric
+    trait = unlist(WB_group_means.inv.mean)  # Extract means and unlist the result
+  )
+data <- WB_df.inv.mean # this lets us reuse the same generic code: we only change this first line
+trait <- data$trait
+N.obs <- length(trait)
+temp <- data$T
+```
+
+```{r mean.inv.lambda}
+WB_group_means.mean.inv <- tapply(dfW$trait, dfW$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+  })
+  WB_df.mean.inv<- data.frame(
+    T=c(rep(10,10),rep(17,10),rep(21,10),rep(25,10),rep(32,10)),  # Extract T values as numeric
+    trait = unlist(WB_group_means.mean.inv)  # Extract means and unlist the result
+  )
+  data<-WB_df.mean.inv
+  trait <- 1/(data$trait)
+  N.obs <- length(trait)
+  temp <- data$T
+```
+
+```{r normal.model}
+sink("model.base.txt")
+cat("model{
+  #Priors
+  #If mu<0, make it small number
+  #And nonzero
+  la~dnorm(0, 1/10) #has to be positive exp(1)?
+  b.l~dexp(0.5) #Has to be positive, because function has neg sign
+  c~dexp(0.5) #Has to be positive
+  #Likelihood
+  for (i in 1:N.obs){
+    mu[i] <- exp((exp(la) * temp[i]^2 - b.l * temp[i] + c))
+    trait[i] ~ dexp(mu[i])
+  }
+}",file="model.base.txt")
+#file.show("quad.txt")
+```
+
+```{r inverse.model}
+  sink("inv.model.base.txt")
+  cat("model{
+  #Priors
+  #If mu<0, make it small number
+  #And nonzero
+  la~dnorm(0, 1/10) #has to be positive exp(1)?
+  b.l~dexp(0.5) #Has to be positive, because function has neg sign
+  c~dexp(0.5) #Has to be positive
+  sig~dexp(15000)
+  sig2<-sig^2
+  tau<-1/sig2
+  #Likelihood
+  for (i in 1:N.obs){
+    mu[i] <- exp((exp(la) * temp[i]^2 - b.l * temp[i] + c))
+    trait[i] ~ dnorm(mu[i], tau) T(0,)
+  }
+}",file="inv.model.base.txt")
+```
+
+```{r inverse.model.nt}
+  sink("inv.model.base.nt.txt")
+  cat("model{
+  #Priors
+  #If mu<0, make it small number
+  #And nonzero
+  la~dnorm(0, 1/10) #has to be positive exp(1)?
+  b.l~dexp(0.5) #Has to be positive, because function has neg sign
+  c~dexp(0.5) #Has to be positive
+  tau~dexp(0.1)
+  #Likelihood
+  for (i in 1:N.obs){
+    mu[i] <- exp(exp(la) * temp[i]^2 - b.l * temp[i] + c)
+    trait[i] ~ dnorm(mu[i], tau)
+  }
+}",file="inv.model.base.nt.txt")
+```
+
+```{r weibull.model}
+sink("weibull.model.base.txt")
+cat("model{
+  #Priors
+  #If mu<0, make it small number
+  #And nonzero
+  la~dnorm(0, 1/10) #has to be positive exp(1)?
+  b.l~dexp(0.5) #Has to be positive, because function has neg sign
+  c~dexp(0.5) #Has to be positive
+  shape~dexp(0.001)
+  #Likelihood
+  for (i in 1:N.obs){
+    trait[i] ~ dgen.gamma(1, 1/lambda[i], shape) #
+    lambda[i] <- (med[i])/(log(2))^(1/shape)
+    med[i] <- exp(-(exp(la) * temp[i]^2 - b.l * temp[i] + c))
+  }
+}",file="weibull.model.base.txt")
+#file.show("quad.txt")
+```
+
+```{r initial}
+parameters <- c("la", "b.l", "c","sig")
+inits<-function(){list(
+  la = log(0.005),
+  b.l = 0.4,
+  c = 1.5,
+  sig=2
+  )}
+
+# MCMC Settings: number of posterior dist elements = [(ni - nb) / nt ] * nc
+ni <- 70000 # number of iterations in each chain
+nb <- 40000 # number of 'burn in' iterations to discard
+nt <- 8 # thinning rate - jags saves every nt iterations in each chain
+nc <- 5 # number of chains
+
+# Bundle all data in a list for JAGS
+jag.data<-list(trait = trait, N.obs = N.obs, temp = temp)
+```
+
+```{r mod.wei}
+lf.fit.weibull <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, 
+               model.file="weibull.model.base.txt", n.thin=nt, n.chains=nc, n.burnin=nb, 
+               n.iter=ni, DIC=T, working.directory=getwd())
+lf.fit.mcmc <- as.mcmc(lf.fit.weibull) ## makes an "mcmc" object
+closeAllConnections()
+
+mydf<-as.data.frame(lf.fit.mcmc[[3]][,c(1,2,4)])
+pairs(mydf)
+#png('my_plot.png')
+plot(lf.fit.mcmc)
+#dev.off()
+
+samp<-as.mcmc.list(lf.fit.mcmc)
+hist(samp[[1]][,4],xlab="la",main="Posterior Samples of la")
+abline(v=log(true.exp.a),col="blue",lwd=4)
+hist(samp[[1]][,1],xlab="b",main="Posterior Samples of b")
+abline(v=true.exp.b,col="blue",lwd=4)
+hist(samp[[1]][,2],xlab="c",main="Posterior Samples of c")
+abline(v=true.exp.c,col="blue",lwd=4)
+```
+
+```{r model}
+lf.fit.lambda <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, 
+               model.file="model.base.txt", n.thin=nt, n.chains=nc, n.burnin=nb, 
+               n.iter=ni, DIC=T, working.directory=getwd())
+# Convergence?
+# Has true values
+
+lf.fit.mean.lambda <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, 
+               model.file="model.base.txt", n.thin=nt, n.chains=nc, n.burnin=nb, 
+               n.iter=ni, DIC=T, working.directory=getwd())
+# Convergence?
+# Has true values
+
+lf.fit.inv.lambda <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, 
+               model.file="inv.model.base.txt", n.thin=nt, n.chains=nc, n.burnin=nb, 
+               n.iter=ni, DIC=T, working.directory=getwd())
+# Not converging
+
+lf.fit.inv.mean.lambda <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, 
+               model.file="inv.model.base.txt", n.thin=nt, n.chains=nc, n.burnin=nb, 
+               n.iter=ni, DIC=T, working.directory=getwd())
+# Bad convergence
+# Has true values
+
+lf.fit.mean.inv.lambda <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, 
+               model.file="inv.model.base.txt", n.thin=nt, n.chains=nc, n.burnin=nb, 
+               n.iter=ni, DIC=T, working.directory=getwd())
+# Bad convergence
+# Has true values
+
+lf.fit.weibull <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, 
+               model.file="weibull.model.base.txt", n.thin=nt, n.chains=nc, n.burnin=nb, 
+               n.iter=ni, DIC=T, working.directory=getwd())
+# Great convergence, maybe need to change b prior?
+
+lf.fit.inv.lambda.nt <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, 
+               model.file="inv.model.base.nt.txt", n.thin=nt, n.chains=nc, n.burnin=nb, 
+               n.iter=ni, DIC=T, working.directory=getwd())
+# Bad convergence
+# Has true values
+
+lf.fit.inv.mean.lambda.nt <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, 
+               model.file="inv.model.base.nt.txt", n.thin=nt, n.chains=nc, n.burnin=nb, 
+               n.iter=ni, DIC=T, working.directory=getwd())
+# Bad convergence
+# Has true values
+
+lf.fit.mean.inv.lambda.nt <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, 
+               model.file="inv.model.base.nt.txt", n.thin=nt, n.chains=nc, n.burnin=nb, 
+               n.iter=ni, DIC=T, working.directory=getwd())
+# Bad convergence
+# Has true values
+
+lf.fit.mcmc <- as.mcmc(lf.fit.inv.lambda) ## makes an "mcmc" object
+closeAllConnections()
+
+mydf<-as.data.frame(lf.fit.mcmc[[3]][,c(1,2,4)])
+pairs(mydf)
+#png('my_plot.png')
+plot(lf.fit.mcmc)
+#dev.off()
+
+samp<-as.mcmc.list(lf.fit.mcmc)
+hist(samp[[1]][,4],xlab="la",main="Posterior Samples of la")
+abline(v=log(true.exp.a),col="blue",lwd=4)
+hist(samp[[1]][,1],xlab="b",main="Posterior Samples of b")
+abline(v=true.exp.b,col="blue",lwd=4)
+hist(samp[[1]][,2],xlab="c",main="Posterior Samples of c")
+abline(v=true.exp.c,col="blue",lwd=4)
+```
+
+```{r hdi.plot}
+df.new = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
+xseq<-seq(from=10,to=35,length.out=250)
+xdf <- expand.grid(point = xseq, iteration = 1:nrow(df.new))
+
+# Apply the quadratic equation for each combination
+xdf$value <- apply(xdf, 1, function(row) {
+  i <- row["iteration"]
+  location <- row["point"]
+  (exp(-(exp(df.new[i, 4]) * location^2 - df.new[i, 1] * location + df.new[i, 2])))
+})
+WB_mean.xdf<-xdf |> group_by(point) |> summarize(avg.value=mean(value),
+                                              lower.hdi=hdi(value)[1],
+                                              upper.hdi=hdi(value)[2])
+WB_true_curve <- function(x) (exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c)))
+WB_mean.xdf$true_curve <- WB_true_curve(xseq)
+ggplot(WB_mean.xdf, aes(x = point)) +
+  geom_line(aes(y = avg.value), color = "black") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "blue", alpha = 0.3)+
+  geom_line(aes(y=true_curve),color="violetred1")#+
+  #geom_point(aes(x=T,y=trait),data=data)
+
+
+```
+

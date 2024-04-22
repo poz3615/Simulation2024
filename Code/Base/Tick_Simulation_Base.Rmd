@@ -1,0 +1,226 @@
+---
+title: "Tick Simulation Base"
+author: "Piper Zimmerman"
+date: "September 29, 2023"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(nimble)
+library(HDInterval)
+library(MCMCvis)
+library(coda) # makes diagnostic plots
+library(IDPmisc) # makes nice colored pairs plots to look at joint posteriors
+library("matrixStats")
+library("truncnorm")
+#devtools::install_github("johnwilliamsmithjr/bayesTPC")
+library(bayesTPC)
+library(rjags)
+library(R2jags)
+library(dplyr)
+```
+
+```{r lambda}
+true.a<-0.001094
+true.b<-0.0488
+true.c<-0.609
+f<-function(x,a=0.001094,b=0.0488,c=0.609){
+  a*x^2-b*x+c
+}
+T1<-rexp(n=100,f(10))
+T2<-rexp(n=100,f(17))
+T3<-rexp(n=100,f(21))
+T4<-rexp(n=100,f(25))
+T5<-rexp(n=100,f(32))
+df<-data.frame(
+  T=c(rep(10,100),rep(17,100),rep(21,100),rep(25,100),rep(32,100)),
+  trait=c(T1,T2,T3,T4,T5)
+)
+data <- df # this lets us reuse the same generic code: we only change this first line
+trait <- data$trait
+N.obs <- length(trait)
+temp <- data$T
+plot(df$T,df$trait)
+```
+
+```{r mean.lambda}
+ group_means <- tapply(df$trait, df$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+  })
+  df.mean<- data.frame(
+    T=c(rep(10,10),rep(17,10),rep(21,10),rep(25,10),rep(32,10)),  # Extract T values as numeric
+    trait = unlist(group_means)  # Extract means and unlist the result
+  )
+data <- df.mean # this lets us reuse the same generic code: we only change this first line
+trait <- data$trait
+N.obs <- length(trait)
+temp <- data$T
+```
+
+```{r inv.lambda}
+df$inv.trait <- 1/(df$trait)
+trait <- df$inv.trait
+N.obs <- length(trait)
+temp <- df$T
+```
+
+```{r inv.mean.lambda}
+df$inv.trait <- 1/(df$trait)
+  group_means.inv.mean <- tapply(df$inv.trait, df$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+  })
+  df.inv.mean<- data.frame(
+    T=c(rep(10,10),rep(17,10),rep(21,10),rep(25,10),rep(32,10)),  # Extract T values as numeric
+    trait = unlist(group_means.inv.mean)  # Extract means and unlist the result
+  )
+data <- df.inv.mean # this lets us reuse the same generic code: we only change this first line
+trait <- data$trait
+N.obs <- length(trait)
+temp <- data$T
+```
+
+```{r mean.inv.lambda}
+group_means.mean.inv <- tapply(df$trait, df$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+  })
+  df.mean.inv<- data.frame(
+    T=c(rep(10,10),rep(17,10),rep(21,10),rep(25,10),rep(32,10)),  # Extract T values as numeric
+    trait = unlist(group_means.mean.inv)  # Extract means and unlist the result
+  )
+  data<-df.mean.inv
+  trait <- 1/(data$trait)
+  N.obs <- length(trait)
+  temp <- data$T
+```
+
+```{r normal.model}
+sink("model.base.txt")
+cat("model{
+  #Priors
+  #If mu<0, make it small number
+  #And nonzero
+  la~dnorm(0, 1/10) #has to be positive exp(1)?
+  b.l~dnorm(0, 1/10) #Has to be positive, because function has neg sign
+  c~dexp(0.5) #Has to be positive
+  #Likelihood
+  for (i in 1:N.obs){
+    mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)*((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)>0) + ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)<=0)*0.00001
+    trait[i] ~ dexp(mu[i])
+  }
+}",file="model.base.txt")
+#file.show("quad.txt")
+```
+
+```{r inverse.model}
+  sink("inv.model.base.txt")
+  cat("model{
+  #Priors
+  #If mu<0, make it small number
+  #And nonzero
+  la~dnorm(0, 1/10) #has to be positive exp(1)?
+  b.l~dnorm(0, 1/10) #Has to be positive, because function has neg sign
+  c~dexp(0.5) #Has to be positive
+  tau~dexp(0.1)
+  #Likelihood
+  for (i in 1:N.obs){
+    mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)*((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)>0) + ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)<=0)*0.00001
+    trait[i] ~ dnorm(mu[i], tau) T(0,)
+  }
+}",file="inv.model.base.txt")
+```
+
+```{r weibull.model}
+sink("weibull.model.base.txt")
+cat("model{
+  #Priors
+  #If mu<0, make it small number
+  #And nonzero
+  la~dnorm(0, 1/10) #has to be positive exp(1)?
+  b.l~dnorm(0, 1/10) #Has to be positive, because function has neg sign
+  c~dexp(0.5) #Has to be positive
+  shape~dexp(0.001)
+  #Likelihood
+  for (i in 1:N.obs){
+    trait[i] ~ dgen.gamma(1, lambda[i], shape) #
+    lambda[i] <- (log(2))^(1/shape)/(med[i])
+    med[i] <- exp(exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)
+  }
+}",file="weibull.model.base.txt")
+#file.show("quad.txt")
+```
+
+```{r initial}
+parameters <- c("la", "b.l", "c","tau")
+inits<-function(){list(
+  la = log(0.001),
+  b.l = log(0.05),
+  c = 1,
+  #shape=2
+  tau=0.2
+  )}
+
+# MCMC Settings: number of posterior dist elements = [(ni - nb) / nt ] * nc
+ni <- 70000 # number of iterations in each chain
+nb <- 40000 # number of 'burn in' iterations to discard
+nt <- 8 # thinning rate - jags saves every nt iterations in each chain
+nc <- 5 # number of chains
+
+# Bundle all data in a list for JAGS
+jag.data<-list(trait = trait, N.obs = N.obs, temp = temp)
+```
+
+```{r model}
+lf.fit <- jags(data=jag.data, inits=inits, parameters.to.save=parameters, 
+               model.file="inv.model.base.txt", n.thin=nt, n.chains=nc, n.burnin=nb, 
+               n.iter=ni, DIC=T, working.directory=getwd())
+lf.fit.mcmc <- as.mcmc(lf.fit) ## makes an "mcmc" object
+closeAllConnections()
+
+mydf<-as.data.frame(lf.fit.mcmc[[3]][,c(1,2,4)])
+pairs(mydf)
+png('my_plot.png')
+plot(lf.fit.mcmc)
+dev.off()
+
+samp<-as.mcmc.list(lf.fit.mcmc)
+hist(samp[[1]][,4],xlab="la",main="Posterior Samples of la")
+abline(v=log(0.001094),col="blue",lwd=4)
+hist(samp[[1]][,1],xlab="b",main="Posterior Samples of b")
+abline(v=log(0.0488),col="blue",lwd=4)
+hist(samp[[1]][,2],xlab="c",main="Posterior Samples of c")
+abline(v=0.609,col="blue",lwd=4)
+#hdi(samp[[1]][,4])[1]
+```
+
+```{r hdi.plot}
+df.new = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
+xseq<-seq(from=10,to=35,length.out=250)
+xdf <- expand.grid(point = xseq, iteration = 1:nrow(df.new))
+
+# Apply the quadratic equation for each combination
+xdf$value <- apply(xdf, 1, function(row) {
+  i <- row["iteration"]
+  location <- row["point"]
+  1/(exp(df.new[i, 4]) * location^2 - exp(df.new[i, 1]) * location + df.new[i, 2])
+})
+mean.xdf<-xdf |> group_by(point) |> summarize(avg.value=mean(value),
+                                              lower.hdi=hdi(value)[1],
+                                              upper.hdi=hdi(value)[2])
+true_curve <- function(x) 1/(true.a * x^2 - true.b * x + true.c)
+mean.xdf$true_curve <- true_curve(xseq)
+ggplot(mean.xdf, aes(x = point)) +
+  geom_line(aes(y = avg.value), color = "black") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "blue", alpha = 0.3)+
+  geom_line(aes(y=true_curve),color="violetred1")+
+  geom_point(aes(x=T,y=trait),data=data)
+
+
+```
