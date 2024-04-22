@@ -2067,7 +2067,7 @@ qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==10],
        param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*10^2-
                                (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))*10+
                                mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="red",line.lwd=2,
+       add.line=TRUE,qq.line.type="0-1",line.col="purple",line.lwd=2,
        main="QQ-Plot for WB Data and Exp Distribution, Temperature=10",
        xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
@@ -2076,7 +2076,7 @@ qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==17],
        param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*17^2-
                                (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))*17+
                                mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="red",line.lwd=2,
+       add.line=TRUE,qq.line.type="0-1",line.col="purple",line.lwd=2,
        main="QQ-Plot for WB Data and Exp Distribution, Temperature=17",
        xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
@@ -2085,7 +2085,7 @@ qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==21],
        param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*21^2-
                                (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))*21+
                                mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="red",line.lwd=2,
+       add.line=TRUE,qq.line.type="0-1",line.col="purple",line.lwd=2,
        main="QQ-Plot for WB Data and Exp Distribution, Temperature=21",
        xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
@@ -2094,7 +2094,7 @@ qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==25],
        param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*25^2-
                                (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))*25+
                                mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="red",line.lwd=2,
+       add.line=TRUE,qq.line.type="0-1",line.col="purple",line.lwd=2,
        main="QQ-Plot for WB Data and Exp Distribution, Temperature=25",
        xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
@@ -2103,8 +2103,60 @@ qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==32],
        param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*32^2-
                                (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))*32+
                                mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="red",line.lwd=2,
+       add.line=TRUE,qq.line.type="0-1",line.col="purple",line.lwd=2,
        main="QQ-Plot for WB Data and Exp Distribution, Temperature=32",
        xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
+
 ```
+
+```{r QQPlot.WB.Data.WB.Model}
+qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==10],
+       distribution="weibull",
+       param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),
+       add.line=TRUE,qq.line.type="0-1",line.col="blue",line.lwd=2,
+       main="QQ-Plot for WB Data and WB Distribution, Temperature=10",
+       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==17],
+       distribution="weibull",
+       param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*17^2-
+                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*17+
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),
+       add.line=TRUE,qq.line.type="0-1",line.col="blue",line.lwd=2,
+       main="QQ-Plot for WB Data and WB Distribution, Temperature=17",
+       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==21],
+       distribution="weibull",
+       param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*21^2-
+                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*21+
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),
+       add.line=TRUE,qq.line.type="0-1",line.col="blue",line.lwd=2,
+       main="QQ-Plot for WB Data and WB Distribution, Temperature=21",
+       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==25],
+       distribution="weibull",
+       param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*25^2-
+                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*25+
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),
+       add.line=TRUE,qq.line.type="0-1",line.col="blue",line.lwd=2,
+       main="QQ-Plot for WB Data and WB Distribution, Temperature=25",
+       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==32],
+       distribution="weibull",
+       param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*32^2-
+                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*32+
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),
+       add.line=TRUE,qq.line.type="0-1",line.col="blue",line.lwd=2,
+       main="QQ-Plot for WB Data and WB Distribution, Temperature=32",
+       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+```
+
+
+
