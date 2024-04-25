@@ -40,17 +40,17 @@ my.lambda<-function(x,a=0.00826,b=0.37,c=1.406,sh=3){
   my.med(x,a,b,c)/(log(2))^(1/sh.est) ## fx0 is the median here
 }
 # Generate data from 5 temperatures and create data frame
-T1W<-rweibull(n=100,scale=my.lambda(10),shape=sh.est)
+T1W<-rweibull(n=100,scale=my.lambda(13),shape=sh.est)
 T2W<-rweibull(n=100,scale=my.lambda(17),shape=sh.est)
 T3W<-rweibull(n=100,scale=my.lambda(21),shape=sh.est)
 T4W<-rweibull(n=100,scale=my.lambda(25),shape=sh.est)
-T5W<-rweibull(n=100,scale=my.lambda(32),shape=sh.est)
+T5W<-rweibull(n=100,scale=my.lambda(29),shape=sh.est)
 dfW<-data.frame(
-  T=c(rep(10,100),rep(17,100),rep(21,100),rep(25,100),rep(32,100)),
+  T=c(rep(13,100),rep(17,100),rep(21,100),rep(25,100),rep(29,100)),
   trait=c(T1W,T2W,T3W,T4W,T5W)
 )
-dfW<- Weibull_data.list[[100]] 
-data <- Weibull_data.list[[100]] 
+dfW<- Weibull_N_data.list[[100]] 
+data <- Weibull_N_data.list[[100]] 
 trait <- data$trait
 N.obs <- length(trait)
 temp <- data$T
@@ -88,7 +88,7 @@ temp <- data$T
 ```
 
 ```{r inv.lambda}
-data <- Weibull_data.list[[100]] 
+data <- Weibull_N_data.list[[100]] 
 trait <- 1/(data$trait)
 N.obs <- length(trait)
 temp <- data$T
@@ -154,7 +154,7 @@ cat("model{
   la~dnorm(0, 1/10) #has to be positive exp(1)?
   b.l~dexp(0.5) #Has to be positive, because function has neg sign
   c~dexp(0.5) #Has to be positive
-  sig~dexp(15000)
+  sig~dexp(1000)
   sig2<-sig^2
   tau<-1/sig2
   #Likelihood
@@ -297,7 +297,7 @@ lf.fit.mean.inv.lambda.nt <- jags(data=jag.data, inits=inits, parameters.to.save
 # Bad convergence
 # Has true values
 
-lf.fit.mcmc <- as.mcmc(lf.fit.inv.lambda) ## makes an "mcmc" object
+lf.fit.mcmc <- as.mcmc(lf.fit.inv.mean.lambda) ## makes an "mcmc" object
 closeAllConnections()
 
 mydf<-as.data.frame(lf.fit.mcmc[[3]][,c(1,2,4)])
@@ -317,26 +317,36 @@ abline(v=true.exp.c,col="blue",lwd=4)
 
 ```{r hdi.plot}
 df.new = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
-xseq<-seq(from=10,to=35,length.out=250)
-xdf <- expand.grid(point = xseq, iteration = 1:nrow(df.new))
+xseq <- seq(from = 13, to = 29, length.out = 250)
+xdff <- expand.grid(point = xseq, iteration = 1:nrow(df.new))
 
-# Apply the quadratic equation for each combination
-xdf$value <- apply(xdf, 1, function(row) {
+xdff$value <- apply(xdff, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  (exp(-(exp(df.new[i, 4]) * location^2 - df.new[i, 1] * location + df.new[i, 2])))
+  exp(-(exp(df.new[i, 4]) * location^2 - df.new[i, 1] * location + df.new[i, 2]))
 })
-WB_mean.xdf<-xdf |> group_by(point) |> summarize(avg.value=mean(value),
-                                              lower.hdi=hdi(value)[1],
-                                              upper.hdi=hdi(value)[2])
-WB_true_curve <- function(x) (exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c)))
-WB_mean.xdf$true_curve <- WB_true_curve(xseq)
-ggplot(WB_mean.xdf, aes(x = point)) +
+xdff <- xdff|> mutate(trunc.eval = ifelse(xdff$value > epsilon, xdff$value, epsilon), 
+                             trunc.inv = 1/trunc.eval)
+mean.xdf <- xdff |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
+                                                        avg.value = mean(trunc.eval), 
+                                                        med.value.inv = median(trunc.inv), 
+                                                        med.value = median(trunc.eval), 
+                                                        lower.hdi.inv = hdi(trunc.inv)[1], 
+                                                        upper.hdi.inv = hdi(trunc.inv)[2], 
+                                                        lower.hdi = hdi(trunc.eval)[1], 
+                                                        upper.hdi = hdi(trunc.eval)[2])
+true_curve.inv <- function(x) 1/exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
+true_curve <- function(x) exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
+mean.xdf$true_curve <- true_curve(xseq)
+mean.xdf$true_curve.inv <- true_curve.inv(xseq)
+ggplot(mean.xdf, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "blue", alpha = 0.3)+
-  geom_line(aes(y=true_curve),color="violetred1")#+
-  #geom_point(aes(x=T,y=trait),data=data)
-
-
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "greenyellow", alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = "blue2", linetype = "dashed") +
+  geom_point(aes(x = T, y = trait), data = df) +
+  labs(title = "Mean Curve with Interval Bands and True Curve", 
+       x = "Temperature", 
+       y = "Lifetime") +
+  theme_minimal()
 ```
 

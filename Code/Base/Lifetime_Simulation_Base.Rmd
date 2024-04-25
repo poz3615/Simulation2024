@@ -29,15 +29,16 @@ true.c<-0.609
 f<-function(x,a=0.001094,b=0.0488,c=0.609){
   a*x^2-b*x+c
 }
-T1<-rexp(n=100,f(10))
+T1<-rexp(n=100,f(13))
 T2<-rexp(n=100,f(17))
 T3<-rexp(n=100,f(21))
 T4<-rexp(n=100,f(25))
-T5<-rexp(n=100,f(32))
+T5<-rexp(n=100,f(29))
 df<-data.frame(
-  T=c(rep(10,100),rep(17,100),rep(21,100),rep(25,100),rep(32,100)),
+  T=c(rep(13,100),rep(17,100),rep(21,100),rep(25,100),rep(29,100)),
   trait=c(T1,T2,T3,T4,T5)
 )
+df<-N_data.list[[100]]
 data <- df # this lets us reuse the same generic code: we only change this first line
 trait <- data$trait
 N.obs <- length(trait)
@@ -76,7 +77,7 @@ df$inv.trait <- 1/(df$trait)
     return(means)
   })
   df.inv.mean<- data.frame(
-    T=c(rep(10,10),rep(17,10),rep(21,10),rep(25,10),rep(32,10)),  # Extract T values as numeric
+    T=c(rep(13,10),rep(17,10),rep(21,10),rep(25,10),rep(29,10)),  # Extract T values as numeric
     trait = unlist(group_means.inv.mean)  # Extract means and unlist the result
   )
 data <- df.inv.mean # this lets us reuse the same generic code: we only change this first line
@@ -92,7 +93,7 @@ group_means.mean.inv <- tapply(df$trait, df$T, function(x) {
     return(means)
   })
   df.mean.inv<- data.frame(
-    T=c(rep(10,10),rep(17,10),rep(21,10),rep(25,10),rep(32,10)),  # Extract T values as numeric
+    T=c(rep(13,10),rep(17,10),rep(21,10),rep(25,10),rep(29,10)),  # Extract T values as numeric
     trait = unlist(group_means.mean.inv)  # Extract means and unlist the result
   )
   data<-df.mean.inv
@@ -104,15 +105,17 @@ group_means.mean.inv <- tapply(df$trait, df$T, function(x) {
 ```{r normal.model}
 sink("model.base.txt")
 cat("model{
-  #Priors
-  #If mu<0, make it small number
-  #And nonzero
-  la~dnorm(0, 1/10) #has to be positive exp(1)?
-  b.l~dnorm(0, 1/10) #Has to be positive, because function has neg sign
-  c~dexp(0.5) #Has to be positive
-  #Likelihood
+  # Priors
+  # If mu<0, make it small number
+  # And nonzero
+  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
+  b.l ~ dnorm(0, 1/10) # Has to be positive, because function has neg sign
+  c ~ dexp(0.5) # Has to be positive
+  epsilon <- 0.01
+  # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)*((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)>0) + ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)<=0)*0.00001
+    mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) * ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) > epsilon) + 
+    ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) <= epsilon) * epsilon
     trait[i] ~ dexp(mu[i])
   }
 }",file="model.base.txt")
@@ -122,17 +125,22 @@ cat("model{
 ```{r inverse.model}
   sink("inv.model.base.txt")
   cat("model{
-  #Priors
-  #If mu<0, make it small number
-  #And nonzero
-  la~dnorm(0, 1/10) #has to be positive exp(1)?
-  b.l~dnorm(0, 1/10) #Has to be positive, because function has neg sign
-  c~dexp(0.5) #Has to be positive
-  tau~dexp(0.1)
-  #Likelihood
+  # Priors
+  # If mu<0, make it small number
+  # And nonzero
+  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
+  b.l ~ dnorm(0, 1/10) # Has to be positive, because function has neg sign
+  c ~ dexp(0.5) # Has to be positive
+  sig ~ dexp(5000)
+  sig2 <- sig^2
+  tau <- 1/sig2
+  #tau~dexp(10)
+  epsilon <- 0.01
+  # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)*((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)>0) + ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)<=0)*0.00001
-    trait[i] ~ dnorm(mu[i], tau) T(0,)
+    mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) * ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) > epsilon) + 
+    ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) <= epsilon) * epsilon
+    trait[i] ~ dnorm(mu[i], tau) 
   }
 }",file="inv.model.base.txt")
 ```
@@ -158,13 +166,12 @@ cat("model{
 ```
 
 ```{r initial}
-parameters <- c("la", "b.l", "c","tau")
+parameters <- c("la", "b.l", "c","sig")
 inits<-function(){list(
   la = log(0.001),
   b.l = log(0.05),
-  c = 1,
-  #shape=2
-  tau=0.2
+  c = 0.6,
+  sig=2
   )}
 
 # MCMC Settings: number of posterior dist elements = [(ni - nb) / nt ] * nc
@@ -186,9 +193,7 @@ closeAllConnections()
 
 mydf<-as.data.frame(lf.fit.mcmc[[3]][,c(1,2,4)])
 pairs(mydf)
-png('my_plot.png')
-plot(lf.fit.mcmc)
-dev.off()
+
 
 samp<-as.mcmc.list(lf.fit.mcmc)
 hist(samp[[1]][,4],xlab="la",main="Posterior Samples of la")
@@ -201,26 +206,43 @@ abline(v=0.609,col="blue",lwd=4)
 ```
 
 ```{r hdi.plot}
-df.new = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
-xseq<-seq(from=10,to=35,length.out=250)
-xdf <- expand.grid(point = xseq, iteration = 1:nrow(df.new))
+pt = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
+xseq <- seq(from = 13, to = 29, length.out = 250)
+ptx <- expand.grid(point = xseq, iteration = 1:nrow(pt))
 
 # Apply the quadratic equation for each combination
-xdf$value <- apply(xdf, 1, function(row) {
+ptx$value.inv <- apply(ptx, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  1/(exp(df.new[i, 4]) * location^2 - exp(df.new[i, 1]) * location + df.new[i, 2])
+  1/(exp(pt[i, 4]) * location^2 - exp(pt[i, 1]) * location + pt[i, 2])
 })
-mean.xdf<-xdf |> group_by(point) |> summarize(avg.value=mean(value),
-                                              lower.hdi=hdi(value)[1],
-                                              upper.hdi=hdi(value)[2])
-true_curve <- function(x) 1/(true.a * x^2 - true.b * x + true.c)
-mean.xdf$true_curve <- true_curve(xseq)
-ggplot(mean.xdf, aes(x = point)) +
-  geom_line(aes(y = avg.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "blue", alpha = 0.3)+
-  geom_line(aes(y=true_curve),color="violetred1")+
-  geom_point(aes(x=T,y=trait),data=data)
+ptx$value <- apply(ptx, 1, function(row) {
+  i <- row["iteration"]
+  location <- row["point"]
+  exp(pt[i, 4]) * location^2 - exp(pt[i, 1]) * location + pt[i, 2]
+})
+ptx <- ptx|> mutate(trunc.eval = ifelse(ptx$value > epsilon, ptx$value, epsilon), 
+                         trunc.inv = 1/trunc.eval)
+ptdf <- ptx |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
+                                                    avg.value = mean(trunc.eval), 
+                                                    med.value.inv = median(trunc.inv), 
+                                                    med.value = median(trunc.eval), 
+                                                    lower.hdi.inv = hdi(trunc.inv)[1], 
+                                                    upper.hdi.inv = hdi(trunc.inv)[2], 
+                                                    lower.hdi = hdi(trunc.eval)[1], 
+                                                    upper.hdi = hdi(trunc.eval)[2])
+true_curve.inv <- function(x) 1/(true.a * x^2 - true.b * x + true.c)
+true_curve <- function(x) (true.a * x^2 - true.b * x + true.c)
+ptdf$true_curve <- true_curve(xseq)
+ptdf$true_curve.inv <- true_curve.inv(xseq)
 
-
+ggplot(ptdf, aes(x = point)) +
+  geom_line(aes(y = avg.value.inv), color = "black") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = "violetred1", linetype = "dashed") +
+  geom_point(aes(x = T, y = trait), data = df) +
+  labs(title = "Mean Curve with Interval Bands and True Curve", 
+       x = "Temperature", 
+       y = "Lifetime") +
+  theme_minimal()
 ```
