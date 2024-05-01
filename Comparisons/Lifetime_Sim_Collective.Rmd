@@ -11,6 +11,47 @@ library(ggplot2)
 library(EnvStats)
 ```
 
+```{r load.wide.exp}
+load("individual_exponential.RData")
+load("mean_exponential.RData")
+load("inverse_exponential.RData")
+load("mean_inverse_exponential.RData")
+load("inverse_mean_exponential.RData")
+load("inverse_notrunc.RData")
+load("mean_inverse_notrunc.RData")
+load("inverse_mean_notrunc.RData")
+```
+
+```{r load.wide.wb}
+load("Weibull_individual.RData")
+load("Weibull_mean.RData")
+load("Weibull_inverse.RData")
+load("Weibull_mean_inverse.RData")
+load("Weibull_inverse_mean.RData")
+load("Weibull_weibull_data.RData")
+```
+
+```{r load.narrow.exp}
+load("individual_exp_narrow.RData")
+load("mean_exp_narrow.RData")
+load("inverse_exp_narrow.RData")
+load("mean_inverse_exp_narrow.RData")
+load("inverse_mean_exp_narrow.RData")
+load("inverse_exp_narrow_NT.RData")
+load("mean_inverse_exp_narrow_NT.RData")
+load("inverse_mean_exp_narrow_NT.RData")
+```
+
+```{r load.narrow.wb}
+load("mean_wb_narrow.RData")
+load("individual_wb_narrow.RData")
+load("inverse_wb_narrow.RData")
+load("mean_inverse_wb_narrow.RData")
+load("inverse_mean_wb_narrow.RData")
+load("individual_wb_wb_narrow.RData")
+```
+
+
 
 ```{r plot.a.wide}
 desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
@@ -392,7 +433,6 @@ log_c_notrunc.plot <- ggplot(log_df.c_notrunc, aes(x, log(Mean)))+
   coord_flip()
 log_c_notrunc.plot
 ```
-
 
 
 ```{r plot.a.narrow}
@@ -780,7 +820,6 @@ log_N_c_notrunc.plot
 ```
 
 
-
 ```{r plot.a.wide.wb}
 desired_order.wb <- c("WB Data, WB Model", "Inverse Mean WB Data, Exp Model", "Mean Inverse WB Data, Exp Model",
                       "Individual Inverse WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual WB Data, Exp Model")
@@ -985,7 +1024,6 @@ c.wb.log.plot <- ggplot(df.c.wb.log, aes(x, log(Mean)))+
   theme_classic()+coord_flip()
 c.wb.log.plot
 ```
-
 
 
 ```{r plot.a.wide.compare}
@@ -1577,7 +1615,6 @@ ggplot(topt.mean.wb.med, aes(x = Topt, y = Lifetime,color=Method)) +
 ```
 
 
-
 ```{r exp.extreme.mean}
 x_initial <- 20
 
@@ -2013,149 +2050,719 @@ ggplot(wb.extreme.med, aes(x = Low, y = High,color=Method)) +
 ```
 
 
-```{r QQPlot.Exp.Data}
-qqPlot(data.list[[100]]$trait[data.list[[100]]$T==10],
+```{r QQPlot.Ind.Exp.Data}
+ind.exp.10<-qqPlot(data.list[[100]]$trait[data.list[[100]]$T==10],
        distribution="exp",
        param.list=list(rate=(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1]))))*10^2-
                                exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))))*10+
-                               mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="red",line.lwd=2,
-       main="QQ-Plot for Exp Data and Exp Distribution, Temperature=10",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
-       ylab="Quantiles of Generated Data with True Parameters")
-qqPlot(data.list[[100]]$trait[data.list[[100]]$T==17],
+                               mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+ind.exp.17<-qqPlot(data.list[[100]]$trait[data.list[[100]]$T==17],
        distribution="exp",
        param.list=list(rate=(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1]))))*17^2-
                                exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))))*17+
-                               mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="red",line.lwd=2,
-       main="QQ-Plot for Exp Data and Exp Distribution, Temperature=17",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
-       ylab="Quantiles of Generated Data with True Parameters")
-qqPlot(data.list[[100]]$trait[data.list[[100]]$T==21],
+                               mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+ind.exp.21<-qqPlot(data.list[[100]]$trait[data.list[[100]]$T==21],
        distribution="exp",
        param.list=list(rate=(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1]))))*21^2-
                                exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))))*21+
-                               mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="red",line.lwd=2,
-       main="QQ-Plot for Exp Data and Exp Distribution, Temperature=21",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
-       ylab="Quantiles of Generated Data with True Parameters")
-qqPlot(data.list[[100]]$trait[data.list[[100]]$T==25],
+                               mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+ind.exp.25<-qqPlot(data.list[[100]]$trait[data.list[[100]]$T==25],
        distribution="exp",
        param.list=list(rate=(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1]))))*25^2-
                                exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))))*25+
-                               mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="red",line.lwd=2,
-       main="QQ-Plot for Exp Data and Exp Distribution, Temperature=25",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
-       ylab="Quantiles of Generated Data with True Parameters")
-qqPlot(data.list[[100]]$trait[data.list[[100]]$T==32],
+                               mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+ind.exp.32<-qqPlot(data.list[[100]]$trait[data.list[[100]]$T==32],
        distribution="exp",
        param.list=list(rate=(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1]))))*32^2-
                                exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))))*32+
-                               mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="red",line.lwd=2,
-       main="QQ-Plot for Exp Data and Exp Distribution, Temperature=32",
+                               mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+
+
+plot(ind.exp.10,pch=20,xlim=c(0,80),ylim=c(0,100),
+     main="QQ-Plot for Exp Data and Exp Distribution",
        xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
+points(ind.exp.17,pch=20,col="yellowgreen")
+points(ind.exp.21,pch=20,col="darkblue")
+points(ind.exp.25,pch=20,col="lightpink")
+points(ind.exp.32,pch=20,col="seagreen")
+legend("topleft",legend=c("10","17","21","25","32"),
+       pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
 ```
 
-```{r QQPlot.WB.Data}
-qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==10],
+```{r QQPlot.Mean.Exp.Data}
+group_means.mean.exp <- tapply(data.list[[100]]$trait, data.list[[100]]$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+    })
+df.mean.mean.exp <- data.frame(
+    T = c(rep(10, 10), rep(17, 10), rep(21, 10), rep(25, 10), rep(32, 10)), # Extract T values as numeric
+    trait = unlist(group_means.mean.exp)  # Extract means and unlist the result
+    )
+mean.exp.10<-qqPlot(df.mean.mean.exp$trait[df.mean.mean.exp$T==10],
+       distribution="exp",
+       param.list=list(rate=(exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+mean.exp.17<-qqPlot(df.mean.mean.exp$trait[df.mean.mean.exp$T==17],
+       distribution="exp",
+       param.list=list(rate=(exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1]))))*17^2-
+                               exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))))*17+
+                               mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+mean.exp.21<-qqPlot(df.mean.mean.exp$trait[df.mean.mean.exp$T==21],
+       distribution="exp",
+       param.list=list(rate=(exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1]))))*21^2-
+                               exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))))*21+
+                               mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+mean.exp.25<-qqPlot(df.mean.mean.exp$trait[df.mean.mean.exp$T==25],
+       distribution="exp",
+       param.list=list(rate=(exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1]))))*25^2-
+                               exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))))*25+
+                               mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+mean.exp.32<-qqPlot(df.mean.mean.exp$trait[df.mean.mean.exp$T==32],
+       distribution="exp",
+       param.list=list(rate=(exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1]))))*32^2-
+                               exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))))*32+
+                               mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+
+
+plot(mean.exp.10,pch=20,xlim=c(0,30),ylim=c(0,50),
+     main="QQ-Plot for Mean Exp Data and Exp Distribution",
+       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+points(mean.exp.17,pch=20,col="yellowgreen")
+points(mean.exp.21,pch=20,col="darkblue")
+points(mean.exp.25,pch=20,col="lightpink")
+points(mean.exp.32,pch=20,col="seagreen")
+legend("topleft",legend=c("10","17","21","25","32"),
+       pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+```
+
+```{r QQPlot.Inv.Exp.Data}
+inv.exp.10<-qqPlot(1/data.list[[100]]$trait[data.list[[100]]$T==10],
+       distribution="normTrunc",
+       param.list=list(mean=0.01,
+                       sd=1/mean(unlist(lapply(param_list3[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+inv.exp.17<-qqPlot(1/data.list[[100]]$trait[data.list[[100]]$T==17],
+       distribution="normTrunc",
+       param.list=list(mean=0.01,
+                       sd=1/mean(unlist(lapply(param_list3[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+inv.exp.21<-qqPlot(1/data.list[[100]]$trait[data.list[[100]]$T==21],
+       distribution="normTrunc",
+       param.list=list(mean=0.01,
+                       sd=1/mean(unlist(lapply(param_list3[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+inv.exp.25<-qqPlot(1/data.list[[100]]$trait[data.list[[100]]$T==25],
+       distribution="normTrunc",
+       param.list=list(mean=0.01,
+                       sd=1/mean(unlist(lapply(param_list3[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+inv.exp.32<-qqPlot(1/data.list[[100]]$trait[data.list[[100]]$T==32],
+       distribution="normTrunc",
+       param.list=list(mean=0.01,
+                       sd=1/mean(unlist(lapply(param_list3[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+
+
+plot(inv.exp.10,pch=20,,
+     main="QQ-Plot for Inverse Exp Data and Exp Distribution",
+       xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+points(inv.exp.17,pch=20,col="yellowgreen")
+points(inv.exp.21,pch=20,col="darkblue")
+points(inv.exp.25,pch=20,col="lightpink")
+points(inv.exp.32,pch=20,col="seagreen")
+legend("topleft",legend=c("10","17","21","25","32"),
+       pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+```
+
+```{r QQPlot.Mean.Inv.Exp.Data}
+group_means.mean.exp <- tapply(data.list[[100]]$trait, data.list[[100]]$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+    })
+df.mean.mean.exp <- data.frame(
+    T = c(rep(10, 10), rep(17, 10), rep(21, 10), rep(25, 10), rep(32, 10)), # Extract T values as numeric
+    trait = unlist(group_means.mean.exp)  # Extract means and unlist the result
+    )
+mean.inv.exp.10<-qqPlot(1/df.mean.mean.exp$trait[df.mean.mean.exp$T==10],
+       distribution="normTrunc",
+       param.list=list(mean=(exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               exp(mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(param_list4[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+mean.inv.exp.17<-qqPlot(1/df.mean.mean.exp$trait[df.mean.mean.exp$T==17],
+       distribution="normTrunc",
+       param.list=list(mean=(exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               exp(mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(param_list4[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+mean.inv.exp.21<-qqPlot(1/df.mean.mean.exp$trait[df.mean.mean.exp$T==21],
+       distribution="normTrunc",
+       param.list=list(mean=(exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               exp(mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(param_list4[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+mean.inv.exp.25<-qqPlot(1/df.mean.mean.exp$trait[df.mean.mean.exp$T==25],
+       distribution="normTrunc",
+       param.list=list(mean=(exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               exp(mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(param_list4[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+mean.inv.exp.32<-qqPlot(1/df.mean.mean.exp$trait[df.mean.mean.exp$T==32],
+       distribution="normTrunc",
+       param.list=list(mean=(exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               exp(mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(param_list4[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+
+
+plot(mean.inv.exp.10,pch=20,xlim=c(0,30),ylim=c(0,1),
+     main="QQ-Plot for Mean Inverse Exp Data and Exp Distribution",
+       xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+points(mean.inv.exp.17,pch=20,col="yellowgreen")
+points(mean.inv.exp.21,pch=20,col="darkblue")
+points(mean.inv.exp.25,pch=20,col="lightpink")
+points(mean.inv.exp.32,pch=20,col="seagreen")
+legend("topleft",legend=c("10","17","21","25","32"),
+       pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+```
+
+```{r QQPlot.Inv.Mean.Exp.Data}
+group_means.inv.exp <- tapply(1/data.list[[100]]$trait, data.list[[100]]$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+    })
+df.mean.inv.exp <- data.frame(
+    T = c(rep(10, 10), rep(17, 10), rep(21, 10), rep(25, 10), rep(32, 10)), # Extract T values as numeric
+    trait = unlist(group_means.inv.exp)  # Extract means and unlist the result
+    )
+inv.mean.exp.10<-qqPlot(df.mean.inv.exp$trait[df.mean.inv.exp$T==10],
+       distribution="normTrunc",
+       param.list=list(mean=(exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               exp(mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(param_list5[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+inv.mean.exp.17<-qqPlot(df.mean.inv.exp$trait[df.mean.inv.exp$T==17],
+       distribution="normTrunc",
+       param.list=list(mean=(exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               exp(mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(param_list5[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+inv.mean.exp.21<-qqPlot(df.mean.inv.exp$trait[df.mean.inv.exp$T==21],
+       distribution="normTrunc",
+       param.list=list(mean=(exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               exp(mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(param_list5[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+inv.mean.exp.25<-qqPlot(df.mean.inv.exp$trait[df.mean.inv.exp$T==25],
+       distribution="normTrunc",
+       param.list=list(mean=(exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               exp(mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(param_list5[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+inv.mean.exp.32<-qqPlot(df.mean.inv.exp$trait[df.mean.inv.exp$T==32],
+       distribution="normTrunc",
+       param.list=list(mean=(exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               exp(mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(param_list5[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+
+
+plot(inv.mean.exp.10,pch=20,xlim=c(1,5),ylim=c(0,3),
+     main="QQ-Plot for Inverse Mean Exp Data and Exp Distribution",
+       xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+points(inv.mean.exp.17,pch=20,col="yellowgreen")
+points(inv.mean.exp.21,pch=20,col="darkblue")
+points(inv.mean.exp.25,pch=20,col="lightpink")
+points(inv.mean.exp.32,pch=20,col="seagreen")
+legend("topleft",legend=c("10","17","21","25","32"),
+       pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+```
+
+
+```{r QQPlot.Ind.WB.Data}
+ind.wb.10<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==10],
        distribution="exp",
        param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*10^2-
                                (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))*10+
-                               mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="purple",line.lwd=2,
-       main="QQ-Plot for WB Data and Exp Distribution, Temperature=10",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
-       ylab="Quantiles of Generated Data with True Parameters")
-qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==17],
+                               mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+ind.wb.17<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==17],
        distribution="exp",
        param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*17^2-
                                (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))*17+
-                               mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="purple",line.lwd=2,
-       main="QQ-Plot for WB Data and Exp Distribution, Temperature=17",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
-       ylab="Quantiles of Generated Data with True Parameters")
-qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==21],
+                               mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+ind.wb.21<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==21],
        distribution="exp",
        param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*21^2-
                                (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))*21+
-                               mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="purple",line.lwd=2,
-       main="QQ-Plot for WB Data and Exp Distribution, Temperature=21",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
-       ylab="Quantiles of Generated Data with True Parameters")
-qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==25],
+                               mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+ind.wb.25<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==25],
        distribution="exp",
        param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*25^2-
                                (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))*25+
-                               mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="purple",line.lwd=2,
-       main="QQ-Plot for WB Data and Exp Distribution, Temperature=25",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
-       ylab="Quantiles of Generated Data with True Parameters")
-qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==32],
+                               mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+ind.wb.32<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==32],
        distribution="exp",
        param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*32^2-
                                (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))*32+
-                               mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),
-       add.line=TRUE,qq.line.type="0-1",line.col="purple",line.lwd=2,
-       main="QQ-Plot for WB Data and Exp Distribution, Temperature=32",
+                               mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+
+plot(ind.wb.10,xlim=c(0,35),ylim=c(0,35),pch=20,
+       main="QQ-Plot for WB Data and Exponential Distribution",
        xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
+points(ind.wb.17,pch=20,col="yellowgreen")
+points(ind.wb.21,pch=20,col="darkblue")
+points(ind.wb.25,pch=20,col="lightpink")
+points(ind.wb.32,pch=20,col="seagreen")
+legend("topleft",legend=c("10","17","21","25","32"),
+       pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+
+```
+
+```{r QQPlot.Mean.WB.Data}
+group_means.mean.wb <- tapply(Weibull_data.list[[100]]$trait, Weibull_data.list[[100]]$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+    })
+df.mean.mean.wb <- data.frame(
+    T = c(rep(10, 10), rep(17, 10), rep(21, 10), rep(25, 10), rep(32, 10)), # Extract T values as numeric
+    trait = unlist(group_means.mean.wb)  # Extract means and unlist the result
+    )
+mean.wb.10<-qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T==10],
+       distribution="exp",
+       param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               (mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+mean.wb.17<-qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T==17],
+       distribution="exp",
+       param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1]))))*17^2-
+                               (mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))))*17+
+                               mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+mean.wb.21<-qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T==21],
+       distribution="exp",
+       param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1]))))*21^2-
+                               (mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))))*21+
+                               mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+mean.wb.25<-qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T==25],
+       distribution="exp",
+       param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1]))))*25^2-
+                               (mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))))*25+
+                               mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+mean.wb.32<-qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T==32],
+       distribution="exp",
+       param.list=list(rate=exp(exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1]))))*32^2-
+                               (mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))))*32+
+                               mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
+
+
+plot(mean.wb.10,pch=20,xlim=c(0,60),ylim=c(0,30),
+     main="QQ-Plot for Mean WB Data and Exp Distribution",
+       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+points(mean.wb.17,pch=20,col="yellowgreen")
+points(mean.wb.21,pch=20,col="darkblue")
+points(mean.wb.25,pch=20,col="lightpink")
+points(mean.wb.32,pch=20,col="seagreen")
+legend("topleft",legend=c("10","17","21","25","32"),
+       pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+```
+
+```{r QQPlot.Inv.WB.Data}
+inv.wb.10<-qqPlot(1/Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==10],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               (mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list3[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+inv.wb.17<-qqPlot(1/Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==17],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1]))))*17^2-
+                               (mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))))*17+
+                               mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list3[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),plot.it=FALSE)
+inv.wb.21<-qqPlot(1/Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==21],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1]))))*21^2-
+                               (mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))))*21+
+                               mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list3[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),plot.it=FALSE)
+inv.wb.25<-qqPlot(1/Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==25],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1]))))*25^2-
+                               (mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))))*25+
+                               mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list3[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),plot.it=FALSE)
+inv.wb.32<-qqPlot(1/Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==32],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1]))))*32^2-
+                               (mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))))*32+
+                               mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list3[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),plot.it=FALSE)
+
+plot(inv.wb.10,xlim=c(0,50),ylim=c(0,3),pch=20,
+       main="QQ-Plot for Inverse WB Data and Exponential Distribution",
+       xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+points(inv.wb.17,pch=20,col="yellowgreen")
+points(inv.wb.21,pch=20,col="darkblue")
+points(inv.wb.25,pch=20,col="lightpink")
+points(inv.wb.32,pch=20,col="seagreen")
+legend("topleft",legend=c("10","17","21","25","32"),
+       pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+
+```
+
+```{r QQPlot.Mean.Inv.WB.Data}
+group_means.mean.wb <- tapply(Weibull_data.list[[100]]$trait, Weibull_data.list[[100]]$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+    })
+df.mean.mean.wb <- data.frame(
+    T = c(rep(10, 10), rep(17, 10), rep(21, 10), rep(25, 10), rep(32, 10)), # Extract T values as numeric
+    trait = unlist(group_means.mean.wb)  # Extract means and unlist the result
+    )
+mean.inv.wb.10<-qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T==10],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               (mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list4[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+mean.inv.wb.17<-qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T==17],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1]))))*17^2-
+                               (mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))))*17+
+                               mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list4[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),plot.it=FALSE)
+mean.inv.wb.21<-qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T==21],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1]))))*21^2-
+                               (mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))))*21+
+                               mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list4[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),plot.it=FALSE)
+mean.inv.wb.25<-qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T==25],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1]))))*25^2-
+                               (mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))))*25+
+                               mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list4[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),plot.it=FALSE)
+mean.inv.wb.32<-qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T==32],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1]))))*32^2-
+                               (mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))))*32+
+                               mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list4[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),plot.it=FALSE)
+
+plot(mean.inv.wb.10,pch=20,ylim=c(0,30),xlim=c(0,8000),
+       main="QQ-Plot for Mean Inverse WB Data and Exponential Distribution",
+       xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+points(mean.inv.wb.17,pch=20,col="yellowgreen")
+points(mean.inv.wb.21,pch=20,col="darkblue")
+points(mean.inv.wb.25,pch=20,col="lightpink")
+points(mean.inv.wb.32,pch=20,col="seagreen")
+legend("topleft",legend=c("10","17","21","25","32"),
+       pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+
+```
+
+```{r QQPlot.Inv.Mean.WB.Data}
+group_means.inv.wb <- tapply(1/Weibull_data.list[[100]]$trait, Weibull_data.list[[100]]$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+    })
+df.mean.inv.wb <- data.frame(
+    T = c(rep(10, 10), rep(17, 10), rep(21, 10), rep(25, 10), rep(32, 10)), # Extract T values as numeric
+    trait = unlist(group_means.inv.wb)  # Extract means and unlist the result
+    )
+
+inv.mean.wb.10<-qqPlot(df.mean.inv.wb$trait[df.mean.inv.wb$T==10],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1]))))*10^2-
+                               (mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))))*10+
+                               mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list5[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),
+       plot.it=FALSE)
+inv.mean.wb.17<-qqPlot(df.mean.inv.wb$trait[df.mean.inv.wb$T==17],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1]))))*17^2-
+                               (mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))))*17+
+                               mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list5[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),plot.it=FALSE)
+inv.mean.wb.21<-qqPlot(df.mean.inv.wb$trait[df.mean.inv.wb$T==21],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1]))))*21^2-
+                               (mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))))*21+
+                               mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list5[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),plot.it=FALSE)
+inv.mean.wb.25<-qqPlot(df.mean.inv.wb$trait[df.mean.inv.wb$T==25],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1]))))*25^2-
+                               (mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))))*25+
+                               mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list5[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),plot.it=FALSE)
+inv.mean.wb.32<-qqPlot(df.mean.inv.wb$trait[df.mean.inv.wb$T==32],
+       distribution="normTrunc",
+       param.list=list(mean=exp(exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1]))))*32^2-
+                               (mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))))*32+
+                               mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))),
+                       sd=1/mean(unlist(lapply(Weibull_param_list5[[5]], function(matrix) matrix[, 1]))),
+                       min=0,
+                       max=Inf),plot.it=FALSE)
+
+plot(inv.mean.wb.10,pch=20,xlim=c(0,1500),ylim=c(0,1),
+       main="QQ-Plot for Inverse Mean WB Data and Exponential Distribution",
+       xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
+       ylab="Quantiles of Generated Data with True Parameters")
+points(inv.mean.wb.17,pch=20,col="yellowgreen")
+points(inv.mean.wb.21,pch=20,col="darkblue")
+points(inv.mean.wb.25,pch=20,col="lightpink")
+points(inv.mean.wb.32,pch=20,col="seagreen")
+legend("topleft",legend=c("10","17","21","25","32"),
+       pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
 
 ```
 
 ```{r QQPlot.WB.Data.WB.Model}
-qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==10],
+wb.wb.10<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==10],
        distribution="weibull",
        param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*10^2-
                                (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*10+
-                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),
-       add.line=TRUE,qq.line.type="0-1",line.col="blue",line.lwd=2,
-       main="QQ-Plot for WB Data and WB Distribution, Temperature=10",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
-       ylab="Quantiles of Generated Data with True Parameters")
-qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==17],
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+wb.wb.17<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==17],
        distribution="weibull",
        param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*17^2-
                                (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*17+
-                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),
-       add.line=TRUE,qq.line.type="0-1",line.col="blue",line.lwd=2,
-       main="QQ-Plot for WB Data and WB Distribution, Temperature=17",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
-       ylab="Quantiles of Generated Data with True Parameters")
-qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==21],
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+wb.wb.21<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==21],
        distribution="weibull",
        param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*21^2-
                                (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*21+
-                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),
-       add.line=TRUE,qq.line.type="0-1",line.col="blue",line.lwd=2,
-       main="QQ-Plot for WB Data and WB Distribution, Temperature=21",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
-       ylab="Quantiles of Generated Data with True Parameters")
-qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==25],
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+wb.wb.25<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==25],
        distribution="weibull",
        param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*25^2-
                                (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*25+
-                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),
-       add.line=TRUE,qq.line.type="0-1",line.col="blue",line.lwd=2,
-       main="QQ-Plot for WB Data and WB Distribution, Temperature=25",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
-       ylab="Quantiles of Generated Data with True Parameters")
-qqPlot(Weibull_data.list[[100]]$trait[data.list[[100]]$T==32],
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+wb.wb.32<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==32],
        distribution="weibull",
        param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*32^2-
                                (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*32+
-                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),
-       add.line=TRUE,qq.line.type="0-1",line.col="blue",line.lwd=2,
-       main="QQ-Plot for WB Data and WB Distribution, Temperature=32",
-       xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+
+plot(wb.wb.10,xlim=c(0,35),ylim=c(0,35),pch=20,
+       main="QQ-Plot for WB Data and WB Distribution",
+       xlab="Quantiles of Weibull with Posterior Mean Parameters",
        ylab="Quantiles of Generated Data with True Parameters")
+points(wb.wb.17,pch=20,col="yellowgreen")
+points(wb.wb.21,pch=20,col="darkblue")
+points(wb.wb.25,pch=20,col="lightpink")
+points(wb.wb.32,pch=20,col="seagreen")
+legend("topleft",legend=c("10","17","21","25","32"),
+       pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+```
+
+
+
+```{r RMSE.Boxplot.Exp}
+xdf1$true.value<-rep(true_curve(xseq),938)
+xdf2$true.value<-rep(true_curve(xseq),938)
+xdf3$true.value<-rep(true_curve(xseq),938)
+xdf4.2$true.value<-rep(true_curve(xseq),938)
+xdf5$true.value<-rep(true_curve(xseq),938)
+xdf3.NT$true.value<-rep(true_curve(xseq),938)
+xdf4.NT$true.value<-rep(true_curve(xseq),938)
+xdf5.NT$true.value<-rep(true_curve(xseq),938)
+
+
+rmse1<-xdf1 |> group_by(point) |> summarize(rmse1=sqrt(mean((trunc.inv-true.value)^2))) |> select(rmse1)
+rmse2<-xdf2 |> group_by(point) |> summarize(rmse2=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse2)
+rmse3<-xdf3 |> group_by(point) |> summarize(rmse3=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse3)
+rmse4<-xdf4.2 |> group_by(point) |> summarize(rmse4=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse4)
+rmse5<-xdf5 |> group_by(point) |> summarize(rmse5=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse5)
+rmse3.NT<-xdf3.NT |> group_by(point) |> summarize(rmse3.NT=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse3.NT)
+rmse4.NT<-xdf4.NT |> group_by(point) |> summarize(rmse4.NT=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse4.NT)
+rmse5.NT<-xdf5.NT |> group_by(point) |> summarize(rmse5.NT=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse5.NT)
+
+boxplot.df<-data.frame(
+  Method=factor(c(rep("Individual Exp Data, Exp Model",250),rep("Mean Exp Data, Exp Model",250),rep("Individual Inverse Exp Data, Exp Model",250),rep("Mean Inverse Exp Data, Exp Model",250),rep("Inverse Mean Exp Data, Exp Model",250),rep("Individual Inverse Exp Data, Exp NT Model",250),rep("Mean Inverse Exp Data, Exp NT Model",250),rep("Inverse Mean Exp Data, Exp NT Model",250)),levels=c("Inverse Mean Exp Data, Exp NT Model","Mean Inverse Exp Data, Exp NT Model","Individual Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp Model","Mean Inverse Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Exp Data, Exp Model","Individual Exp Data, Exp Model")),
+  RMSE=c(rmse1$rmse1,
+         rmse2$rmse2,
+         rmse3$rmse3,
+         rmse4$rmse4,
+         rmse5$rmse5,
+         rmse3.NT$rmse3.NT,
+         rmse4.NT$rmse4.NT,
+         rmse5.NT$rmse5.NT
+  ),
+  Temperature=c(rep(xdf1$point,8))
+)
+
+ggplot(boxplot.df,aes(y=Method,x=RMSE,fill=Method))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(legend.position="none")+
+  labs(title="Boxplot of RMSE Comparisons",
+       subtitle="Data Generated from Exponential Distribution")
+ggplot(boxplot.df,aes(y=RMSE,x=Temperature,col=Method))+
+  geom_line()+
+  theme_classic()+
+  labs(title="Plot of RMSE Comparisons",
+       subtitle="Data Generated from Exponential Distribution")
+
+```
+
+```{r RMSE.Boxplot.WB}
+xdf1_W$true.value<-rep(true_curve(xseq),938)
+xdf2_W$true.value<-rep(true_curve(xseq),938)
+xdf3_W$true.value<-rep(true_curve(xseq),938)
+xdf4_W$true.value<-rep(true_curve(xseq),938)
+xdf5_W$true.value<-rep(true_curve(xseq),938)
+xdf6_W$true.value<-rep(true_curve(xseq),938)
+
+
+rmse1.wb<-xdf1_W |> group_by(point) |> summarize(rmse1.wb=sqrt(mean((trunc.inv-true.value)^2))) |> select(rmse1.wb)
+rmse2.wb<-xdf2_W |> group_by(point) |> summarize(rmse2.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse2.wb)
+rmse3.wb<-xdf3_W |> group_by(point) |> summarize(rmse3.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse3.wb)
+rmse4.wb<-xdf4_W |> group_by(point) |> summarize(rmse4.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse4.wb)
+rmse5.wb<-xdf5_W |> group_by(point) |> summarize(rmse5.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse5.wb)
+rmse6.wb<-xdf6_W |> group_by(point) |> summarize(rmse6.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse6.wb)
+
+
+boxplot.df.wb<-data.frame(
+  Method=factor(c(rep("Individual WB Data, Exp Model",250),rep("Mean WB Data, Exp Model",250),rep("Individual Inverse WB Data, Exp Model",250),rep("Mean Inverse WB Data, Exp Model",250),rep("Inverse Mean WB Data, Exp Model",250),rep("Individual WB Data, WB Model",250)),levels=c("Individual WB Data, WB Model","Inverse Mean WB Data, Exp Model","Mean Inverse WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
+               "Mean WB Data, Exp Model","Individual WB Data, Exp Model")),
+  RMSE=c(rmse1.wb$rmse1.wb,
+         rmse2.wb$rmse2.wb,
+         rmse3.wb$rmse3.wb,
+         rmse4.wb$rmse4.wb,
+         rmse5.wb$rmse5.wb,
+         rmse6.wb$rmse6.wb
+  ),
+  Temperature=c(rep(xdf1_W$point,6))
+)
+
+ggplot(boxplot.df.wb,aes(y=Method,x=RMSE,fill=Method))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(legend.position="none")+
+  labs(title="Boxplot of RMSE Comparisons",
+       subtitle="Data Generated from Weibull Distribution")
+ggplot(boxplot.df.wb,aes(y=RMSE,x=Temperature,col=Method))+
+  geom_line()+
+  theme_classic()+
+  labs(title="Plot of RMSE Comparisons",
+       subtitle="Data Generated from Weibull Distribution")
+
+ggplot(rbind(boxplot.df,boxplot.df.wb),aes(y=Method,x=RMSE,fill=Method))+
+  geom_boxplot()+
+  theme_classic()+
+  theme(legend.position="none")+
+  labs(title="Boxplot of RMSE Comparisons",
+       subtitle="Data Generated from Weibull Distribution")
+ggplot(rbind(boxplot.df,boxplot.df.wb),aes(y=RMSE,x=Temperature,col=Method))+
+  geom_line()+
+  theme_classic()+
+  labs(title="Plot of RMSE Comparisons",
+       subtitle="Data Generated from Weibull Distribution")
+
+```
+
+
+```{r RMSE.5.Temps}
+xdf1$point<-round(xdf1$point,5)
+xdf2$point<-round(xdf2$point,5)
+xdf3$point<-round(xdf3$point,5)
+xdf4.2$point<-round(xdf4.2$point,5)
+xdf5$point<-round(xdf5$point,5)
+
+plot(xdf1[xdf1$point %in% c(10,17.02811,21.04418	,24.95984	,31.98795),] |> group_by(point) |> summarize(mean=mean(trunc.inv-true.value)),type="l")
+lines(xdf2[xdf2$point %in% c(10,17.02811,21.04418	,24.95984	,31.98795),] |> group_by(point) |> summarize(mean=mean(trunc.inv-true.value)),col="red")
+lines(xdf3[xdf3$point %in% c(10,17.02811,21.04418	,24.95984	,31.98795),] |> group_by(point) |> summarize(mean=mean(trunc.inv-true.value)),col="green")
+lines(xdf4.2[xdf4.2$point %in% c(10,17.02811,21.04418	,24.95984	,31.98795),] |> group_by(point) |> summarize(mean=mean(trunc.inv-true.value)),col="blue")
+lines(xdf5[xdf5$point %in% c(10,17.02811,21.04418	,24.95984	,31.98795),] |> group_by(point) |> summarize(mean=mean(trunc.inv-true.value)),col="purple")
 ```
 
 

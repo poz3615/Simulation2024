@@ -340,6 +340,22 @@ N_tab.lambda[1, 6] <- mean(N_rmse_values_a_lambda)
 N_tab.lambda[2, 6] <- mean(N_rmse_values_b_lambda)
 N_tab.lambda[3, 6] <- mean(N_rmse_values_c_lambda)
 
+save(N_param_list1,
+     df.new1_N,
+     N_mean.xdf1,
+     N_hist_list1,
+     N_plot1_mean, 
+     N_plot1_med,
+     N_plot1_mean.inv, 
+     N_plot1_med.inv,
+     N_proportions_list_a1,
+     N_proportions_list_b1,
+     N_proportions_list_c1,
+     N_rmse_values_a_lambda,
+     N_rmse_values_b_lambda,
+     N_rmse_values_c_lambda,
+     N_tab.lambda,
+     file="individual_exp_narrow.RData")
 
 ########################################## Mean Lambda #############################################
 
@@ -647,7 +663,22 @@ N_tab.lambda.mean[1, 6] <- mean(N_rmse_values_a_lambda_mean)
 N_tab.lambda.mean[2, 6] <- mean(N_rmse_values_b_lambda_mean)
 N_tab.lambda.mean[3, 6] <- mean(N_rmse_values_c_lambda_mean)
 
-
+save(N_param_list2,
+     df.new2_N,
+     N_mean.xdf2,
+     N_hist_list2,
+     N_plot2_mean, 
+     N_plot2_med,
+     N_plot2_mean.inv, 
+     N_plot2_med.inv,
+     N_proportions_list_a2,
+     N_proportions_list_b2,
+     N_proportions_list_c2,
+     N_rmse_values_a_lambda_mean,
+     N_rmse_values_b_lambda_mean,
+     N_rmse_values_c_lambda_mean,
+     N_tab.lambda.mean,
+     file="mean_exp_narrow.RData")
 
 ########################################## Inverse Lambda #############################################
 
@@ -677,7 +708,7 @@ for(i in 1:b){
   la ~ dnorm(0, 1/10) 
   b.l ~ dnorm(0, 1/10) 
   c ~ dexp(0.5) # Has to be positive
-  sig ~ dexp(5000)
+  sig ~ dexp(15000)
   sig2 <- sig^2
   tau <- 1/sig2
   # Set epsilon to avoid negative or small values
@@ -958,7 +989,22 @@ N_tab.inv.lambda[1, 6] <- mean(N_rmse_values_a_lambda_inv)
 N_tab.inv.lambda[2, 6] <- mean(N_rmse_values_b_lambda_inv)
 N_tab.inv.lambda[3, 6] <- mean(N_rmse_values_c_lambda_inv)
 
-
+save(N_param_list3,
+     df.new3_N,
+     N_mean.xdf3,
+     N_hist_list3,
+     N_plot3_mean, 
+     N_plot3_med,
+     N_plot3_mean.inv, 
+     N_plot3_med.inv,
+     N_proportions_list_a3,
+     N_proportions_list_b3,
+     N_proportions_list_c3,
+     N_rmse_values_a_lambda_inv,
+     N_rmse_values_b_lambda_inv,
+     N_rmse_values_c_lambda_inv,
+     N_tab.inv.lambda,
+     file="inverse_exp_narrow.RData")
 
 ########################################## Mean Inverse Lambda #############################################
 
@@ -1282,6 +1328,22 @@ N_tab.mean.inv.lambda[1, 6] <- mean(N_rmse_values_a_lambda_mean_inv)
 N_tab.mean.inv.lambda[2, 6] <- mean(N_rmse_values_b_lambda_mean_inv)
 N_tab.mean.inv.lambda[3, 6] <- mean(N_rmse_values_c_lambda_mean_inv)
 
+save(N_param_list4,
+     df.new4_N,
+     N_mean.xdf4,
+     N_hist_list4,
+     N_plot4_mean, 
+     N_plot4_med,
+     N_plot4_mean.inv, 
+     N_plot4_med.inv,
+     N_proportions_list_a4,
+     N_proportions_list_b4,
+     N_proportions_list_c4,
+     N_rmse_values_a_lambda_mean_inv,
+     N_rmse_values_b_lambda_mean_inv,
+     N_rmse_values_c_lambda_mean_inv,
+     N_tab.mean.inv.lambda,
+     file="mean_inverse_exp_narrow.RData")
 
 ########################################## Inverse Mean Lambda #############################################
 
@@ -1607,6 +1669,22 @@ N_tab.inv.mean.lambda[1, 6] <- mean(N_rmse_values_a_lambda_inv_mean)
 N_tab.inv.mean.lambda[2, 6] <- mean(N_rmse_values_b_lambda_inv_mean)
 N_tab.inv.mean.lambda[3, 6] <- mean(N_rmse_values_c_lambda_inv_mean)
 
+save(N_param_list5,
+     df.new5_N,
+     N_mean.xdf5,
+     N_hist_list5,
+     N_plot5_mean, 
+     N_plot5_med,
+     N_plot5_mean.inv, 
+     N_plot5_med.inv,
+     N_proportions_list_a5,
+     N_proportions_list_b5,
+     N_proportions_list_c5,
+     N_rmse_values_a_lambda_inv_mean,
+     N_rmse_values_b_lambda_inv_mean,
+     N_rmse_values_c_lambda_inv_mean,
+     N_tab.inv.mean.lambda,
+     file="inverse_mean_exp_narrow.RData")
 
 
 
@@ -1922,6 +2000,22 @@ N_tab.inv.lambda_notrunc[2, 6] <- mean(N_rmse_values_b_lambda_inv_notrunc)
 N_tab.inv.lambda_notrunc[3, 6] <- mean(N_rmse_values_c_lambda_inv_notrunc)
 
 
+save(N_param_list3_notrunc,
+     df.new3_N.NT,
+     N_mean.xdf3_NT,
+     N_hist_list3_notrunc,
+     N_plot3_mean_NT, 
+     N_plot3_med_NT,
+     N_plot3_mean_NT, 
+     N_plot3_med.inv_NT,
+     N_proportions_list_a3_notrunc,
+     N_proportions_list_b3_notrunc,
+     N_proportions_list_c3_notrunc,
+     N_rmse_values_a_lambda_inv_notrunc,
+     N_rmse_values_b_lambda_inv_notrunc,
+     N_rmse_values_c_lambda_inv_notrunc,
+     N_tab.inv.lambda_notrunc,
+     file="inverse_exp_narrow_NT.RData")
 
 ########################################## Mean Inverse Lambda NOT TRUNCATED #############################################
 
@@ -2245,7 +2339,22 @@ N_tab.mean.inv.lambda_notrunc[2, 6] <- mean(N_rmse_values_b_lambda_mean_inv_notr
 N_tab.mean.inv.lambda_notrunc[3, 6] <- mean(N_rmse_values_c_lambda_mean_inv_notrunc)
 
 
-
+save(N_param_list4_notrunc,
+     df.new4_N.NT,
+     N_mean.xdf4_NT,
+     N_hist_list4_notrunc,
+     N_plot4_mean_NT, 
+     N_plot4_med_NT,
+     N_plot4_mean_NT, 
+     N_plot4_med.inv_NT,
+     N_proportions_list_a4_notrunc,
+     N_proportions_list_b4_notrunc,
+     N_proportions_list_c4_notrunc,
+     N_rmse_values_a_lambda_mean_inv_notrunc,
+     N_rmse_values_b_lambda_mean_inv_notrunc,
+     N_rmse_values_c_lambda_mean_inv_notrunc,
+     N_tab.mean.inv.lambda_notrunc,
+     file="mean_inverse_exp_narrow_NT.RData")
 
 
 
@@ -2572,5 +2681,22 @@ N_tab.inv.mean.lambda_notrunc[3, 5] <- mean(unlist(N_proportions_list_c5_notrunc
 N_tab.inv.mean.lambda_notrunc[1, 6] <- mean(N_rmse_values_a_lambda_inv_mean_notrunc)
 N_tab.inv.mean.lambda_notrunc[2, 6] <- mean(N_rmse_values_b_lambda_inv_mean_notrunc)
 N_tab.inv.mean.lambda_notrunc[3, 6] <- mean(N_rmse_values_c_lambda_inv_mean_notrunc)
+
+save(N_param_list5_notrunc,
+     df.new5_N.NT,
+     N_mean.xdf5_NT,
+     N_hist_list5_notrunc,
+     N_plot5_mean_NT, 
+     N_plot5_med_NT,
+     N_plot5_mean_NT, 
+     N_plot5_med.inv_NT,
+     N_proportions_list_a5_notrunc,
+     N_proportions_list_b5_notrunc,
+     N_proportions_list_c5_notrunc,
+     N_rmse_values_a_lambda_inv_mean_notrunc,
+     N_rmse_values_b_lambda_inv_mean_notrunc,
+     N_rmse_values_c_lambda_inv_mean_notrunc,
+     N_tab.inv.mean.lambda_notrunc,
+     file="inverse_mean_exp_narrow_NT.RData")
 
 

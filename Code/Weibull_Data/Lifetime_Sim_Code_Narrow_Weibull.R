@@ -315,28 +315,44 @@ Weibull_N_rmse_values_c_lambda <- sapply(Weibull_N_param_list1[[3]], Weibull_N_c
 
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
-Weibull_N_tabambda <- matrix(0, nrow = 3, ncol = 6)
-row.names(Weibull_N_tabambda) <- c("a", "b", "c")
-colnames(Weibull_N_tabambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
-Weibull_N_tabambda[1, 1] <- true.exp.a
-Weibull_N_tabambda[2, 1] <- true.exp.b
-Weibull_N_tabambda[3, 1] <- true.exp.c
-Weibull_N_tabambda[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 1]))))
-Weibull_N_tabambda[2, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1]))))
-Weibull_N_tabambda[3, 2] <- mean(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 1])))
-Weibull_N_tabambda[1, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 1])))[1])
-Weibull_N_tabambda[2, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1])))[1])
-Weibull_N_tabambda[3, 3] <- hdi(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 1])))[1]
-Weibull_N_tabambda[1, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 1])))[2])
-Weibull_N_tabambda[2, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1])))[2])
-Weibull_N_tabambda[3, 4] <- hdi(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 1])))[2]
-Weibull_N_tabambda[1, 5] <- mean(unlist(Weibull_N_proportions_list_a1))
-Weibull_N_tabambda[2, 5] <- mean(unlist(Weibull_N_proportions_list_b1))
-Weibull_N_tabambda[3, 5] <- mean(unlist(Weibull_N_proportions_list_c1))
-Weibull_N_tabambda[1, 6] <- mean(Weibull_N_rmse_values_a_lambda)
-Weibull_N_tabambda[2, 6] <- mean(Weibull_N_rmse_values_b_lambda)
-Weibull_N_tabambda[3, 6] <- mean(Weibull_N_rmse_values_c_lambda)
+Weibull_N_tab.lambda <- matrix(0, nrow = 3, ncol = 6)
+row.names(Weibull_N_tab.lambda) <- c("a", "b", "c")
+colnames(Weibull_N_tab.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
+Weibull_N_tab.lambda[1, 1] <- true.exp.a
+Weibull_N_tab.lambda[2, 1] <- true.exp.b
+Weibull_N_tab.lambda[3, 1] <- true.exp.c
+Weibull_N_tab.lambda[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 1]))))
+Weibull_N_tab.lambda[2, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1]))))
+Weibull_N_tab.lambda[3, 2] <- mean(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 1])))
+Weibull_N_tab.lambda[1, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 1])))[1])
+Weibull_N_tab.lambda[2, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1])))[1])
+Weibull_N_tab.lambda[3, 3] <- hdi(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 1])))[1]
+Weibull_N_tab.lambda[1, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 1])))[2])
+Weibull_N_tab.lambda[2, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1])))[2])
+Weibull_N_tab.lambda[3, 4] <- hdi(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 1])))[2]
+Weibull_N_tab.lambda[1, 5] <- mean(unlist(Weibull_N_proportions_list_a1))
+Weibull_N_tab.lambda[2, 5] <- mean(unlist(Weibull_N_proportions_list_b1))
+Weibull_N_tab.lambda[3, 5] <- mean(unlist(Weibull_N_proportions_list_c1))
+Weibull_N_tab.lambda[1, 6] <- mean(Weibull_N_rmse_values_a_lambda)
+Weibull_N_tab.lambda[2, 6] <- mean(Weibull_N_rmse_values_b_lambda)
+Weibull_N_tab.lambda[3, 6] <- mean(Weibull_N_rmse_values_c_lambda)
 
+save(Weibull_N_param_list1,
+     df.new1_W_N,
+     mean.xdf1_W_N,
+     Weibull_N_hist_list1,
+     plot1_mean_W_N, 
+     plot1_med_W_N,
+     plot1_mean.inv_W_N, 
+     plot1_med.inv_W_N,
+     Weibull_N_proportions_list_a1,
+     Weibull_N_proportions_list_b1,
+     Weibull_N_proportions_list_c1,
+     Weibull_N_rmse_values_a_lambda,
+     Weibull_N_rmse_values_b_lambda,
+     Weibull_N_rmse_values_c_lambda,
+     Weibull_N_tab.lambda,
+     file="individual_wb_narrow.RData")
 
 ########################################## Mean Lambda #############################################
 
@@ -616,29 +632,44 @@ Weibull_N_rmse_values_c_lambda_mean <- sapply(Weibull_N_param_list2[[3]], Weibul
 
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
-Weibull_N_tabambda.mean <- matrix(0, nrow = 3, ncol = 6)
-row.names(Weibull_N_tabambda.mean) <- c("a", "b", "c")
-colnames(Weibull_N_tabambda.mean) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
-Weibull_N_tabambda.mean[1, 1] <- true.exp.a
-Weibull_N_tabambda.mean[2, 1] <- true.exp.b
-Weibull_N_tabambda.mean[3, 1] <- true.exp.c
-Weibull_N_tabambda.mean[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 1]))))
-Weibull_N_tabambda.mean[2, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 1]))))
-Weibull_N_tabambda.mean[3, 2] <- mean(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 1])))
-Weibull_N_tabambda.mean[1, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 1])))[1])
-Weibull_N_tabambda.mean[2, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 1])))[1])
-Weibull_N_tabambda.mean[3, 3] <- hdi(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 1])))[1]
-Weibull_N_tabambda.mean[1, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 1])))[2])
-Weibull_N_tabambda.mean[2, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 1])))[2])
-Weibull_N_tabambda.mean[3, 4] <- hdi(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 1])))[2]
-Weibull_N_tabambda.mean[1, 5] <- mean(unlist(Weibull_N_proportions_list_a2))
-Weibull_N_tabambda.mean[2, 5] <- mean(unlist(Weibull_N_proportions_list_b2))
-Weibull_N_tabambda.mean[3, 5] <- mean(unlist(Weibull_N_proportions_list_c2))
-Weibull_N_tabambda.mean[1, 6] <- mean(Weibull_N_rmse_values_a_lambda_mean)
-Weibull_N_tabambda.mean[2, 6] <- mean(Weibull_N_rmse_values_b_lambda_mean)
-Weibull_N_tabambda.mean[3, 6] <- mean(Weibull_N_rmse_values_c_lambda_mean)
+Weibull_N_tab.lambda.mean <- matrix(0, nrow = 3, ncol = 6)
+row.names(Weibull_N_tab.lambda.mean) <- c("a", "b", "c")
+colnames(Weibull_N_tab.lambda.mean) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
+Weibull_N_tab.lambda.mean[1, 1] <- true.exp.a
+Weibull_N_tab.lambda.mean[2, 1] <- true.exp.b
+Weibull_N_tab.lambda.mean[3, 1] <- true.exp.c
+Weibull_N_tab.lambda.mean[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 1]))))
+Weibull_N_tab.lambda.mean[2, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 1]))))
+Weibull_N_tab.lambda.mean[3, 2] <- mean(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 1])))
+Weibull_N_tab.lambda.mean[1, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 1])))[1])
+Weibull_N_tab.lambda.mean[2, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 1])))[1])
+Weibull_N_tab.lambda.mean[3, 3] <- hdi(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 1])))[1]
+Weibull_N_tab.lambda.mean[1, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 1])))[2])
+Weibull_N_tab.lambda.mean[2, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 1])))[2])
+Weibull_N_tab.lambda.mean[3, 4] <- hdi(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 1])))[2]
+Weibull_N_tab.lambda.mean[1, 5] <- mean(unlist(Weibull_N_proportions_list_a2))
+Weibull_N_tab.lambda.mean[2, 5] <- mean(unlist(Weibull_N_proportions_list_b2))
+Weibull_N_tab.lambda.mean[3, 5] <- mean(unlist(Weibull_N_proportions_list_c2))
+Weibull_N_tab.lambda.mean[1, 6] <- mean(Weibull_N_rmse_values_a_lambda_mean)
+Weibull_N_tab.lambda.mean[2, 6] <- mean(Weibull_N_rmse_values_b_lambda_mean)
+Weibull_N_tab.lambda.mean[3, 6] <- mean(Weibull_N_rmse_values_c_lambda_mean)
 
-
+save(Weibull_N_param_list2,
+     df.new2_W_N,
+     mean.xdf2_W_N,
+     Weibull_N_hist_list2,
+     plot2_mean_W_N, 
+     plot2_med_W_N,
+     plot2_mean.inv_W_N, 
+     plot2_med.inv_W_N,
+     Weibull_N_proportions_list_a2,
+     Weibull_N_proportions_list_b2,
+     Weibull_N_proportions_list_c2,
+     Weibull_N_rmse_values_a_lambda_mean,
+     Weibull_N_rmse_values_b_lambda_mean,
+     Weibull_N_rmse_values_c_lambda_mean,
+     Weibull_N_tab.lambda.mean,
+     file="mean_wb_narrow.RData")
 
 ########################################## Inverse Lambda #############################################
 
@@ -942,7 +973,22 @@ Weibull_N_tab.inv.lambda[1, 6] <- mean(Weibull_N_rmse_values_a_lambda_inv)
 Weibull_N_tab.inv.lambda[2, 6] <- mean(Weibull_N_rmse_values_b_lambda_inv)
 Weibull_N_tab.inv.lambda[3, 6] <- mean(Weibull_N_rmse_values_c_lambda_inv)
 
-
+save(Weibull_N_param_list3,
+     df.new3_W_N,
+     mean.xdf3_W_N,
+     Weibull_N_hist_list3,
+     plot3_mean_W_N, 
+     plot3_med_W_N,
+     plot3_mean.inv_W_N, 
+     plot3_med.inv_W_N,
+     Weibull_N_proportions_list_a3,
+     Weibull_N_proportions_list_b3,
+     Weibull_N_proportions_list_c3,
+     Weibull_N_rmse_values_a_lambda_inv,
+     Weibull_N_rmse_values_b_lambda_inv,
+     Weibull_N_rmse_values_c_lambda_inv,
+     Weibull_N_tab.inv.lambda,
+     file="inverse_wb_narrow.RData")
 
 ########################################## Mean Inverse Lambda #############################################
 
@@ -1257,6 +1303,22 @@ Weibull_N_tab.mean.inv.lambda[1, 6] <- mean(Weibull_N_rmse_values_a_lambda_mean_
 Weibull_N_tab.mean.inv.lambda[2, 6] <- mean(Weibull_N_rmse_values_b_lambda_mean_inv)
 Weibull_N_tab.mean.inv.lambda[3, 6] <- mean(Weibull_N_rmse_values_c_lambda_mean_inv)
 
+save(Weibull_N_param_list4,
+     df.new4_W_N,
+     mean.xdf4_W_N,
+     Weibull_N_hist_list4,
+     plot4_mean_W_N, 
+     plot4_med_W_N,
+     plot4_mean.inv_W_N, 
+     plot4_med.inv_W_N,
+     Weibull_N_proportions_list_a4,
+     Weibull_N_proportions_list_b4,
+     Weibull_N_proportions_list_c4,
+     Weibull_N_rmse_values_a_lambda_mean_inv,
+     Weibull_N_rmse_values_b_lambda_mean_inv,
+     Weibull_N_rmse_values_c_lambda_mean_inv,
+     Weibull_N_tab.mean.inv.lambda,
+     file="mean_inverse_wb_narrow.RData")
 
 ########################################## Inverse Mean Lambda #############################################
 
@@ -1574,7 +1636,22 @@ Weibull_N_tab.inv.mean.lambda[2, 6] <- mean(Weibull_N_rmse_values_b_lambda_inv_m
 Weibull_N_tab.inv.mean.lambda[3, 6] <- mean(Weibull_N_rmse_values_c_lambda_inv_mean)
 
 
-
+save(Weibull_N_param_list5,
+     df.new5_W_N,
+     mean.xdf5_W_N,
+     Weibull_N_hist_list5,
+     plot5_mean_W_N, 
+     plot5_med_W_N,
+     plot5_mean.inv_W_N, 
+     plot5_med.inv_W_N,
+     Weibull_N_proportions_list_a5,
+     Weibull_N_proportions_list_b5,
+     Weibull_N_proportions_list_c5,
+     Weibull_N_rmse_values_a_lambda_inv_mean,
+     Weibull_N_rmse_values_b_lambda_inv_mean,
+     Weibull_N_rmse_values_c_lambda_inv_mean,
+     Weibull_N_tab.inv.mean.lambda,
+     file="inverse_mean_wb_narrow.RData")
 
 
 
@@ -1880,4 +1957,21 @@ Weibull_N_tab.wb[3, 5] <- mean(unlist(Weibull_N_proportions_list_c6))
 Weibull_N_tab.wb[1, 6] <- mean(Weibull_N_rmse_values_a_wb)
 Weibull_N_tab.wb[2, 6] <- mean(Weibull_N_rmse_values_b_wb)
 Weibull_N_tab.wb[3, 6] <- mean(Weibull_N_rmse_values_c_wb)
+
+save(Weibull_N_param_list6,
+     df.new6_W_N,
+     mean.xdf6_W_N,
+     Weibull_N_hist_list6,
+     plot6_mean_W_N, 
+     plot6_med_W_N,
+     plot6_mean.inv_W_N, 
+     plot6_med.inv_W_N,
+     Weibull_N_proportions_list_a6,
+     Weibull_N_proportions_list_b6,
+     Weibull_N_proportions_list_c6,
+     Weibull_N_rmse_values_a_wb,
+     Weibull_N_rmse_values_b_wb,
+     Weibull_N_rmse_values_c_wb,
+     Weibull_N_tab.inv.mean.lambda,
+     file="individual_wb_wb_narrow.RData")
 

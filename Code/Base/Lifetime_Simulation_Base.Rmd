@@ -131,7 +131,7 @@ cat("model{
   la ~ dnorm(0, 1/10) # has to be positive exp(1)?
   b.l ~ dnorm(0, 1/10) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
-  sig ~ dexp(5000)
+  sig ~ dexp(15000)
   sig2 <- sig^2
   tau <- 1/sig2
   #tau~dexp(10)
@@ -140,7 +140,7 @@ cat("model{
   for (i in 1:N.obs){
     mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) * ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) > epsilon) + 
     ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) <= epsilon) * epsilon
-    trait[i] ~ dnorm(mu[i], tau) 
+    trait[i] ~ dnorm(mu[i], tau) T(0,)
   }
 }",file="inv.model.base.txt")
 ```

@@ -4,7 +4,7 @@ Compiling model graph
 Graph information:
    Observed stochastic nodes: 50
    Unobserved stochastic nodes: 4
-   Total graph size: 164
+   Total graph size: 167
 
 Initializing model
 

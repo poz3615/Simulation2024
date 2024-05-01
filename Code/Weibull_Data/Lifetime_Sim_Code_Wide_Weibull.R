@@ -44,6 +44,9 @@ epsilon <- 0.01
 # True value vector with a in log space
 Weibull_true_values <- c(log(true.exp.a), true.exp.b, true.exp.c, NA, NA)
 
+# Raw data for HDI plot
+data.raw.w <- Weibull_data.list[[100]]
+
 ##########################################Lambda #############################################
 
 # Create list of matrices to store parameter summary statistics
@@ -334,6 +337,23 @@ Weibull_tab.lambda[3, 5] <- mean(unlist(Weibull_proportions_list_c1))
 Weibull_tab.lambda[1, 6] <- mean(Weibull_rmse_values_a_lambda)
 Weibull_tab.lambda[2, 6] <- mean(Weibull_rmse_values_b_lambda)
 Weibull_tab.lambda[3, 6] <- mean(Weibull_rmse_values_c_lambda)
+
+save(Weibull_param_list1,
+     df.new1_W,
+     mean.xdf1_W,
+     Weibull_hist_list1,
+     plot1_mean_W, 
+     plot1_med_W,
+     plot1_mean.inv_W, 
+     plot1_med.inv_W,
+     Weibull_proportions_list_a1,
+     Weibull_proportions_list_b1,
+     Weibull_proportions_list_c1,
+     Weibull_rmse_values_a_lambda,
+     Weibull_rmse_values_b_lambda,
+     Weibull_rmse_values_c_lambda,
+     Weibull_tab.lambda,
+     file="Weibull_individual.RData")
 
 
 ##########################################Mean Lambda #############################################
@@ -639,7 +659,22 @@ Weibull_tab.lambda.mean[1, 6] <- mean(Weibull_rmse_values_a_lambda_mean)
 Weibull_tab.lambda.mean[2, 6] <- mean(Weibull_rmse_values_b_lambda_mean)
 Weibull_tab.lambda.mean[3, 6] <- mean(Weibull_rmse_values_c_lambda_mean)
 
-
+save(Weibull_param_list2,
+     df.new2_W,
+     mean.xdf2_W,
+     Weibull_hist_list2,
+     plot2_mean_W, 
+     plot2_med_W,
+     plot2_mean.inv_W, 
+     plot2_med.inv_W,
+     Weibull_proportions_list_a2,
+     Weibull_proportions_list_b2,
+     Weibull_proportions_list_c2,
+     Weibull_rmse_values_a_lambda_mean,
+     Weibull_rmse_values_b_lambda_mean,
+     Weibull_rmse_values_c_lambda_mean,
+     Weibull_tab.lambda.mean,
+     file="Weibull_mean.RData")
 
 ##########################################Inverse Lambda #############################################
 
@@ -948,6 +983,23 @@ Weibull_tab.inv.lambda[3, 5] <- mean(unlist(Weibull_proportions_list_c3))
 Weibull_tab.inv.lambda[1, 6] <- mean(Weibull_rmse_values_a_lambda_inv)
 Weibull_tab.inv.lambda[2, 6] <- mean(Weibull_rmse_values_b_lambda_inv)
 Weibull_tab.inv.lambda[3, 6] <- mean(Weibull_rmse_values_c_lambda_inv)
+
+save(Weibull_param_list3,
+     df.new3_W,
+     mean.xdf3_W,
+     Weibull_hist_list3,
+     plot3_mean_W, 
+     plot3_med_W,
+     plot3_mean.inv_W, 
+     plot3_med.inv_W,
+     Weibull_proportions_list_a3,
+     Weibull_proportions_list_b3,
+     Weibull_proportions_list_c3,
+     Weibull_rmse_values_a_lambda_inv,
+     Weibull_rmse_values_b_lambda_inv,
+     Weibull_rmse_values_c_lambda_inv,
+     Weibull_tab.inv.lambda,
+     file="Weibull_inverse.RData")
 
 
 ##########################################Mean Inverse Lambda #############################################
@@ -1268,6 +1320,22 @@ Weibull_tab.mean.inv.lambda[1, 6] <- mean(Weibull_rmse_values_a_lambda_mean_inv)
 Weibull_tab.mean.inv.lambda[2, 6] <- mean(Weibull_rmse_values_b_lambda_mean_inv)
 Weibull_tab.mean.inv.lambda[3, 6] <- mean(Weibull_rmse_values_c_lambda_mean_inv)
 
+save(Weibull_param_list4,
+     df.new4_W,
+     mean.xdf4_W,
+     Weibull_hist_list4,
+     plot4_mean_W, 
+     plot4_med_W,
+     plot4_mean.inv_W, 
+     plot4_med.inv_W,
+     Weibull_proportions_list_a4,
+     Weibull_proportions_list_b4,
+     Weibull_proportions_list_c4,
+     Weibull_rmse_values_a_lambda_mean_inv,
+     Weibull_rmse_values_b_lambda_mean_inv,
+     Weibull_rmse_values_c_lambda_mean_inv,
+     Weibull_tab.mean.inv.lambda,
+     file="Weibull_mean_inverse.RData")
 
 ##########################################Inverse Mean Lambda #############################################
 
@@ -1586,7 +1654,22 @@ Weibull_tab.inv.mean.lambda[2, 6] <- mean(Weibull_rmse_values_b_lambda_inv_mean)
 Weibull_tab.inv.mean.lambda[3, 6] <- mean(Weibull_rmse_values_c_lambda_inv_mean)
 
 
-
+save(Weibull_param_list5,
+     df.new5_W,
+     mean.xdf5_W,
+     Weibull_hist_list5,
+     plot5_mean_W, 
+     plot5_med_W,
+     plot5_mean.inv_W, 
+     plot5_med.inv_W,
+     Weibull_proportions_list_a5,
+     Weibull_proportions_list_b5,
+     Weibull_proportions_list_c5,
+     Weibull_rmse_values_a_lambda_inv_mean,
+     Weibull_rmse_values_b_lambda_inv_mean,
+     Weibull_rmse_values_c_lambda_inv_mean,
+     Weibull_tab.inv.mean.lambda,
+     file="Weibull_inverse_mean.RData")
 
 
 
@@ -1895,5 +1978,20 @@ Weibull_tab.wb[1, 6] <- mean(Weibull_rmse_values_a_wb)
 Weibull_tab.wb[2, 6] <- mean(Weibull_rmse_values_b_wb)
 Weibull_tab.wb[3, 6] <- mean(Weibull_rmse_values_c_wb)
 
-
+save(Weibull_param_list6,
+     df.new6_W,
+     mean.xdf6_W,
+     Weibull_hist_list6,
+     plot6_mean_W, 
+     plot6_med_W,
+     plot6_mean.inv_W, 
+     plot6_med.inv_W,
+     Weibull_proportions_list_a6,
+     Weibull_proportions_list_b6,
+     Weibull_proportions_list_c6,
+     Weibull_rmse_values_a_wb,
+     Weibull_rmse_values_b_wb,
+     Weibull_rmse_values_c_wb,
+     Weibull_tab.wb,
+     file="Weibull_weibull_data.RData")
 

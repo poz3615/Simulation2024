@@ -335,7 +335,22 @@ tab.lambda[1, 6] <- mean(rmse_values_a_lambda)
 tab.lambda[2, 6] <- mean(rmse_values_b_lambda)
 tab.lambda[3, 6] <- mean(rmse_values_c_lambda)
 
-
+save(param_list1,
+     df.new1,
+     mean.xdf1,
+     hist_list1,
+     plot1_mean, 
+     plot1_med,
+     plot1_mean.inv, 
+     plot1_med.inv,
+     proportions_list_a1,
+     proportions_list_b1,
+     proportions_list_c1,
+     rmse_values_a_lambda,
+     rmse_values_b_lambda,
+     rmse_values_c_lambda,
+     tab.lambda,
+     file="individual_exponential.RData")
 
 ##########################################Mean Lambda #############################################
 
@@ -639,7 +654,22 @@ tab.lambda.mean[1, 6] <- mean(rmse_values_a_lambda_mean)
 tab.lambda.mean[2, 6] <- mean(rmse_values_b_lambda_mean)
 tab.lambda.mean[3, 6] <- mean(rmse_values_c_lambda_mean)
 
-
+save(param_list2,
+     df.new2,
+     mean.xdf2,
+     hist_list2,
+     plot2_mean, 
+     plot2_med,
+     plot2_mean.inv, 
+     plot2_med.inv,
+     proportions_list_a2,
+     proportions_list_b2,
+     proportions_list_c2,
+     rmse_values_a_lambda_mean,
+     rmse_values_b_lambda_mean,
+     rmse_values_c_lambda_mean,
+     tab.lambda.mean,
+     file="mean_exponential.RData")
 
 ##########################################Inverse Lambda #############################################
 
@@ -953,6 +983,22 @@ tab.inv.lambda[1, 6] <- mean(rmse_values_a_lambda_inv)
 tab.inv.lambda[2, 6] <- mean(rmse_values_b_lambda_inv)
 tab.inv.lambda[3, 6] <- mean(rmse_values_c_lambda_inv)
 
+save(param_list3,
+     df.new3,
+     mean.xdf3,
+     hist_list3,
+     plot3_mean, 
+     plot3_med,
+     plot3_mean.inv, 
+     plot3_med.inv,
+     proportions_list_a3,
+     proportions_list_b3,
+     proportions_list_c3,
+     rmse_values_a_lambda_inv,
+     rmse_values_b_lambda_inv,
+     rmse_values_c_lambda_inv,
+     tab.inv.lambda,
+     file="inverse_exponential.RData")
 
 ##########################################Mean Inverse Lambda #############################################
 
@@ -1274,6 +1320,22 @@ tab.mean.inv.lambda[1, 6] <- mean(rmse_values_a_lambda_mean_inv)
 tab.mean.inv.lambda[2, 6] <- mean(rmse_values_b_lambda_mean_inv)
 tab.mean.inv.lambda[3, 6] <- mean(rmse_values_c_lambda_mean_inv)
 
+save(param_list4,
+     df.new4,
+     mean.xdf4,
+     hist_list4,
+     plot4_mean, 
+     plot4_med,
+     plot4_mean.inv, 
+     plot4_med.inv,
+     proportions_list_a4,
+     proportions_list_b4,
+     proportions_list_c4,
+     rmse_values_a_lambda_mean_inv,
+     rmse_values_b_lambda_mean_inv,
+     rmse_values_c_lambda_mean_inv,
+     tab.mean.inv.lambda,
+     file="mean_inverse_exponential.RData")
 
 ##########################################Inverse Mean Lambda #############################################
 
@@ -1596,7 +1658,22 @@ tab.inv.mean.lambda[2, 6] <- mean(rmse_values_b_lambda_inv_mean)
 tab.inv.mean.lambda[3, 6] <- mean(rmse_values_c_lambda_inv_mean)
 
 
-
+save(param_list5,
+     df.new5,
+     mean.xdf5,
+     hist_list5,
+     plot5_mean, 
+     plot5_med,
+     plot5_mean.inv, 
+     plot5_med.inv,
+     proportions_list_a5,
+     proportions_list_b5,
+     proportions_list_c5,
+     rmse_values_a_lambda_inv_mean,
+     rmse_values_b_lambda_inv_mean,
+     rmse_values_c_lambda_inv_mean,
+     tab.inv.mean.lambda,
+     file="inverse_mean_exponential.RData")
 
 
 
@@ -1910,6 +1987,22 @@ tab.inv.lambda_notrunc[1, 6] <- mean(rmse_values_a_lambda_inv_notrunc)
 tab.inv.lambda_notrunc[2, 6] <- mean(rmse_values_b_lambda_inv_notrunc)
 tab.inv.lambda_notrunc[3, 6] <- mean(rmse_values_c_lambda_inv_notrunc)
 
+save(param_list3_notrunc,
+     df.new3.NT,
+     mean.xdf3.NT,
+     hist_list3_notrunc,
+     plot3_mean_NT, 
+     plot3_med_NT,
+     plot3_mean.inv_NT, 
+     plot3_med.inv_NT,
+     proportions_list_a3_notrunc,
+     proportions_list_b3_notrunc,
+     proportions_list_c3_notrunc,
+     rmse_values_a_lambda_inv_notrunc,
+     rmse_values_b_lambda_inv_notrunc,
+     rmse_values_c_lambda_inv_notrunc,
+     tab.inv.lambda_notrunc,
+     file="inverse_notrunc.RData")
 
 ##########################################Mean Inverse Lambda NOT TRUNCATED #############################################
 
@@ -2231,6 +2324,23 @@ tab.mean.inv.lambda_notrunc[3, 5] <- mean(unlist(proportions_list_c4_notrunc))
 tab.mean.inv.lambda_notrunc[1, 6] <- mean(rmse_values_a_lambda_mean_inv_notrunc)
 tab.mean.inv.lambda_notrunc[2, 6] <- mean(rmse_values_b_lambda_mean_inv_notrunc)
 tab.mean.inv.lambda_notrunc[3, 6] <- mean(rmse_values_c_lambda_mean_inv_notrunc)
+
+save(param_list4_notrunc,
+     df.new4.NT,
+     mean.xdf4.NT,
+     hist_list4_notrunc,
+     plot4_mean_NT, 
+     plot4_med_NT,
+     plot4_mean.inv_NT, 
+     plot4_med.inv_NT,
+     proportions_list_a4_notrunc,
+     proportions_list_b4_notrunc,
+     proportions_list_c4_notrunc,
+     rmse_values_a_lambda_mean_inv_notrunc,
+     rmse_values_b_lambda_mean_inv_notrunc,
+     rmse_values_c_lambda_mean_inv_notrunc,
+     tab.mean.inv.lambda_notrunc,
+     file="mean_inverse_notrunc.RData")
 
 
 ##########################################Inverse Mean Lambda NOT TRUNCATED #############################################
@@ -2555,7 +2665,22 @@ tab.inv.mean.lambda_notrunc[2, 6] <- mean(rmse_values_b_lambda_inv_mean_notrunc)
 tab.inv.mean.lambda_notrunc[3, 6] <- mean(rmse_values_c_lambda_inv_mean_notrunc)
 
 
-
+save(param_list5_notrunc,
+     df.new5.NT,
+     mean.xdf5.NT,
+     hist_list5_notrunc,
+     plot5_mean_NT, 
+     plot5_med_NT,
+     plot5_mean.inv_NT, 
+     plot5_med.inv_NT,
+     proportions_list_a5_notrunc,
+     proportions_list_b5_notrunc,
+     proportions_list_c5_notrunc,
+     rmse_values_a_lambda_inv_mean_notrunc,
+     rmse_values_b_lambda_inv_mean_notrunc,
+     rmse_values_c_lambda_inv_mean_notrunc,
+     tab.inv.mean.lambda_notrunc,
+     file="inverse_mean_notrunc.RData")
 
 
 
