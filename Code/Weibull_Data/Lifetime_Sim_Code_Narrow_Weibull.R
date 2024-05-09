@@ -226,7 +226,7 @@ for (i in 1:4) {
   # Create a histogram and store it in the list
   Weibull_N_hist_list1[[i]] <- hist(Weibull_N_combined_vector1, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
                             xlab = "Values", col = "lightpink2", border = "black", breaks = 10, freq = FALSE)
-  abline(v = Weibull_true_values[i], col = "red", lwd = 2)
+  abline(v = Weibull_true_values[i], col = "grey44", lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
     lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
@@ -353,6 +353,7 @@ save(Weibull_N_param_list1,
      Weibull_N_rmse_values_c_lambda,
      Weibull_N_tab.lambda,
      file="individual_wb_narrow.RData")
+
 
 ########################################## Mean Lambda #############################################
 
@@ -544,7 +545,7 @@ for (i in 1:4) {
   # Create a histogram and store it in the list
   Weibull_N_hist_list2[[i]] <- hist(Weibull_N_combined_vector2, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
                             xlab = "Values", col = "lightpink2", border = "black", breaks = 10, freq = FALSE)
-  abline(v = Weibull_true_values[i], col = "red", lwd = 2)
+  abline(v = Weibull_true_values[i], col = "grey44", lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
     lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
@@ -670,6 +671,7 @@ save(Weibull_N_param_list2,
      Weibull_N_rmse_values_c_lambda_mean,
      Weibull_N_tab.lambda.mean,
      file="mean_wb_narrow.RData")
+
 
 ########################################## Inverse Lambda #############################################
 
@@ -829,6 +831,7 @@ plot3_mean.inv_W_N <- ggplot(mean.xdf3_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "greenyellow", alpha = 0.3) +
   geom_line(aes(y = true_curve.inv), color = "blue2", linetype = "dashed") +
+  geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortlity Rate") +
@@ -838,6 +841,7 @@ plot3_med.inv_W_N <- ggplot(mean.xdf3_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "greenyellow", alpha = 0.3) +
   geom_line(aes(y = true_curve.inv), color = "blue2", linetype = "dashed") +
+  geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -860,7 +864,7 @@ for (i in 1:5) {
   # Create a histogram and store it in the list
   Weibull_N_hist_list3[[i]] <- hist(Weibull_N_combined_vector3, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
                             xlab = "Values", col = "lightpink2", border = "black", breaks = 10, freq = FALSE)
-  abline(v = Weibull_true_values[i], col = "red", lwd = 2)
+  abline(v = Weibull_true_values[i], col = "grey44", lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
     lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
@@ -989,6 +993,7 @@ save(Weibull_N_param_list3,
      Weibull_N_rmse_values_c_lambda_inv,
      Weibull_N_tab.inv.lambda,
      file="inverse_wb_narrow.RData")
+
 
 ########################################## Mean Inverse Lambda #############################################
 
@@ -1161,6 +1166,7 @@ plot4_mean.inv_W_N <- ggplot(mean.xdf4_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "greenyellow", alpha = 0.3) +
   geom_line(aes(y = true_curve.inv), color = "blue2", linetype = "dashed") +
+  geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortlity Rate") +
@@ -1169,6 +1175,7 @@ plot4_mean.inv_W_N <- ggplot(mean.xdf4_W_N, aes(x = point)) +
 plot4_med.inv_W_N <- ggplot(mean.xdf4_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "greenyellow", alpha = 0.3) +
+  geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
   geom_line(aes(y = true_curve.inv), color = "blue2", linetype = "dashed") +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1192,7 +1199,7 @@ for (i in 1:5) {
   # Create a histogram and store it in the list
   Weibull_N_hist_list4[[i]] <- hist(Weibull_N_combined_vector4, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
                             xlab = "Values", col = "lightpink2", border = "black", breaks = 10, freq = FALSE)
-  abline(v = Weibull_true_values[i], col = "red", lwd = 2)
+  abline(v = Weibull_true_values[i], col = "grey44", lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
     lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
@@ -1319,6 +1326,7 @@ save(Weibull_N_param_list4,
      Weibull_N_rmse_values_c_lambda_mean_inv,
      Weibull_N_tab.mean.inv.lambda,
      file="mean_inverse_wb_narrow.RData")
+
 
 ########################################## Inverse Mean Lambda #############################################
 
@@ -1492,6 +1500,7 @@ plot5_mean.inv_W_N <- ggplot(mean.xdf5_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "greenyellow", alpha = 0.3) +
   geom_line(aes(y = true_curve.inv), color = "blue2", linetype = "dashed") +
+  geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortlity Rate") +
@@ -1501,6 +1510,7 @@ plot5_med.inv_W_N <- ggplot(mean.xdf5_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "greenyellow", alpha = 0.3) +
   geom_line(aes(y = true_curve.inv), color = "blue2", linetype = "dashed") +
+  geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1523,7 +1533,7 @@ for (i in 1:5) {
   # Create a histogram and store it in the list
   Weibull_N_hist_list5[[i]] <- hist(Weibull_N_combined_vector5, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
                             xlab = "Values", col = "lightpink2", border = "black", breaks = 10, freq = FALSE)
-  abline(v = Weibull_true_values[i], col = "red", lwd = 2)
+  abline(v = Weibull_true_values[i], col = "grey44", lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
     lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
@@ -1845,7 +1855,7 @@ for (i in 1:5) {
   # Create a histogram and store it in the list
   Weibull_N_hist_list6[[i]] <- hist(Weibull_N_combined_vector6, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
                                     xlab = "Values", col = "lightpink2", border = "black", breaks = 10, freq = FALSE)
-  abline(v = Weibull_true_values[i], col = "red", lwd = 2)
+  abline(v = Weibull_true_values[i], col = "grey44", lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
     lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
@@ -1972,6 +1982,6 @@ save(Weibull_N_param_list6,
      Weibull_N_rmse_values_a_wb,
      Weibull_N_rmse_values_b_wb,
      Weibull_N_rmse_values_c_wb,
-     Weibull_N_tab.inv.mean.lambda,
+     Weibull_N_tab.wb,
      file="individual_wb_wb_narrow.RData")
 
