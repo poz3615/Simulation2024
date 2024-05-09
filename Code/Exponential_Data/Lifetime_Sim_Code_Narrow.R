@@ -824,7 +824,7 @@ N_plot3_mean <- ggplot(N_mean.xdf3, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve), color = "violetred1", linetype = "dashed") +
-  #geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
+  geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -844,7 +844,7 @@ N_plot3_mean.inv <- ggplot(N_mean.xdf3, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve.inv), color = "violetred1", linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = N_data.raw) +
+  #geom_point(aes(x = T, y = trait), data = N_data.raw) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime") +
@@ -1163,7 +1163,7 @@ N_plot4_mean <- ggplot(N_mean.xdf4, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve), color = "violetred1", linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
+  #geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1173,7 +1173,7 @@ N_plot4_med <- ggplot(N_mean.xdf4, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve), color = "violetred1", linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
+  #geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1504,7 +1504,7 @@ N_plot5_mean <- ggplot(N_mean.xdf5, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve), color = "violetred1", linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
+  #geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1514,7 +1514,7 @@ N_plot5_med <- ggplot(N_mean.xdf5, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve), color = "violetred1", linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
+  #geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1833,7 +1833,7 @@ N_plot3_mean_NT <- ggplot(N_mean.xdf3_NT, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve), color = "violetred1", linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
+  #geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1843,7 +1843,7 @@ N_plot3_med_NT <- ggplot(N_mean.xdf3_NT, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve), color = "violetred1", linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
+  #geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -2171,7 +2171,7 @@ N_plot4_mean_NT <- ggplot(N_mean.xdf4_NT, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve), color = "violetred1", linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
+  #geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -2181,7 +2181,7 @@ N_plot4_med_NT <- ggplot(N_mean.xdf4_NT, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve), color = "violetred1", linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
+  #geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -2516,7 +2516,7 @@ N_plot5_mean_NT <- ggplot(N_mean.xdf5_NT, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve), color = "violetred1", linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
+  #geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -2526,7 +2526,7 @@ N_plot5_med_NT <- ggplot(N_mean.xdf5_NT, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve), color = "violetred1", linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
+  #geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
