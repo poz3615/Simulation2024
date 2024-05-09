@@ -1337,6 +1337,7 @@ save(param_list4,
      tab.mean.inv.lambda,
      file="mean_inverse_exponential.RData")
 
+
 ##########################################Inverse Mean Lambda #############################################
 
 # Create list of matrices to store parameter summary statistics
