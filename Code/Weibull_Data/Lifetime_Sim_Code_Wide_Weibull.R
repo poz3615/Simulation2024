@@ -1771,8 +1771,7 @@ for(i in 1:w){
     Weibull_param_list6[[5]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
     Weibull_param_list6[[5]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
   }
-  
-  
+
 }
 # Take samp, the mcmc list, chain 1 and save every fourth row
 # Saved every fourth row to avoid autocorrelation
