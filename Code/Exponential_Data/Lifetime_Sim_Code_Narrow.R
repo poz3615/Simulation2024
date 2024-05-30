@@ -341,6 +341,7 @@ N_tab.lambda[2, 6] <- mean(N_rmse_values_b_lambda)
 N_tab.lambda[3, 6] <- mean(N_rmse_values_c_lambda)
 
 save(N_param_list1,
+     xdf1_N,
      df.new1_N,
      N_mean.xdf1,
      N_hist_list1,
@@ -356,6 +357,7 @@ save(N_param_list1,
      N_rmse_values_c_lambda,
      N_tab.lambda,
      file="individual_exp_narrow.RData")
+
 
 ########################################## Mean Lambda #############################################
 
@@ -664,6 +666,7 @@ N_tab.lambda.mean[2, 6] <- mean(N_rmse_values_b_lambda_mean)
 N_tab.lambda.mean[3, 6] <- mean(N_rmse_values_c_lambda_mean)
 
 save(N_param_list2,
+     xdf2_N,
      df.new2_N,
      N_mean.xdf2,
      N_hist_list2,
@@ -990,6 +993,7 @@ N_tab.inv.lambda[2, 6] <- mean(N_rmse_values_b_lambda_inv)
 N_tab.inv.lambda[3, 6] <- mean(N_rmse_values_c_lambda_inv)
 
 save(N_param_list3,
+     xdf3_N,
      df.new3_N,
      N_mean.xdf3,
      N_hist_list3,
@@ -1173,7 +1177,7 @@ N_plot4_med <- ggplot(N_mean.xdf4, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkslategray2", alpha = 0.3) +
   geom_line(aes(y = true_curve), color = "violetred1", linetype = "dashed") +
-  #geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
+  geom_point(aes(x = T, y = 1/trait), data = N_data.raw) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1329,6 +1333,7 @@ N_tab.mean.inv.lambda[2, 6] <- mean(N_rmse_values_b_lambda_mean_inv)
 N_tab.mean.inv.lambda[3, 6] <- mean(N_rmse_values_c_lambda_mean_inv)
 
 save(N_param_list4,
+     xdf4_N,
      df.new4_N,
      N_mean.xdf4,
      N_hist_list4,
@@ -1670,6 +1675,7 @@ N_tab.inv.mean.lambda[2, 6] <- mean(N_rmse_values_b_lambda_inv_mean)
 N_tab.inv.mean.lambda[3, 6] <- mean(N_rmse_values_c_lambda_inv_mean)
 
 save(N_param_list5,
+     xdf5_N,
      df.new5_N,
      N_mean.xdf5,
      N_hist_list5,
@@ -2001,6 +2007,7 @@ N_tab.inv.lambda_notrunc[3, 6] <- mean(N_rmse_values_c_lambda_inv_notrunc)
 
 
 save(N_param_list3_notrunc,
+     xdf3_N.NT,
      df.new3_N.NT,
      N_mean.xdf3_NT,
      N_hist_list3_notrunc,
@@ -2340,6 +2347,7 @@ N_tab.mean.inv.lambda_notrunc[3, 6] <- mean(N_rmse_values_c_lambda_mean_inv_notr
 
 
 save(N_param_list4_notrunc,
+     xdf4_N.NT,
      df.new4_N.NT,
      N_mean.xdf4_NT,
      N_hist_list4_notrunc,
@@ -2683,6 +2691,7 @@ N_tab.inv.mean.lambda_notrunc[2, 6] <- mean(N_rmse_values_b_lambda_inv_mean_notr
 N_tab.inv.mean.lambda_notrunc[3, 6] <- mean(N_rmse_values_c_lambda_inv_mean_notrunc)
 
 save(N_param_list5_notrunc,
+     xdf5_N.NT,
      df.new5_N.NT,
      N_mean.xdf5_NT,
      N_hist_list5_notrunc,

@@ -336,6 +336,7 @@ tab.lambda[2, 6] <- mean(rmse_values_b_lambda)
 tab.lambda[3, 6] <- mean(rmse_values_c_lambda)
 
 save(param_list1,
+     xdf1,
      df.new1,
      mean.xdf1,
      hist_list1,
@@ -655,6 +656,7 @@ tab.lambda.mean[2, 6] <- mean(rmse_values_b_lambda_mean)
 tab.lambda.mean[3, 6] <- mean(rmse_values_c_lambda_mean)
 
 save(param_list2,
+     xdf2,
      df.new2,
      mean.xdf2,
      hist_list2,
@@ -984,6 +986,7 @@ tab.inv.lambda[2, 6] <- mean(rmse_values_b_lambda_inv)
 tab.inv.lambda[3, 6] <- mean(rmse_values_c_lambda_inv)
 
 save(param_list3,
+     xdf3,
      df.new3,
      mean.xdf3,
      hist_list3,
@@ -1022,7 +1025,7 @@ for(i in 1:b){
   }
   data.raw <- data.list[[i]] 
   # Get 10 groups of 10, and calculate the means
-  group_means <- tapply(data.raw$trait, data.raw$T, function(x) {
+  group_means <- tapply(data.list[[i]]$trait, data.list[[i]]$T, function(x) {
     split_values <- split(x, rep(1:10, each = 10))
     means <- sapply(split_values, mean)
     return(means)
@@ -1043,7 +1046,7 @@ for(i in 1:b){
   la ~ dnorm(0, 1/10) 
   b.l ~ dnorm(0, 1/10) 
   c ~ dexp(0.5) # Has to be positive
-  sig ~ dexp(0.5)
+  sig ~ dexp(200)
   sig2 <- sig^2
   tau <- 1/sig2
   # Set epsilon to avoid negative or small values
@@ -1122,21 +1125,21 @@ xseq <- seq(from = 10, to = 35, length.out = 250)
 # Create a grid with point as each temperature, and iteration being
 # the number of rows we selected from samp
 # The idea is to evaluate each row of df.new4 as a function at each of those temperatures
-xdf4.2 <- expand.grid(point = xseq, iteration = 1:nrow(df.new4))
+xdf4 <- expand.grid(point = xseq, iteration = 1:nrow(df.new4))
 
 # Apply the quadratic equation for each combination
-xdf4.2$value <- apply(xdf4.2, 1, function(row) {
+xdf4$value <- apply(xdf4, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
   exp(df.new4[i, 4]) * location^2 - exp(df.new4[i, 1]) * location + df.new4[i, 2]
 })
 # Apply truncation so that if the evaluated function gives a value smaller than epsilon,
 # it gets truncated to epsilon
-xdf4.2 <- xdf4.2|> mutate(trunc.eval = ifelse(xdf4.2$value > epsilon, xdf4.2$value, epsilon), 
+xdf4 <- xdf4|> mutate(trunc.eval = ifelse(xdf4$value > epsilon, xdf4$value, epsilon), 
                           trunc.inv = 1/trunc.eval)
 # At each temperature point, summarize to get the mean, median, and hdi bounds
 # of the evaluated function
-mean.xdf4 <- xdf4.2 |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
+mean.xdf4 <- xdf4 |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
                                                   avg.value = mean(trunc.eval), 
                                                   med.value.inv = median(trunc.inv), 
                                                   med.value = median(trunc.eval), 
@@ -1154,7 +1157,7 @@ plot4_mean <- ggplot(mean.xdf4, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
   geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
-  # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
+  #geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") + 
@@ -1164,7 +1167,7 @@ plot4_med <- ggplot(mean.xdf4, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
   geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
-  # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
+  #geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") + 
@@ -1321,6 +1324,7 @@ tab.mean.inv.lambda[2, 6] <- mean(rmse_values_b_lambda_mean_inv)
 tab.mean.inv.lambda[3, 6] <- mean(rmse_values_c_lambda_mean_inv)
 
 save(param_list4,
+     xdf4,
      df.new4,
      mean.xdf4,
      hist_list4,
@@ -1660,6 +1664,7 @@ tab.inv.mean.lambda[3, 6] <- mean(rmse_values_c_lambda_inv_mean)
 
 
 save(param_list5,
+     xdf5,
      df.new5,
      mean.xdf5,
      hist_list5,
@@ -1989,6 +1994,7 @@ tab.inv.lambda_notrunc[2, 6] <- mean(rmse_values_b_lambda_inv_notrunc)
 tab.inv.lambda_notrunc[3, 6] <- mean(rmse_values_c_lambda_inv_notrunc)
 
 save(param_list3_notrunc,
+     xdf3.NT,
      df.new3.NT,
      mean.xdf3.NT,
      hist_list3_notrunc,
@@ -2327,6 +2333,7 @@ tab.mean.inv.lambda_notrunc[2, 6] <- mean(rmse_values_b_lambda_mean_inv_notrunc)
 tab.mean.inv.lambda_notrunc[3, 6] <- mean(rmse_values_c_lambda_mean_inv_notrunc)
 
 save(param_list4_notrunc,
+     xdf4.NT,
      df.new4.NT,
      mean.xdf4.NT,
      hist_list4_notrunc,
@@ -2667,6 +2674,7 @@ tab.inv.mean.lambda_notrunc[3, 6] <- mean(rmse_values_c_lambda_inv_mean_notrunc)
 
 
 save(param_list5_notrunc,
+     xdf5.NT,
      df.new5.NT,
      mean.xdf5.NT,
      hist_list5_notrunc,
