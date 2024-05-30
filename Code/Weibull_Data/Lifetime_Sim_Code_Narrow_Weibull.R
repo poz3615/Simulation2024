@@ -338,6 +338,7 @@ Weibull_N_tab.lambda[2, 6] <- mean(Weibull_N_rmse_values_b_lambda)
 Weibull_N_tab.lambda[3, 6] <- mean(Weibull_N_rmse_values_c_lambda)
 
 save(Weibull_N_param_list1,
+     xdf1_W_N,
      df.new1_W_N,
      mean.xdf1_W_N,
      Weibull_N_hist_list1,
@@ -656,6 +657,7 @@ Weibull_N_tab.lambda.mean[2, 6] <- mean(Weibull_N_rmse_values_b_lambda_mean)
 Weibull_N_tab.lambda.mean[3, 6] <- mean(Weibull_N_rmse_values_c_lambda_mean)
 
 save(Weibull_N_param_list2,
+     xdf2_W_N,
      df.new2_W_N,
      mean.xdf2_W_N,
      Weibull_N_hist_list2,
@@ -978,6 +980,7 @@ Weibull_N_tab.inv.lambda[2, 6] <- mean(Weibull_N_rmse_values_b_lambda_inv)
 Weibull_N_tab.inv.lambda[3, 6] <- mean(Weibull_N_rmse_values_c_lambda_inv)
 
 save(Weibull_N_param_list3,
+     xdf3_W_N,
      df.new3_W_N,
      mean.xdf3_W_N,
      Weibull_N_hist_list3,
@@ -1311,6 +1314,7 @@ Weibull_N_tab.mean.inv.lambda[2, 6] <- mean(Weibull_N_rmse_values_b_lambda_mean_
 Weibull_N_tab.mean.inv.lambda[3, 6] <- mean(Weibull_N_rmse_values_c_lambda_mean_inv)
 
 save(Weibull_N_param_list4,
+     xdf4_W_N,
      df.new4_W_N,
      mean.xdf4_W_N,
      Weibull_N_hist_list4,
@@ -1647,6 +1651,7 @@ Weibull_N_tab.inv.mean.lambda[3, 6] <- mean(Weibull_N_rmse_values_c_lambda_inv_m
 
 
 save(Weibull_N_param_list5,
+     xdf5_W_N,
      df.new5_W_N,
      mean.xdf5_W_N,
      Weibull_N_hist_list5,
@@ -1969,6 +1974,7 @@ Weibull_N_tab.wb[2, 6] <- mean(Weibull_N_rmse_values_b_wb)
 Weibull_N_tab.wb[3, 6] <- mean(Weibull_N_rmse_values_c_wb)
 
 save(Weibull_N_param_list6,
+     xdf_W_N,
      df.new6_W_N,
      mean.xdf6_W_N,
      Weibull_N_hist_list6,
