@@ -1309,8 +1309,8 @@ df.wb.n$Method <- factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Mo
 df.outliers.wb.n <- df.wb.n |>
   select(Method, x.middle, x.outliers, y.middle, y.outliers) |>
   data.table::data.table()
-df.outliers.wb.n <- df.outliers.wb.n[, list(x.outliers = unlist(df.outliers.wb.n$x.outliers), y.outliers = c(unlist(df.outliers.wb.n$y.outliers), rep(NA,20))),
-                           by = list(Method, x.middle, y.middle)]
+#df.outliers.wb.n <- df.outliers.wb.n[, list(x.outliers = unlist(df.outliers.wb.n$x.outliers), y.outliers = c(unlist(df.outliers.wb.n$y.outliers), rep(NA,20))),
+ #                          by = list(Method, x.middle, y.middle)]
 
 dub.wb.n <- double.box.df.wb.n |> group_by(Method) |> summarise(medianTopt=median(Topt),
                                                      medianLife=median(Lifetime),
@@ -1347,7 +1347,7 @@ ggplot(data=dub.wb.n[1:6,], aes(fill = Method, color = Method)) +
   #geom_point(data = df.outliers.wb.n, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
   theme_classic()+
   geom_point(aes(x=medianTopt.True.wb.n, y= medianLife.True.wb.n),color="black")+
-  facet_wrap(dub.wb.n$Method[1:6],nrow=2, scales= "free_y")+
+  facet_wrap(dub.wb.n$Method[1:6],nrow=2)+
   theme(legend.position="none")+
   labs(title= "Boxplot of Topt and Lifetime",
        x="Topt",
@@ -1620,7 +1620,7 @@ ggplot(data=dub.ex.n[1:8,], aes(fill = Method, color = Method)) +
   #geom_point(data = df.outliers.ex.n, aes(x = x.outliers, y = y.middle), size = 1, shape = 1) + # x-direction
   #geom_point(data = df.outliers.ex.n, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
   theme_classic()+
-  #facet_wrap(dub.ex.n$Method[1:8],nrow=2)+
+  facet_wrap(dub.ex.n$Method[1:8],nrow=2)+
   geom_point(aes(x=medianLow.True.ex.n, y= medianHigh.True.ex.n),color="black")+
   theme(legend.position="none")+
   labs(title= "Boxplot of Extreme Temperatures, Narrow Interval",
@@ -1958,6 +1958,7 @@ points(ind.exp.25.n,pch=20,col="mediumorchid4")
 points(ind.exp.29.n,pch=20,col="darkslategray3")
 legend("topleft",legend=c("13","17","21","25","29"),
        pch=c(20,20,20,20,20),col=c("black","chocolate1","cornflowerblue","mediumorchid4","darkslategray3"))
+abline(a=0,b=1,lwd=2,col="magenta")
 ```
 
 ```{r QQPlot.Mean.Exp.Data.Narrow}
@@ -2007,6 +2008,7 @@ points(mean.exp.25.n,pch=20,col="mediumorchid4")
 points(mean.exp.29.n,pch=20,col="darkslategray3")
 legend("topleft",legend=c("13","17","21","25","29"),
        pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
+abline(a=0,b=1,lwd=2,col="magenta")
 ```
 
 ```{r QQPlot.Inv.Exp.Data.Narrow}
@@ -2048,7 +2050,7 @@ inv.exp.29.n<-qqPlot(1/N_data.list[[100]]$trait[N_data.list[[100]]$T==29],
 
 
 plot(inv.exp.13.n,pch=20,ylim=c(0,12),
-     main="QQ-Plot for Inverse Exp Data and Exp Distribution, Narrow Interval",
+     main="QQ-Plot for Inverse Exp Data and Trunc Norm Distribution, Narrow Interval",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(inv.exp.17.n,pch=20,col="chocolate1")
@@ -2057,6 +2059,7 @@ points(inv.exp.25.n,pch=20,col="mediumorchid4")
 points(inv.exp.29.n,pch=20,col="darkslategray3")
 legend("topleft",legend=c("13","17","21","25","29"),
        pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
+abline(a=0,b=1,lwd=2,col="magenta")
 ```
 
 ```{r QQPlot.Mean.Inv.Exp.Data.Narrow}
@@ -2117,7 +2120,7 @@ mean.inv.exp.29.n<-qqPlot(1/df.mean.mean.exp.n$trait[df.mean.mean.exp.n$T==29],
 
 
 plot(mean.inv.exp.13.n,pch=20,xlim=c(0,50),ylim=c(0,0.3),
-     main="QQ-Plot for Mean Inverse Exp Data and Exp Distribution, Narrow Interval",
+     main="QQ-Plot for Mean Inverse Exp Data and Trunc Norm Distribution, Narrow Interval",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(mean.inv.exp.17.n,pch=20,col="chocolate1")
@@ -2126,6 +2129,7 @@ points(mean.inv.exp.25.n,pch=20,col="mediumorchid4")
 points(mean.inv.exp.29.n,pch=20,col="darkslategray3")
 legend("topleft",legend=c("13","17","21","25","29"),
        pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
+abline(a=0,b=1,lwd=2,col="magenta")
 ```
 
 ```{r QQPlot.Inv.Mean.Exp.Data.Narrow}
@@ -2186,7 +2190,7 @@ inv.mean.exp.29.n<-qqPlot(df.mean.inv.exp.n$trait[df.mean.inv.exp.n$T==29],
 
 
 plot(inv.mean.exp.13.n,pch=20,xlim=c(0,6.5),ylim=c(0,10),
-     main="QQ-Plot for Inverse Mean Exp Data and Exp Distribution, Narrow Interval",
+     main="QQ-Plot for Inverse Mean Exp Data and Trunc Norm Distribution, Narrow Interval",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(inv.mean.exp.17.n,pch=20,col="chocolate1")
@@ -2195,6 +2199,7 @@ points(inv.mean.exp.25.n,pch=20,col="mediumorchid4")
 points(inv.mean.exp.29.n,pch=20,col="darkslategray3")
 legend("topleft",legend=c("13","17","21","25","29"),
        pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
+abline(a=0,b=1,lwd=2,col="magenta")
 ```
 
 
@@ -2236,6 +2241,7 @@ points(ind.wb.25.n,pch=20,col="mediumorchid4")
 points(ind.wb.29.n,pch=20,col="darkslategray3")
 legend("topleft",legend=c("13","17","21","25","29"),
        pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
+abline(a=0,b=1,lwd=2,col="magenta")
 
 ```
 
@@ -2286,6 +2292,7 @@ points(mean.wb.25.n,pch=20,col="mediumorchid4")
 points(mean.wb.29.n,pch=20,col="darkslategray3")
 legend("topleft",legend=c("13","17","21","25","29"),
        pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
+abline(a=0,b=1,lwd=2,col="magenta")
 ```
 
 ```{r QQPlot.Inv.WB.Data.Narrow}
@@ -2332,7 +2339,7 @@ inv.wb.29.n<-qqPlot(1/Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]
                        max=Inf),plot.it=FALSE)
 
 plot(inv.wb.13.n,xlim=c(0,500),ylim=c(0,0.4),pch=20,
-       main="QQ-Plot for Inverse WB Data and Exponential Distribution, Narrow Interval",
+       main="QQ-Plot for Inverse WB Data and Exp Distribution, Narrow Interval",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(inv.wb.17.n,pch=20,col="chocolate1")
@@ -2341,6 +2348,7 @@ points(inv.wb.25.n,pch=20,col="mediumorchid4")
 points(inv.wb.29.n,pch=20,col="darkslategray3")
 legend("topleft",legend=c("13","17","21","25","29"),
        pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
+abline(a=0,b=1,lwd=2,col="magenta")
 
 ```
 
@@ -2397,7 +2405,7 @@ mean.inv.wb.29.n<-qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T==29],
                        max=Inf),plot.it=FALSE)
 
 plot(mean.inv.wb.13.n,pch=20,ylim=c(0,30),xlim=c(0,15000),
-       main="QQ-Plot for Mean Inverse WB Data and Exponential Distribution, Narrow Interval",
+       main="QQ-Plot for Mean Inverse WB Data and Trunc Norm Distribution, Narrow Interval",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(mean.inv.wb.17.n,pch=20,col="chocolate1")
@@ -2406,6 +2414,7 @@ points(mean.inv.wb.25.n,pch=20,col="mediumorchid4")
 points(mean.inv.wb.29.n,pch=20,col="darkslategray3")
 legend("topleft",legend=c("13","17","21","25","29"),
        pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
+abline(a=0,b=1,lwd=2,col="magenta")
 
 ```
 
@@ -2463,7 +2472,7 @@ inv.mean.wb.29.n<-qqPlot(df.mean.inv.wb.n$trait[df.mean.inv.wb.n$T==29],
                        max=Inf),plot.it=FALSE)
 
 plot(inv.mean.wb.13.n,pch=20,xlim=c(0,4000),ylim=c(0,0.3),
-       main="QQ-Plot for Inverse Mean WB Data and Exponential Distribution, Narrow Interval",
+       main="QQ-Plot for Inverse Mean WB Data and Trunc Norm Distribution, Narrow Interval",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(inv.mean.wb.17.n,pch=20,col="chocolate1")
@@ -2472,6 +2481,7 @@ points(inv.mean.wb.25.n,pch=20,col="mediumorchid4")
 points(inv.mean.wb.29.n,pch=20,col="darkslategray3")
 legend("topleft",legend=c("13","17","21","25","29"),
        pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
+abline(a=0,b=1,lwd=2,col="magenta")
 
 ```
 
@@ -2512,29 +2522,30 @@ points(wb.wb.25.n,pch=20,col="mediumorchid4")
 points(wb.wb.29.n,pch=20,col="darkslategray3")
 legend("topleft",legend=c("13","17","21","25","29"),
        pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
+abline(a=0,b=1,lwd=2,col="magenta")
 ```
 
 
 
 ```{r RMSE.Boxplot.Narrow.Exp}
-xdf1_N$true.value<-rep(true_curve(xseq),938)
-xdf2_N$true.value<-rep(true_curve(xseq),938)
-xdf3_N$true.value<-rep(true_curve(xseq),938)
-xdf4_N$true.value<-rep(true_curve(xseq),938)
-xdf5_N$true.value<-rep(true_curve(xseq),938)
-xdf3_N.NT$true.value<-rep(true_curve(xseq),938)
-xdf4_N.NT$true.value<-rep(true_curve(xseq),938)
-xdf5_N.NT$true.value<-rep(true_curve(xseq),938)
+xdf1_N$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
+xdf2_N$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
+xdf3_N$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
+xdf4_N$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
+xdf5_N$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
+xdf3_N.NT$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
+xdf4_N.NT$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
+xdf5_N.NT$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
 
 
-rmse1_N<-xdf1_N |> group_by(point) |> summarize(rmse1=sqrt(mean((trunc.inv-true.value)^2))) |> select(rmse1)
-rmse2_N<-xdf2_N |> group_by(point) |> summarize(rmse2=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse2)
-rmse3_N<-xdf3_N |> group_by(point) |> summarize(rmse3=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse3)
-rmse4_N<-xdf4_N |> group_by(point) |> summarize(rmse4=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse4)
-rmse5_N<-xdf5_N |> group_by(point) |> summarize(rmse5=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse5)
-rmse3_N.NT<-xdf3_N.NT |> group_by(point) |> summarize(rmse3.NT=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse3.NT)
-rmse4_N.NT<-xdf4_N.NT |> group_by(point) |> summarize(rmse4.NT=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse4.NT)
-rmse5_N.NT<-xdf5_N.NT |> group_by(point) |> summarize(rmse5.NT=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse5.NT)
+rmse1_N<-xdf1_N |> group_by(point) |> summarize(rmse1=sqrt(mean((trunc.inv-1/true.value)^2))) |> select(rmse1)
+rmse2_N<-xdf2_N |> group_by(point) |> summarize(rmse2=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse2)
+rmse3_N<-xdf3_N |> group_by(point) |> summarize(rmse3=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse3)
+rmse4_N<-xdf4_N |> group_by(point) |> summarize(rmse4=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse4)
+rmse5_N<-xdf5_N |> group_by(point) |> summarize(rmse5=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse5)
+rmse3_N.NT<-xdf3_N.NT |> group_by(point) |> summarize(rmse3.NT=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse3.NT)
+rmse4_N.NT<-xdf4_N.NT |> group_by(point) |> summarize(rmse4.NT=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse4.NT)
+rmse5_N.NT<-xdf5_N.NT |> group_by(point) |> summarize(rmse5.NT=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse5.NT)
 
 boxplot.df_N<-data.frame(
   Method=factor(c(rep("Individual Exp Data, Exp Model",250),rep("Mean Exp Data, Exp Model",250),rep("Individual Inverse Exp Data, Exp Model",250),rep("Mean Inverse Exp Data, Exp Model",250),rep("Inverse Mean Exp Data, Exp Model",250),rep("Individual Inverse Exp Data, Exp NT Model",250),rep("Mean Inverse Exp Data, Exp NT Model",250),rep("Inverse Mean Exp Data, Exp NT Model",250)),levels=c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model","Mean Inverse Exp Data, Exp Model",
@@ -2548,7 +2559,7 @@ boxplot.df_N<-data.frame(
          rmse4_N.NT$rmse4.NT,
          rmse5_N.NT$rmse5.NT
   ),
-  Temperature=c(rep(xdf1_N$point,8))
+  Temperature=c(rep(seq(from=13,to=29,length.out=250),8))
 )
 
 
@@ -2568,20 +2579,20 @@ ggplot(boxplot.df_N,aes(y=RMSE,x=Temperature,col=Method))+
 ```
 
 ```{r RMSE.Boxplot.Narrow.WB}
-xdf1_W_N$true.value<-rep(true_curve(xseq),938)
-xdf2_W_N$true.value<-rep(true_curve(xseq),938)
-xdf3_W_N$true.value<-rep(true_curve(xseq),938)
-xdf4_W_N$true.value<-rep(true_curve(xseq),938)
-xdf5_W_N$true.value<-rep(true_curve(xseq),938)
-xdf6_W_N$true.value<-rep(true_curve(xseq),938)
+xdf1_W_N$true.value<-rep(my.med(seq(from= 13, to = 29, length.out = 250)),938)
+xdf2_W_N$true.value<-rep(my.med(seq(from= 13, to = 29, length.out = 250)),938)
+xdf3_W_N$true.value<-rep(my.med(seq(from= 13, to = 29, length.out = 250)),938)
+xdf4_W_N$true.value<-rep(my.med(seq(from= 13, to = 29, length.out = 250)),938)
+xdf5_W_N$true.value<-rep(my.med(seq(from= 13, to = 29, length.out = 250)),938)
+xdf6_W_N$true.value<-rep(my.med(seq(from= 13, to = 29, length.out = 250)),938)
 
 
-rmse1.wb_N<-xdf1_W_N |> group_by(point) |> summarize(rmse1.wb=sqrt(mean((trunc.inv-true.value)^2))) |> select(rmse1.wb)
-rmse2.wb_N<-xdf2_W_N |> group_by(point) |> summarize(rmse2.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse2.wb)
-rmse3.wb_N<-xdf3_W_N |> group_by(point) |> summarize(rmse3.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse3.wb)
-rmse4.wb_N<-xdf4_W_N |> group_by(point) |> summarize(rmse4.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse4.wb)
-rmse5.wb_N<-xdf5_W_N |> group_by(point) |> summarize(rmse5.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse5.wb)
-rmse6.wb_N<-xdf6_W_N |> group_by(point) |> summarize(rmse6.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse6.wb)
+rmse1.wb_N<-xdf1_W_N |> group_by(point) |> summarize(rmse1.wb=sqrt(mean((trunc.eval-true.value)^2))) |> select(rmse1.wb)
+rmse2.wb_N<-xdf2_W_N |> group_by(point) |> summarize(rmse2.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse2.wb)
+rmse3.wb_N<-xdf3_W_N |> group_by(point) |> summarize(rmse3.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse3.wb)
+rmse4.wb_N<-xdf4_W_N |> group_by(point) |> summarize(rmse4.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse4.wb)
+rmse5.wb_N<-xdf5_W_N |> group_by(point) |> summarize(rmse5.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse5.wb)
+rmse6.wb_N<-xdf6_W_N |> group_by(point) |> summarize(rmse6.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse6.wb)
 
 
 boxplot.df.wb_N<-data.frame(
@@ -2594,11 +2605,11 @@ boxplot.df.wb_N<-data.frame(
          rmse5.wb_N$rmse5.wb,
          rmse6.wb_N$rmse6.wb
   ),
-  Temperature=c(rep(xdf1_W_N$point,6))
+  Temperature=c(rep(seq(from=13,to=29, length.out = 250),6))
 )
 
 joint.box_N <- rbind(boxplot.df_N[!(boxplot.df_N$Method %in% c("Individual Inverse Exp Data, Exp NT Model","Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model")),],boxplot.df.wb_N)
-joint.box_N$Method <- factor(joint.box_N$Method, levels = desired_order.compare)
+joint.box_N$Method <- factor(joint.box_N$Method, levels = rev(desired_order.compare))
 
 
 ggplot(boxplot.df.wb_N,aes(y=Method,x=RMSE,fill=Method))+
@@ -2623,6 +2634,141 @@ ggplot(joint.box_N,aes(y=RMSE,x=Temperature,col=Method))+
   geom_line()+
   theme_classic()+
   labs(title="Plot of RMSE Comparisons",
-       subtitle="Data Generated from Weibull Distribution, Nrrow Interval")
+       subtitle="Data Generated from Weibull Distribution, Narrow Interval")
 
 ```
+
+```{r RMSE.Table.Exp.Narrow}
+summary_list_N <- list(
+  xdf1_N |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf2_N |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf3_N |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf4_N |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf5_N |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf3_N.NT |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf4_N.NT |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf5_N.NT |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2)))
+)
+
+# Convert the list into a matrix
+RMSE.tab.exp_N <- do.call(rbind, summary_list_N)
+
+RMSE.tab.exp_N$Method <- factor(c(
+  "Individual Exp Data, Exp Model",
+  "Mean Exp Data, Exp Model",
+  "Individual Inverse Exp Data, Trunc Norm Model",
+  "Mean Inverse Exp Data, Trunc Norm Model",
+  "Inverse Mean Exp Data, Trunc Norm Model",
+  "Individual Inverse Exp Data, Normal Model",
+  "Mean Inverse Exp Data, Normal Model",
+  "Inverse Mean Exp Data, Normal Model"
+), levels = c(
+  "Individual Exp Data, Exp Model",
+  "Mean Exp Data, Exp Model",
+  "Individual Inverse Exp Data, Trunc Norm Model",
+  "Mean Inverse Exp Data, Trunc Norm Model",
+  "Inverse Mean Exp Data, Trunc Norm Model",
+  "Individual Inverse Exp Data, Normal Model",
+  "Mean Inverse Exp Data, Normal Model",
+  "Inverse Mean Exp Data, Normal Model"
+))
+
+RMSE.tab.exp_N
+
+RMSE.tab.exp_N |> ggplot(aes(x=Method, y=RMSE))+
+  geom_bar(stat = "identity", position = "dodge", color = "black", fill = "blanchedalmond")+
+  geom_text(aes(label = round(RMSE, 4)), hjust = -0.2, position = position_dodge(width = 0.9)) +
+  scale_x_discrete(limits = rev(levels(RMSE.tab.exp_N$Method)))+
+  labs(title="RMSE Boxplot, Narrow Interval",
+       subtitle = "Exponential Data")+
+  coord_flip()+
+  theme_classic()
+```
+
+```{r RMSE.Table.WB.Narrow}
+summary_list.wb_N <- list(
+  xdf1_W_N |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf2_W_N |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf3_W_N |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf4_W_N |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf5_W_N |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf6_W_N |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2)))
+)
+
+# Convert the list into a matrix
+RMSE.tab.wb_N <- do.call(rbind, summary_list.wb_N)
+
+RMSE.tab.wb_N$Method <- factor(c(
+  "Individual WB Data, Exp Model",
+  "Mean WB Data, Exp Model",
+  "Individual Inverse WB Data, Trunc Norm Model",
+  "Mean Inverse WB Data, Trunc Norm Model",
+  "Inverse Mean WB Data, Trunc Norm Model",
+  "Individual WB Data, WB Model"
+  ), levels = c(
+  "Individual WB Data, Exp Model",
+  "Mean WB Data, Exp Model",
+  "Individual Inverse WB Data, Trunc Norm Model",
+  "Mean Inverse WB Data, Trunc Norm Model",
+  "Inverse Mean WB Data, Trunc Norm Model",
+  "Individual WB Data, WB Model"
+  ))
+
+RMSE.tab.wb_N
+
+RMSE.tab.wb_N |> ggplot(aes(x=Method, y=RMSE))+
+  geom_bar(stat = "identity", position = "dodge", color = "black", fill = "khaki1")+
+  geom_text(aes(label = round(RMSE, 2)), hjust = -0.2, position = position_dodge(width = 0.9)) +
+  scale_x_discrete(limits = rev(levels(RMSE.tab.wb_N$Method)))+
+  labs(title="RMSE Boxplot, Narrow Interval",
+       subtitle = "Weibull Data")+
+  coord_flip()+
+  theme_classic()
+```
+
+```{r RMSE.Table.Compare.Narrow}
+summary_list.compare_N <- list(
+  xdf1_N |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf1_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf6_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf2_N |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf2_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf3_N |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf3_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf4_N |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf4_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf5_N |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf5_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf3_N.NT |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf4_N.NT |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf5_N.NT |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2)))
+)
+
+# Convert the list into a matrix
+RMSE.tab.compare_N <- do.call(rbind, summary_list.compare_N)
+
+row.names(RMSE.tab.compare_N) <- c(
+  "Individual Exp Data, Exp Model",
+  "Individual WB Data, Exp Model",
+  "Individual WB Data, WB Model",
+  "Mean Exp Data, Exp Model",
+  "Mean WB Data, Exp Model",
+  "Individual Inverse Exp Data, Trunc Norm Model",
+  "Individual Inverse WB Data, Trunc Norm Model",
+  "Mean Inverse Exp Data, Trunc Norm Model",
+  "Mean Inverse WB Data, Trunc Norm Model",
+  "Inverse Mean Exp Data, Trunc Norm Model",
+  "Inverse Mean WB Data, Trunc Norm Model",
+  "Individual Inverse Exp Data, Normal Model",
+  "Mean Inverse Exp Data, Normal Model",
+  "Inverse Mean Exp Data, Normal Model"
+)
+
+colnames(RMSE.tab.compare_N) <- "RMSE"
+RMSE.tab.compare_N
+
+```
+
+
+
+

@@ -993,7 +993,11 @@ dub<- double.box.df |> group_by(Method) |> summarise(medianTopt=median(Topt),
          maxLife=ifelse(q3Life+1.5*iqrLife>100,100,q3Life+1.5*iqrLife),
          minLife=ifelse(q1Life-1.5*iqrLife<0,0,q1Life-1.5*iqrLife),
          Middle.Topt = plot.x$middle,
-         Middle.Life = plot.y$middle,)
+         Middle.Life = plot.y$middle)
+
+dub$Method <-factor(dub.ex$Method, levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp NT Model",
+               "Mean Inverse Exp Data, Exp NT Model", "Inverse Mean Exp Data, Exp NT Model", "True Curve"))
 
 medianTopt.True<- as.numeric(rep(dub[9,2],8))
 medianLife.True<- as.numeric(rep(dub[9,3],8))
@@ -1007,7 +1011,7 @@ df$Method <- factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model
 df.outliers <- df |>
   select(Method, x.middle, x.outliers, y.middle, y.outliers) |>
   data.table::data.table()
-df.outliers <- df.outliers[, list(x.outliers = unlist(df.outliers$x.outliers), y.outliers = c(unlist(df.outliers$y.outliers),rep(NA,29))),
+df.outliers <- df.outliers[, list(x.outliers = unlist(df.outliers$x.outliers), y.outliers = c(unlist(df.outliers$y.outliers),rep(NA,10))),
                            by = list(Method, x.middle, y.middle)]
 
 ggplot(data=dub[1:8,], aes(fill = Method, color = Method)) +
@@ -1020,8 +1024,8 @@ ggplot(data=dub[1:8,], aes(fill = Method, color = Method)) +
   geom_segment(aes(x = plot.x$x.middle[1:8], y = minLife, xend = plot.x$x.middle[1:8], yend = maxLife)) + #whiskers
   geom_segment(aes(x = q1Topt, y = minLife, xend = q3Topt, yend = minLife)) + #lower end
   geom_segment(aes(x = q1Topt, y = maxLife, xend = q3Topt, yend = maxLife)) + #upper end
-  #geom_point(data = df.outliers, aes(x = x.outliers, y = y.middle), size = 1, shape = 1) + # x-direction
-  #geom_point(data = df.outliers, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
+  geom_point(data = df.outliers, aes(x = x.outliers, y = y.middle), size = 1, shape = 1) + # x-direction
+  geom_point(data = df.outliers, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
   theme_classic()+
   #facet_wrap(dub$Method[1:8],scales="free_y",nrow=2)+
   geom_point(aes(x=medianTopt.True, y= medianLife.True),color="black")+
@@ -1593,7 +1597,7 @@ df.outliers.ex <- df.ex |>
   select(Method, x.middle, x.outliers, y.middle, y.outliers) |>
   data.table::data.table()
 
-df.outliers.ex <- df.outliers.ex[, list(x.outliers = c(unlist(df.outliers.ex$x.outliers),rep(NA,27)), y.outliers = c(unlist(df.outliers.ex$y.outliers))),
+df.outliers.ex <- df.outliers.ex[, list(x.outliers = c(unlist(df.outliers.ex$x.outliers),rep(NA,18)), y.outliers = c(unlist(df.outliers.ex$y.outliers))),
                            by = list(Method, x.middle, y.middle)]
 
 ggplot(data=dub.ex[1:8,], aes(fill = Method, color = Method)) +
@@ -1606,8 +1610,8 @@ ggplot(data=dub.ex[1:8,], aes(fill = Method, color = Method)) +
   geom_segment(aes(x = plot.x.ex$x.middle[1:8], y = minHigh, xend = plot.x.ex$x.middle[1:8], yend = maxHigh)) + #whiskers
   geom_segment(aes(x = q1Low, y = minHigh, xend = q3Low, yend = minHigh)) + #lower end
   geom_segment(aes(x = q1Low, y = maxHigh, xend = q3Low, yend = maxHigh)) + #upper end
-  #geom_point(data = df.outliers.ex, aes(x = x.outliers, y = y.middle), size = 1, shape = 1) + # x-direction
-  #geom_point(data = df.outliers.ex, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
+  geom_point(data = df.outliers.ex, aes(x = x.outliers, y = y.middle), size = 1, shape = 1) + # x-direction
+  geom_point(data = df.outliers.ex, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
   theme_classic()+
   #facet_wrap(dub.ex$Method[1:8],scales="free_y",nrow=2)+
   geom_point(aes(x=medianLow.True.ex, y= medianHigh.True.ex),color="black")+
@@ -1950,6 +1954,7 @@ points(ind.exp.25,pch=20,col="lightpink")
 points(ind.exp.32,pch=20,col="seagreen")
 legend("topleft",legend=c("10","17","21","25","32"),
        pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+abline(a=0,b=1,lwd=2,col="red")
 ```
 
 ```{r QQPlot.Mean.Exp.Data}
@@ -1999,6 +2004,7 @@ points(mean.exp.25,pch=20,col="lightpink")
 points(mean.exp.32,pch=20,col="seagreen")
 legend("topleft",legend=c("10","17","21","25","32"),
        pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+abline(a=0,b=1,lwd=2,col="red")
 ```
 
 ```{r QQPlot.Inv.Exp.Data}
@@ -2039,8 +2045,8 @@ inv.exp.32<-qqPlot(1/data.list[[100]]$trait[data.list[[100]]$T==32],
        plot.it=FALSE)
 
 
-plot(inv.exp.10,pch=20,,
-     main="QQ-Plot for Inverse Exp Data and Exp Distribution",
+plot(inv.exp.10,pch=20,
+     main="QQ-Plot for Inverse Exp Data and Trunc Norm Distribution",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(inv.exp.17,pch=20,col="yellowgreen")
@@ -2049,6 +2055,7 @@ points(inv.exp.25,pch=20,col="lightpink")
 points(inv.exp.32,pch=20,col="seagreen")
 legend("topleft",legend=c("10","17","21","25","32"),
        pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+abline(a=0,b=1,lwd=2,col="red")
 ```
 
 ```{r QQPlot.Mean.Inv.Exp.Data}
@@ -2108,8 +2115,8 @@ mean.inv.exp.32<-qqPlot(1/df.mean.mean.exp$trait[df.mean.mean.exp$T==32],
        plot.it=FALSE)
 
 
-plot(mean.inv.exp.10,pch=20,xlim=c(0,3000),ylim=c(0,0.75),
-     main="QQ-Plot for Mean Inverse Exp Data and Exp Distribution",
+plot(mean.inv.exp.10,pch=20,xlim=c(0,30),ylim=c(0,0.75),
+     main="QQ-Plot for Mean Inverse Exp Data and Trunc Norm Distribution",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(mean.inv.exp.17,pch=20,col="yellowgreen")
@@ -2118,6 +2125,7 @@ points(mean.inv.exp.25,pch=20,col="lightpink")
 points(mean.inv.exp.32,pch=20,col="seagreen")
 legend("topleft",legend=c("10","17","21","25","32"),
        pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+abline(a=0,b=1,lwd=2,col="red")
 ```
 
 ```{r QQPlot.Inv.Mean.Exp.Data}
@@ -2178,7 +2186,7 @@ inv.mean.exp.32<-qqPlot(df.mean.inv.exp$trait[df.mean.inv.exp$T==32],
 
 
 plot(inv.mean.exp.10,pch=20,xlim=c(0,5),ylim=c(0,5),
-     main="QQ-Plot for Inverse Mean Exp Data and Exp Distribution",
+     main="QQ-Plot for Inverse Mean Exp Data and Trunc Norm Distribution",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(inv.mean.exp.17,pch=20,col="yellowgreen")
@@ -2187,6 +2195,7 @@ points(inv.mean.exp.25,pch=20,col="lightpink")
 points(inv.mean.exp.32,pch=20,col="seagreen")
 legend("topleft",legend=c("10","17","21","25","32"),
        pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+abline(a=0,b=1,lwd=2,col="red")
 ```
 
 
@@ -2219,7 +2228,7 @@ ind.wb.32<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==32]
                                mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
 
 plot(ind.wb.10,xlim=c(0,35),ylim=c(0,35),pch=20,
-       main="QQ-Plot for WB Data and Exponential Distribution",
+       main="QQ-Plot for WB Data and Exp Distribution",
        xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(ind.wb.17,pch=20,col="yellowgreen")
@@ -2228,7 +2237,7 @@ points(ind.wb.25,pch=20,col="lightpink")
 points(ind.wb.32,pch=20,col="seagreen")
 legend("topleft",legend=c("10","17","21","25","32"),
        pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
-
+abline(a=0,b=1,lwd=2,col="red")
 ```
 
 ```{r QQPlot.Mean.WB.Data}
@@ -2278,6 +2287,7 @@ points(mean.wb.25,pch=20,col="lightpink")
 points(mean.wb.32,pch=20,col="seagreen")
 legend("topleft",legend=c("10","17","21","25","32"),
        pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+abline(a=0,b=1,lwd=2,col="red")
 ```
 
 ```{r QQPlot.Inv.WB.Data}
@@ -2324,7 +2334,7 @@ inv.wb.32<-qqPlot(1/Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==3
                        max=Inf),plot.it=FALSE)
 
 plot(inv.wb.10,xlim=c(0,50),ylim=c(0,3),pch=20,
-       main="QQ-Plot for Inverse WB Data and Exponential Distribution",
+       main="QQ-Plot for Inverse WB Data and Trunc Norm Distribution",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(inv.wb.17,pch=20,col="yellowgreen")
@@ -2333,6 +2343,7 @@ points(inv.wb.25,pch=20,col="lightpink")
 points(inv.wb.32,pch=20,col="seagreen")
 legend("topleft",legend=c("10","17","21","25","32"),
        pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+abline(a=0,b=1,lwd=2,col="red")
 
 ```
 
@@ -2389,7 +2400,7 @@ mean.inv.wb.32<-qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T==32],
                        max=Inf),plot.it=FALSE)
 
 plot(mean.inv.wb.10,pch=20,ylim=c(0,30),xlim=c(0,8000),
-       main="QQ-Plot for Mean Inverse WB Data and Exponential Distribution",
+       main="QQ-Plot for Mean Inverse WB Data and Trunc Norm Distribution",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(mean.inv.wb.17,pch=20,col="yellowgreen")
@@ -2398,6 +2409,7 @@ points(mean.inv.wb.25,pch=20,col="lightpink")
 points(mean.inv.wb.32,pch=20,col="seagreen")
 legend("topleft",legend=c("10","17","21","25","32"),
        pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+abline(a=0,b=1,lwd=2,col="red")
 
 ```
 
@@ -2455,7 +2467,7 @@ inv.mean.wb.32<-qqPlot(df.mean.inv.wb$trait[df.mean.inv.wb$T==32],
                        max=Inf),plot.it=FALSE)
 
 plot(inv.mean.wb.10,pch=20,xlim=c(0,1500),ylim=c(0,1),
-       main="QQ-Plot for Inverse Mean WB Data and Exponential Distribution",
+       main="QQ-Plot for Inverse Mean WB Data and Trunc Norm Distribution",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
 points(inv.mean.wb.17,pch=20,col="yellowgreen")
@@ -2464,6 +2476,7 @@ points(inv.mean.wb.25,pch=20,col="lightpink")
 points(inv.mean.wb.32,pch=20,col="seagreen")
 legend("topleft",legend=c("10","17","21","25","32"),
        pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+abline(a=0,b=1,lwd=2,col="red")
 
 ```
 
@@ -2504,29 +2517,30 @@ points(wb.wb.25,pch=20,col="lightpink")
 points(wb.wb.32,pch=20,col="seagreen")
 legend("topleft",legend=c("10","17","21","25","32"),
        pch=c(20,20,20,20,20),col=c("black","yellowgreen","darkblue","lightpink","seagreen"))
+abline(a=0,b=1,lwd=2,col="red")
 ```
 
 
 
 ```{r RMSE.Boxplot.Exp}
-xdf1$true.value<-rep(true_curve(xseq),938)
-xdf2$true.value<-rep(true_curve(xseq),938)
-xdf3$true.value<-rep(true_curve(xseq),938)
-xdf4.2$true.value<-rep(true_curve(xseq),938)
-xdf5$true.value<-rep(true_curve(xseq),938)
-xdf3.NT$true.value<-rep(true_curve(xseq),938)
-xdf4.NT$true.value<-rep(true_curve(xseq),938)
-xdf5.NT$true.value<-rep(true_curve(xseq),938)
+xdf1$true.value<-rep(true_curve(seq(from = 10, to = 35, length.out = 250)),938)
+xdf2$true.value<-rep(true_curve(seq(from = 10, to = 35, length.out = 250)),938)
+xdf3$true.value<-rep(true_curve(seq(from = 10, to = 35, length.out = 250)),938)
+xdf4$true.value<-rep(true_curve(seq(from = 10, to = 35, length.out = 250)),938)
+xdf5$true.value<-rep(true_curve(seq(from = 10, to = 35, length.out = 250)),938)
+xdf3.NT$true.value<-rep(true_curve(seq(from = 10, to = 35, length.out = 250)),938)
+xdf4.NT$true.value<-rep(true_curve(seq(from = 10, to = 35, length.out = 250)),938)
+xdf5.NT$true.value<-rep(true_curve(seq(from = 10, to = 35, length.out = 250)),938)
 
 
-rmse1<-xdf1 |> group_by(point) |> summarize(rmse1=sqrt(mean((trunc.inv-true.value)^2))) |> select(rmse1)
-rmse2<-xdf2 |> group_by(point) |> summarize(rmse2=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse2)
-rmse3<-xdf3 |> group_by(point) |> summarize(rmse3=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse3)
-rmse4<-xdf4.2 |> group_by(point) |> summarize(rmse4=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse4)
-rmse5<-xdf5 |> group_by(point) |> summarize(rmse5=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse5)
-rmse3.NT<-xdf3.NT |> group_by(point) |> summarize(rmse3.NT=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse3.NT)
-rmse4.NT<-xdf4.NT |> group_by(point) |> summarize(rmse4.NT=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse4.NT)
-rmse5.NT<-xdf5.NT |> group_by(point) |> summarize(rmse5.NT=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse5.NT)
+rmse1<-xdf1 |> group_by(point) |> summarize(rmse1=sqrt(mean((trunc.inv-1/true.value)^2))) |> select(rmse1)
+rmse2<-xdf2 |> group_by(point) |> summarize(rmse2=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse2)
+rmse3<-xdf3 |> group_by(point) |> summarize(rmse3=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse3)
+rmse4<-xdf4 |> group_by(point) |> summarize(rmse4=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse4)
+rmse5<-xdf5 |> group_by(point) |> summarize(rmse5=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse5)
+rmse3.NT<-xdf3.NT |> group_by(point) |> summarize(rmse3.NT=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse3.NT)
+rmse4.NT<-xdf4.NT |> group_by(point) |> summarize(rmse4.NT=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse4.NT)
+rmse5.NT<-xdf5.NT |> group_by(point) |> summarize(rmse5.NT=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse5.NT)
 
 boxplot.df<-data.frame(
   Method=factor(c(rep("Individual Exp Data, Exp Model",250),rep("Mean Exp Data, Exp Model",250),rep("Individual Inverse Exp Data, Exp Model",250),rep("Mean Inverse Exp Data, Exp Model",250),rep("Inverse Mean Exp Data, Exp Model",250),rep("Individual Inverse Exp Data, Exp NT Model",250),rep("Mean Inverse Exp Data, Exp NT Model",250),rep("Inverse Mean Exp Data, Exp NT Model",250)),levels=rev(c("Inverse Mean Exp Data, Exp NT Model","Mean Inverse Exp Data, Exp NT Model","Individual Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp Model","Mean Inverse Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
@@ -2540,7 +2554,7 @@ boxplot.df<-data.frame(
          rmse4.NT$rmse4.NT,
          rmse5.NT$rmse5.NT
   ),
-  Temperature=c(rep(xdf1$point,8))
+  Temperature = rep(seq(from=10,to=35,length.out=250),8)
 )
 
 ggplot(boxplot.df,aes(y=Method,x=RMSE,fill=Method))+
@@ -2554,24 +2568,23 @@ ggplot(boxplot.df,aes(y=RMSE,x=Temperature,col=Method))+
   theme_classic()+
   labs(title="Plot of RMSE Comparisons",
        subtitle="Data Generated from Exponential Distribution")
-
 ```
 
 ```{r RMSE.Boxplot.WB}
-xdf1_W$true.value<-rep(true_curve(xseq),938)
-xdf2_W$true.value<-rep(true_curve(xseq),938)
-xdf3_W$true.value<-rep(true_curve(xseq),938)
-xdf4_W$true.value<-rep(true_curve(xseq),938)
-xdf5_W$true.value<-rep(true_curve(xseq),938)
-xdf6_W$true.value<-rep(true_curve(xseq),938)
+xdf1_W$true.value<-rep(my.med(seq(from = 10, to = 35, length.out = 250)),938)
+xdf2_W$true.value<-rep(my.med(seq(from = 10, to = 35, length.out = 250)),938)
+xdf3_W$true.value<-rep(my.med(seq(from = 10, to = 35, length.out = 250)),938)
+xdf4_W$true.value<-rep(my.med(seq(from = 10, to = 35, length.out = 250)),938)
+xdf5_W$true.value<-rep(my.med(seq(from = 10, to = 35, length.out = 250)),938)
+xdf6_W$true.value<-rep(my.med(seq(from = 10, to = 35, length.out = 250)),938)
 
 
-rmse1.wb<-xdf1_W |> group_by(point) |> summarize(rmse1.wb=sqrt(mean((trunc.inv-true.value)^2))) |> select(rmse1.wb)
-rmse2.wb<-xdf2_W |> group_by(point) |> summarize(rmse2.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse2.wb)
-rmse3.wb<-xdf3_W |> group_by(point) |> summarize(rmse3.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse3.wb)
-rmse4.wb<-xdf4_W |> group_by(point) |> summarize(rmse4.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse4.wb)
-rmse5.wb<-xdf5_W |> group_by(point) |> summarize(rmse5.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse5.wb)
-rmse6.wb<-xdf6_W |> group_by(point) |> summarize(rmse6.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse6.wb)
+rmse1.wb<-xdf1_W |> group_by(point) |> summarize(rmse1.wb=sqrt(mean((trunc.eval-true.value)^2))) |> select(rmse1.wb)
+rmse2.wb<-xdf2_W |> group_by(point) |> summarize(rmse2.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse2.wb)
+rmse3.wb<-xdf3_W |> group_by(point) |> summarize(rmse3.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse3.wb)
+rmse4.wb<-xdf4_W |> group_by(point) |> summarize(rmse4.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse4.wb)
+rmse5.wb<-xdf5_W |> group_by(point) |> summarize(rmse5.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse5.wb)
+rmse6.wb<-xdf6_W |> group_by(point) |> summarize(rmse6.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse6.wb)
 
 
 boxplot.df.wb<-data.frame(
@@ -2584,18 +2597,20 @@ boxplot.df.wb<-data.frame(
          rmse5.wb$rmse5.wb,
          rmse6.wb$rmse6.wb
   ),
-  Temperature=c(rep(xdf1_W$point,6))
+  Temperature=c(rep(seq(from=10,to=35,length.out=250),6))
 )
 
 ggplot(boxplot.df.wb,aes(y=Method,x=RMSE,fill=Method))+
   geom_boxplot()+
   theme_classic()+
   theme(legend.position="none")+
+  xlim(0,0.2)+
   labs(title="Boxplot of RMSE Comparisons",
        subtitle="Data Generated from Weibull Distribution")
 ggplot(boxplot.df.wb,aes(y=RMSE,x=Temperature,col=Method))+
   geom_line()+
   theme_classic()+
+  #ylim(0,0.2)+
   labs(title="Plot of RMSE Comparisons",
        subtitle="Data Generated from Weibull Distribution")
 
@@ -2617,21 +2632,519 @@ ggplot(joint.box,aes(y=RMSE,x=Temperature,col=Method))+
 
 ```
 
+```{r RMSE.Table.Exp}
+summary_list <- list(
+  xdf1 |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf2 |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf3 |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf4 |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf5 |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf3.NT |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf4.NT |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf5.NT |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2)))
+)
 
 
-```{r RMSE.5.Temps}
-xdf1$point<-round(xdf1$point,5)
-xdf2$point<-round(xdf2$point,5)
-xdf3$point<-round(xdf3$point,5)
-xdf4.2$point<-round(xdf4.2$point,5)
-xdf5$point<-round(xdf5$point,5)
+# Convert the list into a matrix
+RMSE.tab.exp <- do.call(rbind, summary_list)
 
-plot(xdf1[xdf1$point %in% c(10,17.02811,21.04418	,24.95984	,31.98795),] |> group_by(point) |> summarize(mean=mean(trunc.inv-true.value)),type="l")
-lines(xdf2[xdf2$point %in% c(10,17.02811,21.04418	,24.95984	,31.98795),] |> group_by(point) |> summarize(mean=mean(trunc.inv-true.value)),col="red")
-lines(xdf3[xdf3$point %in% c(10,17.02811,21.04418	,24.95984	,31.98795),] |> group_by(point) |> summarize(mean=mean(trunc.inv-true.value)),col="green")
-lines(xdf4.2[xdf4.2$point %in% c(10,17.02811,21.04418	,24.95984	,31.98795),] |> group_by(point) |> summarize(mean=mean(trunc.inv-true.value)),col="blue")
-lines(xdf5[xdf5$point %in% c(10,17.02811,21.04418	,24.95984	,31.98795),] |> group_by(point) |> summarize(mean=mean(trunc.inv-true.value)),col="purple")
+RMSE.tab.exp$Method <- factor(c(
+  "Individual Exp Data, Exp Model",
+  "Mean Exp Data, Exp Model",
+  "Individual Inverse Exp Data, Trunc Norm Model",
+  "Mean Inverse Exp Data, Trunc Norm Model",
+  "Inverse Mean Exp Data, Trunc Norm Model",
+  "Individual Inverse Exp Data, Normal Model",
+  "Mean Inverse Exp Data, Normal Model",
+  "Inverse Mean Exp Data, Normal Model"),
+  levels = c(
+  "Individual Exp Data, Exp Model",
+  "Mean Exp Data, Exp Model",
+  "Individual Inverse Exp Data, Trunc Norm Model",
+  "Mean Inverse Exp Data, Trunc Norm Model",
+  "Inverse Mean Exp Data, Trunc Norm Model",
+  "Individual Inverse Exp Data, Normal Model",
+  "Mean Inverse Exp Data, Normal Model",
+  "Inverse Mean Exp Data, Normal Model"
+))
+
+RMSE.tab.exp
+RMSE.tab.exp |> ggplot(aes(x=Method, y=RMSE))+
+  geom_bar(stat = "identity", position = "dodge", color = "black", fill = "skyblue1")+
+  geom_text(aes(label = round(RMSE, 2)), hjust = -0.2, position = position_dodge(width = 0.9)) +
+  scale_x_discrete(limits = rev(levels(RMSE.tab.exp$Method)))+
+  labs(title="RMSE Boxplot",
+       subtitle = "Exponential Data")+
+  coord_flip()+
+  theme_classic()
+```
+
+```{r RMSE.Table.WB}
+summary_list.wb <- list(
+  xdf1_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf2_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf3_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf4_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf5_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf6_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2)))
+)
+
+# Convert the list into a matrix
+RMSE.tab.wb <- do.call(rbind, summary_list.wb)
+
+RMSE.tab.wb$Method <- factor(c(
+  "Individual WB Data, Exp Model",
+  "Mean WB Data, Exp Model",
+  "Individual Inverse WB Data, Trunc Norm Model",
+  "Mean Inverse WB Data, Trunc Norm Model",
+  "Inverse Mean WB Data, Trunc Norm Model",
+  "Individual WB Data, WB Model"
+  ),
+  levels=c(
+  "Individual WB Data, Exp Model",
+  "Mean WB Data, Exp Model",
+  "Individual Inverse WB Data, Trunc Norm Model",
+  "Mean Inverse WB Data, Trunc Norm Model",
+  "Inverse Mean WB Data, Trunc Norm Model",
+  "Individual WB Data, WB Model"
+  ))
+
+RMSE.tab.wb
+
+RMSE.tab.wb |> ggplot(aes(x=Method, y=RMSE))+
+  geom_bar(stat = "identity", position = "dodge", color = "black", fill = "darkseagreen1")+
+  geom_text(aes(label = round(RMSE, 2)), hjust = -0.2, position = position_dodge(width = 0.9)) +
+  scale_x_discrete(limits = rev(levels(RMSE.tab.wb$Method)))+
+  labs(title="RMSE Boxplot",
+       subtitle = "Weibull Data")+
+  coord_flip()+
+  theme_classic()
+```
+
+```{r RMSE.Table.Compare}
+summary_list.compare <- list(
+  xdf1 |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf1_W |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf6_W |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf2 |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf2_W |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf3 |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf3_W |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf4 |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf4_W |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf5 |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf5_W |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf3.NT |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf4.NT |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf5.NT |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2)))
+)
+
+# Convert the list into a matrix
+RMSE.tab.compare <- do.call(rbind, summary_list.compare)
+
+row.names(RMSE.tab.compare) <- c(
+  "Individual Exp Data, Exp Model",
+  "Individual WB Data, Exp Model",
+  "Individual WB Data, WB Model",
+  "Mean Exp Data, Exp Model",
+  "Mean WB Data, Exp Model",
+  "Individual Inverse Exp Data, Trunc Norm Model",
+  "Individual Inverse WB Data, Trunc Norm Model",
+  "Mean Inverse Exp Data, Trunc Norm Model",
+  "Mean Inverse WB Data, Trunc Norm Model",
+  "Inverse Mean Exp Data, Trunc Norm Model",
+  "Inverse Mean WB Data, Trunc Norm Model",
+  "Individual Inverse Exp Data, Normal Model",
+  "Mean Inverse Exp Data, Normal Model",
+  "Inverse Mean Exp Data, Normal Model"
+)
+
+colnames(RMSE.tab.compare) <- "RMSE"
+RMSE.tab.compare
+
 ```
 
 
+```{r n.w.compare.exp.mr}
+ggplot() +
+  geom_line(data=N_mean.xdf1, aes(x = point,y = med.value), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf1, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf1, aes(x = point,y = med.value), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf1, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf1, aes(x = point, y = true_curve), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Individual Data)", 
+       x = "Temperature", 
+       y = "Mortality Rate") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf2, aes(x = point,y = med.value), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf2, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf2, aes(x = point,y = med.value), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf2, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf2, aes(x = point, y = true_curve), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Mean Data)", 
+       x = "Temperature", 
+       y = "Mortality Rate") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf3, aes(x = point,y = med.value), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf3, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf3, aes(x = point,y = med.value), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf3, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf3, aes(x = point, y = true_curve), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Inverse Data)", 
+       x = "Temperature", 
+       y = "Mortality Rate") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf4, aes(x = point,y = med.value), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf4, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf4, aes(x = point,y = med.value), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf4, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf4, aes(x = point, y = true_curve), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Mean Inverse Data)",
+       x = "Temperature",
+       y = "Mortality Rate") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf5, aes(x = point,y = med.value), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf5, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf5, aes(x = point,y = med.value), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf5, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf5, aes(x = point, y = true_curve), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean Data)",
+       x = "Temperature",
+       y = "Mortality Rate") +
+  #xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf3_NT, aes(x = point,y = med.value), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf3_NT, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf3.NT, aes(x = point,y = med.value), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf3.NT, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf3.NT, aes(x = point, y = true_curve), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Inverse NT Data)",
+       x = "Temperature",
+       y = "Mortality Rate") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf4_NT, aes(x = point,y = med.value), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf4_NT, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf4.NT, aes(x = point,y = med.value), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf4.NT, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf4.NT, aes(x = point, y = true_curve), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Mean Inverse NT Data)",
+       x = "Temperature",
+       y = "Mortality Rate") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf5_NT, aes(x = point,y = med.value), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf5_NT, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf5.NT, aes(x = point,y = med.value), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf5.NT, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf5.NT, aes(x = point, y = true_curve), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean NT Data)",
+       x = "Temperature",
+       y = "Mortality Rate") +
+  xlim(13,29)+
+  theme_minimal()
+
+```
+
+```{r n.w.compare.exp.lt}
+ggplot() +
+  geom_line(data=N_mean.xdf1, aes(x = point,y = med.value.inv), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf1, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf1, aes(x = point,y = med.value.inv), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf1, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf1, aes(x = point, y = true_curve.inv), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Individual Data)", 
+       x = "Temperature", 
+       y = "Lifetime") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf2, aes(x = point,y = med.value.inv), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf2, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf2, aes(x = point,y = med.value.inv), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf2, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf2, aes(x = point, y = true_curve.inv), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Mean Data)", 
+       x = "Temperature", 
+       y = "Lifetime") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf3, aes(x = point,y = med.value.inv), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf3, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf3, aes(x = point,y = med.value.inv), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf3, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf3, aes(x = point, y = true_curve.inv), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Inverse Data)", 
+       x = "Temperature", 
+       y = "Lifetime") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf4, aes(x = point,y = med.value.inv), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf4, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf4, aes(x = point,y = med.value.inv), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf4, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf4, aes(x = point, y = true_curve.inv), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Mean Inverse Data)",
+       x = "Temperature",
+       y = "Lifetime") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf5, aes(x = point,y = med.value.inv), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf5, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf5, aes(x = point,y = med.value.inv), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf5, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf5, aes(x = point, y = true_curve.inv), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean Data)",
+       x = "Temperature",
+       y = "Lifetime") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf3_NT, aes(x = point,y = med.value.inv), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf3_NT, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf3.NT, aes(x = point,y = med.value.inv), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf3.NT, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf3.NT, aes(x = point, y = true_curve.inv), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Inverse NT Data)",
+       x = "Temperature",
+       y = "Lifetime") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf4_NT, aes(x = point,y = med.value.inv), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf4_NT, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf4.NT, aes(x = point,y = med.value.inv), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf4.NT, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf4.NT, aes(x = point, y = true_curve.inv), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Mean Inverse NT Data)",
+       x = "Temperature",
+       y = "Lifetime") +
+  xlim(13,29)+
+  theme_minimal()
+ggplot() +
+  geom_line(data=N_mean.xdf5_NT, aes(x = point,y = med.value.inv), color = "darkslategray2",lwd=1) +
+  geom_ribbon(data=N_mean.xdf5_NT, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "darkslategray2", alpha = 0.3) +
+  geom_line(data=mean.xdf5.NT, aes(x = point,y = med.value.inv), color = "coral1",lwd=1) +
+  geom_ribbon(data=mean.xdf5.NT, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = "coral1", alpha = 0.2) +
+  geom_line(data=mean.xdf5.NT, aes(x = point, y = true_curve.inv), color = "black", linetype = "dashed") +
+  labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean NT Data)",
+       x = "Temperature",
+       y = "Lifetime") +
+  xlim(13,29)+
+  theme_minimal()
+```
+
+```{r n.w.compare.wb.mr}
+ggplot() +
+  geom_line(data= mean.xdf1_W_N, aes(x = point,y = med.value.inv), color = "greenyellow",lwd=1) +
+  geom_ribbon(data = mean.xdf1_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "greenyellow", alpha = 0.3) +
+  geom_line(data= mean.xdf1_W, aes(x = point,y = med.value.inv), color = "darkorange1",lwd=1) +
+  geom_ribbon(data = mean.xdf1_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
+  geom_line(data = mean.xdf1_W, aes(y = true_curve.inv, x=point), color = "black", linetype = "dashed")+
+    labs(title = "Narrow and Wide Median Curve Comparison (Individual WB Data)", 
+       x = "Temperature", 
+       y = "Mortality Rate") +
+  theme_minimal()+
+  xlim(13,29)
+ggplot() +
+  geom_line(data= mean.xdf2_W_N, aes(x = point,y = med.value.inv), color = "greenyellow",lwd=1) +
+  geom_ribbon(data = mean.xdf2_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "greenyellow", alpha = 0.3) +
+  geom_line(data= mean.xdf2_W, aes(x = point,y = med.value.inv), color = "darkorange1",lwd=1) +
+  geom_ribbon(data = mean.xdf2_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
+  geom_line(data = mean.xdf2_W, aes(y = true_curve.inv, x=point), color = "black", linetype = "dashed")+
+    labs(title = "Narrow and Wide Median Curve Comparison (Mean WB Data)", 
+       x = "Temperature", 
+       y = "Mortality Rate") +
+  theme_minimal()+
+  xlim(13,29)
+ggplot() +
+  geom_line(data= mean.xdf3_W_N, aes(x = point,y = med.value.inv), color = "greenyellow",lwd=1) +
+  geom_ribbon(data = mean.xdf3_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "greenyellow", alpha = 0.3) +
+  geom_line(data= mean.xdf3_W, aes(x = point,y = med.value), color = "darkorange1",lwd=1) +
+  geom_ribbon(data = mean.xdf3_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
+  geom_line(data = mean.xdf3_W, aes(y = true_curve, x=point), color = "black", linetype = "dashed")+
+    labs(title = "Narrow and Wide Median Curve Comparison (Inverse WB Data)", 
+       x = "Temperature", 
+       y = "Mortality Rate") +
+  theme_minimal()+
+  xlim(13,29)
+ggplot() +
+  geom_line(data= mean.xdf4_W_N, aes(x = point,y = med.value.inv), color = "greenyellow",lwd=1) +
+  geom_ribbon(data = mean.xdf4_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "greenyellow", alpha = 0.3) +
+  geom_line(data= mean.xdf4_W, aes(x = point,y = med.value.inv), color = "darkorange1",lwd=1) +
+  geom_ribbon(data = mean.xdf4_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
+  geom_line(data = mean.xdf4_W, aes(y = true_curve.inv, x=point), color = "black", linetype = "dashed")+
+    labs(title = "Narrow and Wide Median Curve Comparison (Mean Inverse WB Data)", 
+       x = "Temperature", 
+       y = "Mortality Rate") +
+  theme_minimal()+
+  xlim(13,29)
+ggplot() +
+  geom_line(data= mean.xdf5_W_N, aes(x = point,y = med.value.inv), color = "greenyellow",lwd=1) +
+  geom_ribbon(data = mean.xdf5_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "greenyellow", alpha = 0.3) +
+  geom_line(data= mean.xdf5_W, aes(x = point,y = med.value.inv), color = "darkorange1",lwd=1) +
+  geom_ribbon(data = mean.xdf5_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
+  geom_line(data = mean.xdf5_W, aes(y = true_curve.inv, x=point), color = "black", linetype = "dashed")+
+    labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean WB Data)", 
+       x = "Temperature", 
+       y = "Mortality Rate") +
+  theme_minimal()+
+  xlim(13,29)
+```
+
+```{r n.w.compare.wb.lt}
+ggplot() +
+  geom_line(data= mean.xdf1_W_N, aes(x = point,y = med.value), color = "greenyellow",lwd=1) +
+  geom_ribbon(data = mean.xdf1_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = "greenyellow", alpha = 0.3) +
+  geom_line(data= mean.xdf1_W, aes(x = point,y = med.value), color = "darkorange1",lwd=1) +
+  geom_ribbon(data = mean.xdf1_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
+  geom_line(data = mean.xdf1_W, aes(y = true_curve, x=point), color = "black", linetype = "dashed")+
+    labs(title = "Narrow and Wide Median Curve Comparison (Individual WB Data)", 
+       x = "Temperature", 
+       y = "Lifetime") +
+  theme_minimal()+
+  xlim(13,29)
+ggplot() +
+  geom_line(data= mean.xdf2_W_N, aes(x = point,y = med.value), color = "greenyellow",lwd=1) +
+  geom_ribbon(data = mean.xdf2_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = "greenyellow", alpha = 0.3) +
+  geom_line(data= mean.xdf2_W, aes(x = point,y = med.value), color = "darkorange1",lwd=1) +
+  geom_ribbon(data = mean.xdf2_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
+  geom_line(data = mean.xdf2_W, aes(y = true_curve, x=point), color = "black", linetype = "dashed")+
+    labs(title = "Narrow and Wide Median Curve Comparison (Mean WB Data)", 
+       x = "Temperature", 
+       y = "Lifetime") +
+  theme_minimal()+
+  xlim(13,29)
+ggplot() +
+  geom_line(data= mean.xdf3_W_N, aes(x = point,y = med.value), color = "greenyellow",lwd=1) +
+  geom_ribbon(data = mean.xdf3_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = "greenyellow", alpha = 0.3) +
+  geom_line(data= mean.xdf3_W, aes(x = point,y = med.value.inv), color = "darkorange1",lwd=1) +
+  geom_ribbon(data = mean.xdf3_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
+  geom_line(data = mean.xdf3_W, aes(y = true_curve.inv, x=point), color = "black", linetype = "dashed")+
+    labs(title = "Narrow and Wide Median Curve Comparison (Inverse WB Data)", 
+       x = "Temperature", 
+       y = "Lifetime") +
+  theme_minimal()+
+  xlim(13,29)
+ggplot() +
+  geom_line(data= mean.xdf4_W_N, aes(x = point,y = med.value), color = "greenyellow",lwd=1) +
+  geom_ribbon(data = mean.xdf4_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = "greenyellow", alpha = 0.3) +
+  geom_line(data= mean.xdf4_W, aes(x = point,y = med.value), color = "darkorange1",lwd=1) +
+  geom_ribbon(data = mean.xdf4_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
+  geom_line(data = mean.xdf4_W, aes(y = true_curve, x=point), color = "black", linetype = "dashed")+
+    labs(title = "Narrow and Wide Median Curve Comparison (Mean Inverse WB Data)", 
+       x = "Temperature", 
+       y = "Lifetime") +
+  theme_minimal()+
+  xlim(13,29)
+ggplot() +
+  geom_line(data= mean.xdf5_W_N, aes(x = point,y = med.value), color = "greenyellow",lwd=1) +
+  geom_ribbon(data = mean.xdf5_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = "greenyellow", alpha = 0.3) +
+  geom_line(data= mean.xdf5_W, aes(x = point,y = med.value), color = "darkorange1",lwd=1) +
+  geom_ribbon(data = mean.xdf5_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
+  geom_line(data = mean.xdf5_W, aes(y = true_curve, x=point), color = "black", linetype = "dashed")+
+    labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean WB Data)", 
+       x = "Temperature", 
+       y = "Lifetime") +
+  theme_minimal()+
+  xlim(13,29)
+```
+
+
+
+```{r n.w.compare.rmse}
+nar.wide.rmse.df <- rbind(boxplot.df,boxplot.df_N)
+nar.wide.rmse.df$Set <- factor(c(rep("Wide",2000),rep("Narrow",2000)))
+ggplot(nar.wide.rmse.df, aes(x = Temperature, y = RMSE, color = Set)) +
+  geom_line() +
+  facet_wrap(~ Method, scales = "free_y") +
+  labs(title = "Line Plots for Each Method with Different Temperature Interval",
+       subtitle= "Exponential Data",
+       x = "Temperature",
+       y = "RMSE")+
+  theme_classic()
+
+nar.wide.rmse.df.wb <- rbind(boxplot.df.wb,boxplot.df.wb_N)
+nar.wide.rmse.df.wb$Set <- factor(c(rep("Wide",1500),rep("Narrow",1500)))
+ggplot(nar.wide.rmse.df.wb, aes(x = Temperature, y = RMSE, color = Set)) +
+  geom_line() +
+  facet_wrap(~ Method,scales="free_y") +
+  labs(title = "Line Plots for Each Method with Different Temperature Interval",
+       subtitle= "Weibull Data",
+       x = "Temperature",
+       y = "RMSE")+
+  theme_classic()
+
+barplot.df.exp <- rbind(RMSE.tab.exp,RMSE.tab.exp_N)
+barplot.df.exp$Set <- factor(c(rep("Wide", 8), rep("Narrow", 8)))
+barplot.df.exp |> ggplot(aes(x = Method, y = RMSE, fill = Set)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black") +
+    geom_text(aes(label = round(RMSE, 4)), hjust = -0.5, position = position_dodge(width = 0.9)) +  
+  labs(x = "Method", y = "RMSE") +
+  scale_fill_manual(values = c("Narrow"="blanchedalmond","Wide"="skyblue1")) +
+  scale_x_discrete(limits = rev(levels(barplot.df.exp$Method)))+
+  coord_flip()+
+  labs(title="RMSE Comparison Between Narrow and Wide Temperature Intervals",
+       subtitle="Exponential Data")+
+  theme_classic()
+
+barplot.df.wb <- rbind(RMSE.tab.wb,RMSE.tab.wb_N)
+barplot.df.wb$Set <- factor(c(rep("Wide", 6), rep("Narrow", 6)))
+barplot.df.wb |> ggplot(aes(x = Method, y = RMSE, fill = Set)) +
+  geom_bar(stat = "identity", position = "dodge", color = "black") +
+    geom_text(aes(label = round(RMSE, 4)), hjust = -0.5, position = position_dodge(width = 0.9)) +  
+  labs(x = "Method", y = "RMSE") +
+  scale_fill_manual(values = c("Narrow"="khaki1","Wide"="darkseagreen1")) +
+  scale_x_discrete(limits = rev(levels(barplot.df.wb$Method)))+
+ # ylim(0,0.1)+
+  coord_flip()+
+  labs(title="RMSE Comparison Between Narrow and Wide Temperature Intervals",
+       subtitle="Weibull Data")+
+  theme_classic()
+```
+
+```{r weibull.data.compare}
+wb.exp.plot <- ggplot() +
+  geom_line(data=mean.xdf1_W, aes(x = point, y = avg.value), color = "darkorange1", lwd = 1) +
+  geom_ribbon(data=mean.xdf1_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
+  geom_line(data=mean.xdf6_W, aes(x = point, y = avg.value), color = "hotpink", lwd = 1) +
+  geom_ribbon(data=mean.xdf6_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = "hotpink", alpha = 0.3) +
+  geom_line(data=mean.xdf1_W, aes(x = point, y = true_curve), color = "black", linetype = "dashed") +
+  labs(title = "Mean Curve with Interval Bands and True Curve", 
+       x = "Temperature", 
+       y = "Lifetime") +
+  theme_minimal()
+
+wb.wb.plot <- ggplot() +
+  geom_line(data=mean.xdf1_W, aes(x = point, y = avg.value.inv, color = "Exponential Model"), lwd = 1) +
+  geom_ribbon(data=mean.xdf1_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv, fill = "Exponential Model"), alpha = 0.3) +
+  geom_line(data=mean.xdf6_W, aes(x = point, y = avg.value.inv, color = "Weibull Model"), lwd = 1) +
+  geom_ribbon(data=mean.xdf6_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv, fill = "Weibull Model"), alpha = 0.3) +
+  geom_line(data=mean.xdf1_W, aes(x = point, y = true_curve.inv, color = "True Curve"), linetype = "dashed") +
+  labs(title = "Mean Curve with Interval Bands and True Curve", 
+       x = "Temperature", 
+       y = "Mortality Rate",
+       color = "Curve", 
+       fill = "95% HDI Bands") +
+  scale_color_manual(values = c("Exponential Model" = "darkorange", "Weibull Model" = "hotpink", "True Curve" = "black")) +
+  scale_fill_manual(values = c("Exponential Model" = "darkorange1", "Weibull Model" = "hotpink")) +
+  theme_minimal()
+
+gridExtra::grid.arrange(wb.exp.plot, wb.wb.plot, nrow = 1)
+
+```
 
