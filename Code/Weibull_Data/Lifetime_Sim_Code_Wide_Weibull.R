@@ -142,7 +142,7 @@ for(i in 1:w){
 # Take samp, the mcmc list, chain 1 and save every fourth row
 # Saved every fourth row to avoid autocorrelation
 df.new1_W = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
-xseq <- seq(from = 10, to = 35, length.out = 250)
+xseq <- seq(from = 5, to = 37, length.out = 250)
 # Create a sequence of temperatures from 10 to 35
 xdf1_W <- expand.grid(point = xseq, iteration = 1:nrow(df.new1_W))
 # Create a grid with point as each temperature, and iteration being
@@ -174,8 +174,8 @@ mean.xdf1_W$true_curve.inv <- true_curve.inv(xseq)
 # Plot the mean lifetime response
 plot1_mean_W <- ggplot(mean.xdf1_W, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -184,8 +184,8 @@ plot1_mean_W <- ggplot(mean.xdf1_W, aes(x = point)) +
 # Plot the median lifetime response
 plot1_med_W <- ggplot(mean.xdf1_W, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -194,8 +194,8 @@ plot1_med_W <- ggplot(mean.xdf1_W, aes(x = point)) +
 # Plot the mean mortality rate response
 plot1_mean.inv_W <- ggplot(mean.xdf1_W, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortlity Rate") +
@@ -203,8 +203,8 @@ plot1_mean.inv_W <- ggplot(mean.xdf1_W, aes(x = point)) +
 # Plot the median mortality rate response
 plot1_med.inv_W <- ggplot(mean.xdf1_W, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -226,17 +226,17 @@ for (i in 1:4) {
   x <- seq(min(Weibull_combined_vector1) - 50, max(Weibull_combined_vector1) + 1, length = 1000)
   # Create a histogram and store it in the list
   Weibull_hist_list1[[i]] <- hist(Weibull_combined_vector1, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                          xlab = "Values", col = "mintcream", border = "black", breaks = 10, freq = FALSE)
-  abline(v = Weibull_true_values[i], col = "darkmagenta", lwd = 2)
+                          xlab = "Values", col = plasma(12)[11], border = "black", breaks = 10, freq = FALSE)
+  abline(v = Weibull_true_values[i], col = plasma(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dexp(x, 0.5), col = "black", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
 
 }
@@ -463,7 +463,7 @@ for(i in 1:w){
 # Saved every fourth row to avoid autocorrelation
 df.new2_W = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
 # Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
+xseq <- seq(from = 5, to = 37, length.out = 250)
 # Create a grid with point as each temperature, and iteration being
 # the number of rows we selected from samp
 # The idea is to evaluate each row of df.new2_W as a function at each of those temperatures
@@ -496,8 +496,8 @@ mean.xdf2_W$true_curve.inv <- true_curve.inv(xseq)
 # Plot mean lifetime response
 plot2_mean_W <- ggplot(mean.xdf2_W, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -506,8 +506,8 @@ plot2_mean_W <- ggplot(mean.xdf2_W, aes(x = point)) +
 # Plot median lifetime response
 plot2_med_W <- ggplot(mean.xdf2_W, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -516,8 +516,8 @@ plot2_med_W <- ggplot(mean.xdf2_W, aes(x = point)) +
 # Plot mean mortality rate response
 plot2_mean.inv_W <- ggplot(mean.xdf2_W, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -525,8 +525,8 @@ plot2_mean.inv_W <- ggplot(mean.xdf2_W, aes(x = point)) +
 # Plot median mortality rate response
 plot2_med.inv_W <- ggplot(mean.xdf2_W, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -548,17 +548,17 @@ for (i in 1:4) {
   x <- seq(min(Weibull_combined_vector2) - 50, max(Weibull_combined_vector2) + 1, length = 1000)
   # Create a histogram and store it in the list
   Weibull_hist_list2[[i]] <- hist(Weibull_combined_vector2, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                          xlab = "Values", col = "mintcream", border = "black", breaks = 10, freq = FALSE)
-  abline(v = Weibull_true_values[i], col = "darkmagenta", lwd = 2)
+                          xlab = "Values", col = plasma(12)[11], border = "black", breaks = 10, freq = FALSE)
+  abline(v = Weibull_true_values[i], col = plasma(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dexp(x, 0.5), col = "black", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
  
 }
@@ -783,7 +783,7 @@ for(i in 1:w){
 # Saved every fourth row to avoid autocorrelation
 df.new3_W = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
 # Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
+xseq <- seq(from = 5, to = 37, length.out = 250)
 # Create a grid with point as each temperature, and iteration being
 # the number of rows we selected from samp
 # The idea is to evaluate each row of df.new3_W as a function at each of those temperatures
@@ -816,8 +816,8 @@ mean.xdf3_W$true_curve.inv <- true_curve.inv(xseq)
 # Plot mean lifetime response
 plot3_mean_W <- ggplot(mean.xdf3_W, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -826,8 +826,8 @@ plot3_mean_W <- ggplot(mean.xdf3_W, aes(x = point)) +
 # Plot median lifetime response
 plot3_med_W <- ggplot(mean.xdf3_W, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -836,8 +836,8 @@ plot3_med_W <- ggplot(mean.xdf3_W, aes(x = point)) +
 # Plot mean mortality rate response
 plot3_mean.inv_W <- ggplot(mean.xdf3_W, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -846,8 +846,8 @@ plot3_mean.inv_W <- ggplot(mean.xdf3_W, aes(x = point)) +
 # Plot median mortality rate response
 plot3_med.inv_W <- ggplot(mean.xdf3_W, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -872,20 +872,20 @@ for (i in 1:5) {
   x <- seq(min(Weibull_combined_vector3) - 1, max(Weibull_combined_vector3) + 1, length = 1000)
   # Create a histogram and store it in the list
   Weibull_hist_list3[[i]] <- hist(Weibull_combined_vector3, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                          xlab = "Values", col = "mintcream", border = "black", breaks = 10, freq = FALSE)
-  abline(v = Weibull_true_values[i], col = "darkmagenta", lwd = 2)
+                          xlab = "Values", col = plasma(12)[11], border = "black", breaks = 10, freq = FALSE)
+  abline(v = Weibull_true_values[i], col = plasma(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dexp(x, 0.5), col = "black", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 15000), col = "purple", lty = 2, lwd = 2)
+    lines(x, dexp(x, 15000), col = plasma(12)[6], lty = 2, lwd = 2)
   }
 }
 
@@ -1049,7 +1049,8 @@ for(i in 1:w){
   la ~ dnorm(0, 1/10) 
   b ~ dexp(0.5) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
-  sig2 ~ dexp(250)
+  sig ~ dexp(0.5)
+  sig2 <- sig^2
   tau <- 1/sig2
   # Likelihood
   for (i in 1:N.obs){
@@ -1059,13 +1060,13 @@ for(i in 1:w){
 }", file = "Weibull_mean_inv_lambda.txt")
   
   # Settings
-  parameters <- c("la", "b", "c", "sig2")
+  parameters <- c("la", "b", "c", "sig")
   inits <- function(){list(
     # a in log space
     la = log(0.005), 
     b = 0.4, 
     c = 1.5, 
-    sig2 = 2
+    sig = 2
   )}
   ni <- 60000 
   nb <- 30000 
@@ -1121,7 +1122,7 @@ for(i in 1:w){
 # Saved every fourth row to avoid autocorrelation
 df.new4_W = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
 # Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
+xseq <- seq(from = 5, to = 37, length.out = 250)
 # Create a grid with point as each temperature, and iteration being
 # the number of rows we selected from samp
 # The idea is to evaluate each row of df.new4_W as a function at each of those temperatures
@@ -1154,8 +1155,8 @@ mean.xdf4_W$true_curve.inv <- true_curve.inv(xseq)
 # Plot mean lifetime response
 plot4_mean_W <- ggplot(mean.xdf4_W, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1164,8 +1165,8 @@ plot4_mean_W <- ggplot(mean.xdf4_W, aes(x = point)) +
 # Plot median lifetime response
 plot4_med_W <- ggplot(mean.xdf4_W, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1174,8 +1175,8 @@ plot4_med_W <- ggplot(mean.xdf4_W, aes(x = point)) +
 # Plot mean mortality rate response
 plot4_mean.inv_W <- ggplot(mean.xdf4_W, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1184,8 +1185,8 @@ plot4_mean.inv_W <- ggplot(mean.xdf4_W, aes(x = point)) +
 # Plot median mortality rate response
 plot4_med.inv_W <- ggplot(mean.xdf4_W, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1209,20 +1210,20 @@ for (i in 1:5) {
   x <- seq(min(Weibull_combined_vector4) - 1, max(Weibull_combined_vector4) + 1, length = 1000)
   # Create a histogram and store it in the list
   Weibull_hist_list4[[i]] <- hist(Weibull_combined_vector4, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                          xlab = "Values", col = "mintcream", border = "black", breaks = 10, freq = FALSE)
-  abline(v = Weibull_true_values[i], col = "darkmagenta", lwd = 2)
+                          xlab = "Values", col = plasma(12)[11], border = "black", breaks = 10, freq = FALSE)
+  abline(v = Weibull_true_values[i], col = plasma(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dexp(x, 0.5), col = "black", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 250), col = "purple", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
 }
 
@@ -1386,7 +1387,8 @@ for(i in 1:w){
   la ~ dnorm(0, 1/10) 
   b ~ dexp(0.5) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
-  sig2 ~ dexp(150)
+  sig ~ dexp(0.5)
+  sig2 <- sig^2
   tau <- 1/sig2
   # Likelihood
   for (i in 1:N.obs){
@@ -1395,13 +1397,13 @@ for(i in 1:w){
   }
 }", file = "Weibull_inv_mean_lambda.txt")
   # Settings
-  parameters <- c("la", "b", "c", "sig2")
+  parameters <- c("la", "b", "c", "sig")
   inits <- function(){list(
     # a in log space
     la = log(0.005), 
     b = 0.4, 
     c = 1.5, 
-    sig2 = 2
+    sig = 2
   )}
   ni <- 60000 
   nb <- 30000 
@@ -1457,7 +1459,7 @@ for(i in 1:w){
 # Saved every fourth row to avoid autocorrelation
 df.new5_W = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
 # Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
+xseq <- seq(from = 5, to = 37, length.out = 250)
 # Create a grid with point as each temperature, and iteration being
 # the number of rows we selected from samp
 # The idea is to evaluate each row of df.new5_W as a function at each of those temperatures
@@ -1490,8 +1492,8 @@ mean.xdf5_W$true_curve.inv <- true_curve.inv(xseq)
 # Plot mean lifetime response
 plot5_mean_W <- ggplot(mean.xdf5_W, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1500,8 +1502,8 @@ plot5_mean_W <- ggplot(mean.xdf5_W, aes(x = point)) +
 # Plot median lifetime response
 plot5_med_W <- ggplot(mean.xdf5_W, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1510,8 +1512,8 @@ plot5_med_W <- ggplot(mean.xdf5_W, aes(x = point)) +
 # Plot mean mortality rate response
 plot5_mean.inv_W <- ggplot(mean.xdf5_W, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
   # geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1520,8 +1522,8 @@ plot5_mean.inv_W <- ggplot(mean.xdf5_W, aes(x = point)) +
 # Plot median mortality rate response
 plot5_med.inv_W <- ggplot(mean.xdf5_W, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
   # geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1544,20 +1546,20 @@ for (i in 1:5) {
   x <- seq(min(Weibull_combined_vector5) - 1, max(Weibull_combined_vector5) + 1, length = 1000)
   # Create a histogram and store it in the list
   Weibull_hist_list5[[i]] <- hist(Weibull_combined_vector5, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                          xlab = "Values", col = "mintcream", border = "black", breaks = 10, freq = FALSE)
-  abline(v = Weibull_true_values[i], col = "darkmagenta", lwd = 2)
+                          xlab = "Values", col = plasma(12)[11], border = "black", breaks = 10, freq = FALSE)
+  abline(v = Weibull_true_values[i], col = plasma(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dexp(x, 0.5), col = "black", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 150), col = "purple", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
 }
 
@@ -1782,7 +1784,7 @@ for(i in 1:w){
 # Saved every fourth row to avoid autocorrelation
 df.new6_W = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
 # Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
+xseq <- seq(from = 5, to = 37, length.out = 250)
 # Create a grid with point as each temperature, and iteration being
 # the number of rows we selected from samp
 # The idea is to evaluate each row of df.new6_W as a function at each of those temperatures
@@ -1814,8 +1816,8 @@ mean.xdf6_W$true_curve.inv <- true_curve.inv(xseq)
 # Plot mean lifetime response
 plot6_mean_W <- ggplot(mean.xdf6_W, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1824,8 +1826,8 @@ plot6_mean_W <- ggplot(mean.xdf6_W, aes(x = point)) +
 # Plot median lifetime response
 plot6_med_W <- ggplot(mean.xdf6_W, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
   geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1834,8 +1836,8 @@ plot6_med_W <- ggplot(mean.xdf6_W, aes(x = point)) +
 # Plot mean mortality rate response
 plot6_mean.inv_W <- ggplot(mean.xdf6_W, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
   # geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1844,8 +1846,8 @@ plot6_mean.inv_W <- ggplot(mean.xdf6_W, aes(x = point)) +
 # Plot median mortality rate response
 plot6_med.inv_W <- ggplot(mean.xdf6_W, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "darkorange1", alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = "hotpink", linetype = "dashed") +
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
   # geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1868,20 +1870,20 @@ for (i in 1:5) {
   x <- seq(min(Weibull_combined_vector6) - 1, max(Weibull_combined_vector6) + 1, length = 1000)
   # Create a histogram and store it in the list
   Weibull_hist_list6[[i]] <- hist(Weibull_combined_vector6, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                                    xlab = "Values", col = "mintcream", border = "black", breaks = 10, freq = FALSE)
-  abline(v = Weibull_true_values[i], col = "darkmagenta", lwd = 2)
+                                    xlab = "Values", col = plasma(12)[11], border = "black", breaks = 10, freq = FALSE)
+  abline(v = Weibull_true_values[i], col = plasma(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dexp(x, 0.5), col = "black", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 0.001), col = "purple", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.001), col = plasma(12)[6], lty = 2, lwd = 2)
   }
 }
 
