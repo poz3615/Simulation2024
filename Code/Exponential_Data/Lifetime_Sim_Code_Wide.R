@@ -133,7 +133,7 @@ for(i in 1:b){
 # Saved every fourth row to avoid autocorrelation
 df.new1 = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
 # Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
+xseq <- seq(from = 5, to = 37, length.out = 250)
 # Create a grid with point as each temperature, and iteration being
 # the number of rows we selected from samp
 # The idea is to evaluate each row of df.new1 as a function at each of those temperatures
@@ -167,8 +167,8 @@ mean.xdf1$true_curve.inv <- true_curve.inv(xseq)
 # Plot the mean mortality rate response
 plot1_mean <- ggplot(mean.xdf1, aes(x = point)) + 
 geom_line(aes(y = avg.value), color = "black") + 
-geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
+geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
+geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
 labs(title = "Mean Curve with Interval Bands and True Curve", 
      x = "Temperature", 
      y = "Mortality Rate") + 
@@ -176,8 +176,8 @@ theme_minimal()
 # Plot the median mortality rate response
 plot1_med <- ggplot(mean.xdf1, aes(x = point)) + 
 geom_line(aes(y = med.value), color = "black") + 
-geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
+geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
+geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
 labs(title = "Median Curve with Interval Bands and True Curve", 
      x = "Temperature", 
      y = "Mortality Rate") + 
@@ -185,8 +185,8 @@ theme_minimal()
 # Plot the mean lifetime response
 plot1_mean.inv <- ggplot(mean.xdf1, aes(x = point)) + 
 geom_line(aes(y = avg.value.inv), color = "black") + 
-geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
+geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
+geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
 geom_point(aes(x = T, y = trait), data = data.raw) + 
 labs(title = "Mean Curve with Interval Bands and True Curve", 
      x = "Temperature", 
@@ -195,8 +195,8 @@ theme_minimal()
 # Plot the median lifetime response
 plot1_med.inv <- ggplot(mean.xdf1, aes(x = point)) + 
 geom_line(aes(y = med.value.inv), color = "black") + 
-geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
+geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
+geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
 geom_point(aes(x = T, y = trait), data = data.raw) + 
 labs(title = "Median Curve with Interval Bands and True Curve", 
      x = "Temperature", 
@@ -205,7 +205,8 @@ theme_minimal()
 
 gridExtra::grid.arrange(plot1_mean, plot1_med, nrow = 1)
 gridExtra::grid.arrange(plot1_mean.inv, plot1_med.inv, nrow = 1)
-
+ggsave("mortality_hdi.png", plot = plot1_mean)
+ggsave("lifetime_hdi.png", plot = plot1_mean.inv)
 
 # Assign true values 
 # Create a list to store histograms of the posterior distribution of each parameter
@@ -223,19 +224,20 @@ for (i in 1:4) {
   x <- seq(min(combined_vector1)-50, max(combined_vector1) + 1, length = 1000)
   # Create a histogram and store it in the list
   hist_list1[[i]] <- hist(combined_vector1, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                        xlab = "Values", col = "lightblue", border = "black", breaks = 10, freq = FALSE)
-  abline(v = true_values[i], col = "red", lwd = 2)
+                          xlab = "Values", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
+  abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
-    }
-  if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "black", lty = 2, lwd = 2)
-    }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
-    }
+    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
+  if(i == 2){
+    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
+  }
+  if(i == 3){
+    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
+  }
+  
+}
 
 
 proportions_list_a1 <- lapply(param_list1[[1]], function(matrix) {
@@ -456,7 +458,7 @@ for(i in 1:b){
 # Saved every fourth row to avoid autocorrelation
 df.new2 = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
 # Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
+xseq <- seq(from = 5, to = 37, length.out = 250)
 # Create a grid with point as each temperature, and iteration being
 # the number of rows we selected from samp
 # The idea is to evaluate each row of df.new2 as a function at each of those temperatures
@@ -490,16 +492,16 @@ mean.xdf2$true_curve.inv <- true_curve.inv(xseq)
 # Plot mean mortality rate response
 plot2_mean <- ggplot(mean.xdf2, aes(x = point)) + 
 geom_line(aes(y = avg.value), color = "black") + 
-geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
+geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
+geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
 labs(title = "Mean Curve with Interval Bands and True Curve", 
      x = "Temperature", 
      y = "Mortality Rate") + 
 theme_minimal()
 plot2_med <- ggplot(mean.xdf2, aes(x = point)) + 
 geom_line(aes(y = med.value), color = "black") + 
-geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
+geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
+geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
 labs(title = "Median Curve with Interval Bands and True Curve", 
      x = "Temperature", 
      y = "Mortality Rate") + 
@@ -507,8 +509,8 @@ theme_minimal()
 # Plot mean lifetime response
 plot2_mean.inv <- ggplot(mean.xdf2, aes(x = point)) + 
 geom_line(aes(y = avg.value.inv), color = "black") + 
-geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
+geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
+geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
 geom_point(aes(x = T, y = trait), data = data.raw) + 
 labs(title = "Mean Curve with Interval Bands and True Curve", 
      x = "Temperature", 
@@ -517,8 +519,8 @@ theme_minimal()
 # Plot median lifetime response
 plot2_med.inv <- ggplot(mean.xdf2, aes(x = point)) + 
 geom_line(aes(y = med.value.inv), color = "black") + 
-geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
+geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
+geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
 geom_point(aes(x = T, y = trait), data = data.raw) + 
 labs(title = "Median Curve with Interval Bands and True Curve", 
      x = "Temperature", 
@@ -543,17 +545,17 @@ for (i in 1:4) {
   x <- seq(min(combined_vector2)-50, max(combined_vector2) + 1, length = 1000)
   # Create a histogram and store it in the list
   hist_list2[[i]] <- hist(combined_vector2, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                        xlab = "Values", col = "lightblue", border = "black", breaks = 10, freq = FALSE)
-  abline(v = true_values[i], col = "red", lwd = 2)
+                        xlab = "Values", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
+  abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
     }
   if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "black", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
     }
   if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
     }
 
   }
@@ -780,7 +782,7 @@ for(i in 1:b){
 # Saved every fourth row to avoid autocorrelation
 df.new3 = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
 # Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
+xseq <- seq(from = 5, to = 37, length.out = 250)
 # Create a grid with point as each temperature, and iteration being
 # the number of rows we selected from samp
 # The idea is to evaluate each row of df.new3 as a function at each of those temperatures
@@ -814,8 +816,8 @@ mean.xdf3$true_curve.inv <- true_curve.inv(xseq)
 # Plot mean mortality rate response
 plot3_mean <- ggplot(mean.xdf3, aes(x = point)) + 
   geom_line(aes(y = avg.value), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
+  geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -824,8 +826,8 @@ plot3_mean <- ggplot(mean.xdf3, aes(x = point)) +
 # Plot median mortality rate response
 plot3_med <- ggplot(mean.xdf3, aes(x = point)) + 
   geom_line(aes(y = med.value), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
+  geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -834,8 +836,8 @@ plot3_med <- ggplot(mean.xdf3, aes(x = point)) +
 # Plot mean lifetime response
 plot3_mean.inv <- ggplot(mean.xdf3, aes(x = point)) + 
   geom_line(aes(y = avg.value.inv), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
+  geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -844,8 +846,8 @@ plot3_mean.inv <- ggplot(mean.xdf3, aes(x = point)) +
 # Plot median lifetime response
 plot3_med.inv <- ggplot(mean.xdf3, aes(x = point)) + 
   geom_line(aes(y = med.value.inv), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
+  geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -854,7 +856,8 @@ plot3_med.inv <- ggplot(mean.xdf3, aes(x = point)) +
 
 gridExtra::grid.arrange(plot3_mean, plot3_med, nrow = 1)
 gridExtra::grid.arrange(plot3_mean.inv, plot3_med.inv, nrow = 1)
-
+ggsave("inv_mortality_hdi.png", plot = plot3_mean)
+ggsave("inv_lifetime_hdi.png", plot = plot3_mean.inv)
 
 # Assign true values 
 # Create a list to store histograms of the posterior distribution of each parameter
@@ -871,20 +874,20 @@ for (i in 1:5) {
   x <- seq(min(combined_vector3)-1, max(combined_vector3) + 1, length = 1000)
   # Create a histogram and store it in the list
   hist_list3[[i]] <- hist(combined_vector3, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                          xlab = "Values", col = "lightblue", border = "black", breaks = 10, freq = FALSE)
-  abline(v = true_values[i], col = "red", lwd = 2)
+                          xlab = "Values", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
+  abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "black", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 4000), col = "purple", lty = 2, lwd = 2)
+    lines(x, dexp(x, 4000), col = rocket(12)[5], lty = 2, lwd = 2)
   }
 }
 
@@ -1046,7 +1049,7 @@ for(i in 1:b){
   la ~ dnorm(0, 1/10) 
   b.l ~ dnorm(0, 1/10) 
   c ~ dexp(0.5) # Has to be positive
-  sig ~ dexp(200)
+  sig ~ dexp(400)
   sig2 <- sig^2
   tau <- 1/sig2
   # Set epsilon to avoid negative or small values
@@ -1121,7 +1124,7 @@ for(i in 1:b){
 # Saved every fourth row to avoid autocorrelation
 df.new4 = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
 # Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
+xseq <- seq(from = 5, to = 37, length.out = 250)
 # Create a grid with point as each temperature, and iteration being
 # the number of rows we selected from samp
 # The idea is to evaluate each row of df.new4 as a function at each of those temperatures
@@ -1155,8 +1158,8 @@ mean.xdf4$true_curve.inv <- true_curve.inv(xseq)
 # Plot mean mortality rate response
 plot4_mean <- ggplot(mean.xdf4, aes(x = point)) + 
   geom_line(aes(y = avg.value), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
+  geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   #geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1165,8 +1168,8 @@ plot4_mean <- ggplot(mean.xdf4, aes(x = point)) +
 # Plot median mortality rate response
 plot4_med <- ggplot(mean.xdf4, aes(x = point)) + 
   geom_line(aes(y = med.value), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
+  geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   #geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1175,8 +1178,8 @@ plot4_med <- ggplot(mean.xdf4, aes(x = point)) +
 # Plot mean lifetime response
 plot4_mean.inv <- ggplot(mean.xdf4, aes(x = point)) + 
   geom_line(aes(y = avg.value.inv), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
+  geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1185,8 +1188,8 @@ plot4_mean.inv <- ggplot(mean.xdf4, aes(x = point)) +
 # Plot median lifetime response
 plot4_med.inv <- ggplot(mean.xdf4, aes(x = point)) + 
   geom_line(aes(y = med.value.inv), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
+  geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1209,20 +1212,20 @@ for (i in 1:5) {
   x <- seq(min(combined_vector4)-1, max(combined_vector4) + 1, length = 1000)
   # Create a histogram and store it in the list
   hist_list4[[i]] <- hist(combined_vector4, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                          xlab = "Values", col = "lightblue", border = "black", breaks = 10, freq = FALSE)
-  abline(v = true_values[i], col = "red", lwd = 2)
+                          xlab = "Values", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
+  abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "black", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 0.5), col = "purple", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
 }
 
@@ -1461,7 +1464,7 @@ for(i in 1:b){
 # Saved every fourth row to avoid autocorrelation
 df.new5 = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
 # Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
+xseq <- seq(from = 5, to = 37, length.out = 250)
 # Create a grid with point as each temperature, and iteration being
 # the number of rows we selected from samp
 # The idea is to evaluate each row of df.new5 as a function at each of those temperatures
@@ -1495,8 +1498,8 @@ mean.xdf5$true_curve.inv <- true_curve.inv(xseq)
 # Plot mean mortality rate response
 plot5_mean <- ggplot(mean.xdf5, aes(x = point)) + 
   geom_line(aes(y = avg.value), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
+  geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1505,8 +1508,8 @@ plot5_mean <- ggplot(mean.xdf5, aes(x = point)) +
 # Plot median mortality rate response
 plot5_med <- ggplot(mean.xdf5, aes(x = point)) + 
   geom_line(aes(y = med.value), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
+  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
+  geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1515,8 +1518,8 @@ plot5_med <- ggplot(mean.xdf5, aes(x = point)) +
 # Plot mean lifetime response
 plot5_mean.inv <- ggplot(mean.xdf5, aes(x = point)) + 
   geom_line(aes(y = avg.value.inv), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = 1/true_curve), color = "deepskyblue2", linetype = "dashed") + 
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
+  geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1525,8 +1528,8 @@ plot5_mean.inv <- ggplot(mean.xdf5, aes(x = point)) +
 # Plot median lifetime response
 plot5_med.inv <- ggplot(mean.xdf5, aes(x = point)) + 
   geom_line(aes(y = med.value.inv), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = 1/true_curve), color = "deepskyblue2", linetype = "dashed") + 
+  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
+  geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1549,20 +1552,20 @@ for (i in 1:5) {
   x <- seq(min(combined_vector5)-1, max(combined_vector5) + 1, length = 1000)
   # Create a histogram and store it in the list
   hist_list5[[i]] <- hist(combined_vector5, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                          xlab = "Values", col = "lightblue", border = "black", breaks = 10, freq = FALSE)
-  abline(v = true_values[i], col = "red", lwd = 2)
+                          xlab = "Values", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
+  abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
   # Add prior based on which parameter 
   if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "black", lty = 2, lwd = 2)
+    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 400), col = "purple", lty = 2, lwd = 2)
+    lines(x, dexp(x, 400), col = rocket(12)[5], lty = 2, lwd = 2)
   }
 }
 
@@ -1680,1031 +1683,5 @@ save(param_list5,
      rmse_values_c_lambda_inv_mean,
      tab.inv.mean.lambda,
      file="inverse_mean_exponential.RData")
-
-
-
-##########################################Inverse Lambda NOT TRUNCATED #############################################
-
-# Create list of matrices to store parameter summary statistics
-param_list3_notrunc <- vector("list", length = 5)
-for (i in 1:5) {
-  # Initialize the inner list
-  inner_list3_notrunc <- vector("list", length = b)
-  # Populate the inner list
-  for (j in 1:b) {
-    # Initialize a 5x4 matrix
-    matrix_data3_notrunc <- matrix(0, nrow = 5, ncol = 4)
-    inner_list3_notrunc[[j]] <- matrix_data3_notrunc
-  }
-  param_list3_notrunc[[i]] <- inner_list3_notrunc
-}
-# Create JAGS model for each of the 100 datasets
-for(i in 1:b){
-  if (i %% 10 == 0) {
-    print(i)
-  }
-  # Model
-  sink("inv_lambda_nt.txt")
-  cat("model{
-  # Priors
-  # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) 
-  b.l ~ dnorm(0, 1/10) 
-  c ~ dexp(0.5) # Has to be positive
-  tau ~ dexp(0.1)
-  # Set epsilon to avoid negative or small values
-  epsilon <- 0.01
-  # Likelihood
-  for (i in 1:N.obs){
-    mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) * ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) > epsilon) + ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)<= epsilon) * epsilon
-    trait[i] ~ dnorm(mu[i], tau)
-  }
-}", file = "inv_lambda_nt.txt")
-  
-  # Settings
-  parameters <- c("la", "b.l", "c", "tau")
-  inits <- function(){list(
-    # a and b in log space
-    la = log(0.001), 
-    b.l = log(0.05), 
-    c = 0.6, 
-    tau = 0.2
-  )}
-  ni <- 60000 
-  nb <- 30000 
-  nt <- 8 
-  nc <- 5 
-  data.raw <-  data.list[[i]]
-  data <- data.list[[i]] 
-  trait <- 1/(data$trait)
-  N.obs <- length(trait)
-  temp <- data$T
-  
-  # List data
-  jag.data <- list(trait = trait, N.obs = N.obs, temp = temp)
-  
-  # Run model  
-  mod.fit <- jags(data = jag.data, inits = inits, parameters.to.save = parameters, 
-                  model.file = "inv_lambda_nt.txt", n.thin = nt, n.chains = nc, n.burnin = nb, 
-                  n.iter = ni, DIC = T, working.directory = getwd())
-  # Turn into mcmc object
-  mod.fit.mcmc <- as.mcmc(mod.fit) 
-  closeAllConnections()
-  # Turn into mcmc list
-  samp <- as.mcmc.list(mod.fit.mcmc)
-  for(j in 1:nc){
-    # For each chain, store mean, median, and hdi bounds for a in log space
-    # Statistics are all in a different column, each row is a chain
-    # 100 matrices of 5x4 for each parameter
-    param_list3_notrunc[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    param_list3_notrunc[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    param_list3_notrunc[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    param_list3_notrunc[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b in log space
-    param_list3_notrunc[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    param_list3_notrunc[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    param_list3_notrunc[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    param_list3_notrunc[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
-    # For each chain, store mean, median, and hdi bounds for c
-    param_list3_notrunc[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    param_list3_notrunc[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    param_list3_notrunc[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    param_list3_notrunc[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
-    # For each chain, store mean, median, and hdi bounds for deviance
-    param_list3_notrunc[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    param_list3_notrunc[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    param_list3_notrunc[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    param_list3_notrunc[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
-    # For each chain, store mean, median, and hdi bounds for tau
-    param_list3_notrunc[[5]][[i]][j, 1] <- mean(samp[[j]][, 5])
-    param_list3_notrunc[[5]][[i]][j, 2] <- median(samp[[j]][, 5])
-    param_list3_notrunc[[5]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
-    param_list3_notrunc[[5]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
-  }
-  
-  
-}
-# Take samp, the mcmc list, chain 1 and save every fourth row
-# Saved every fourth row to avoid autocorrelation
-df.new3.NT = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
-# Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
-# Create a grid with point as each temperature, and iteration being
-# the number of rows we selected from samp
-# The idea is to evaluate each row of df.new3.NT as a function at each of those temperatures
-xdf3.NT <- expand.grid(point = xseq, iteration = 1:nrow(df.new3.NT))
-
-# Apply the quadratic equation for each combination
-xdf3.NT$value <- apply(xdf3.NT, 1, function(row) {
-  i <- row["iteration"]
-  location <- row["point"]
-  exp(df.new3.NT[i, 4]) * location^2 - exp(df.new3.NT[i, 1]) * location + df.new3.NT[i, 2]
-})
-# Apply truncation so that if the evaluated function gives a value smaller than epsilon,
-# it gets truncated to epsilon
-xdf3.NT <-  xdf3.NT|> mutate(trunc.eval = ifelse(xdf3.NT$value > epsilon, xdf3.NT$value, epsilon), 
-                           trunc.inv = 1/trunc.eval)
-# At each temperature point, summarize to get the mean, median, and hdi bounds
-# of the evaluated function
-mean.xdf3.NT <- xdf3.NT |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                                      avg.value = mean(trunc.eval), 
-                                                      med.value.inv = median(trunc.inv), 
-                                                      med.value = median(trunc.eval), 
-                                                      lower.hdi.inv = hdi(trunc.inv)[1], 
-                                                      upper.hdi.inv = hdi(trunc.inv)[2], 
-                                                      lower.hdi = hdi(trunc.eval)[1], 
-                                                      upper.hdi = hdi(trunc.eval)[2])
-# Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) 1/(true.a * x^2 - true.b * x + true.c)
-true_curve <- function(x) (true.a * x^2 - true.b * x + true.c)
-mean.xdf3.NT$true_curve <- true_curve(xseq)
-mean.xdf3.NT$true_curve.inv <- true_curve.inv(xseq)
-# Plot mean mortality rate response
-plot3_mean_NT <- ggplot(mean.xdf3.NT, aes(x = point)) + 
-  geom_line(aes(y = avg.value), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
-  # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
-       y = "Mortality Rate") + 
-  theme_minimal()
-# Plot median mortality rate response
-plot3_med_NT <- ggplot(mean.xdf3.NT, aes(x = point)) + 
-  geom_line(aes(y = med.value), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
-  # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
-  labs(title = "Median Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
-       y = "Mortality Rate") + 
-  theme_minimal()
-# Plot mean lifetime response
-plot3_mean.inv_NT <- ggplot(mean.xdf3.NT, aes(x = point)) + 
-  geom_line(aes(y = avg.value.inv), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
-  geom_point(aes(x = T, y = trait), data = data.raw) + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
-       y = "Lifetime") + 
-  theme_minimal()
-# Plot median lifetime response
-plot3_med.inv_NT <- ggplot(mean.xdf3.NT, aes(x = point)) + 
-  geom_line(aes(y = med.value.inv), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
-  geom_point(aes(x = T, y = trait), data = data.raw) + 
-  labs(title = "Median Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
-       y = "Lifetime") + 
-  theme_minimal()
-
-gridExtra::grid.arrange(plot3_mean_NT, plot3_med_NT, nrow = 1)
-gridExtra::grid.arrange(plot3_mean.inv_NT, plot3_med.inv_NT, nrow = 1)
-
-# Assign true values 
-# Create a list to store histograms of the posterior distribution of each parameter
-true_values <- c(log(true.a), log(true.b), true.c, NA, NA)
-hist_list3_notrunc <- vector("list", length = 5)
-par(mfrow = c(2, 3))
-for (i in 1:5) {
-  # Extract the first column from each matrix in param_list[[i]]
-  # This column is the mean of each param for each chain
-  first_column_list3_notrunc <- lapply(param_list3_notrunc[[i]], function(matrix) matrix[, 1])
-  # Combine the vectors into a single vector
-  combined_vector3_notrunc <- unlist(first_column_list3_notrunc)
-  # Sequence of x values to overlay prior distribution onto histograms
-  x <- seq(min(combined_vector3_notrunc)-1, max(combined_vector3_notrunc) + 1, length = 1000)
-  # Create a histogram and store it in the list
-  hist_list3_notrunc[[i]] <- hist(combined_vector3_notrunc, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                                  xlab = "Values", col = "lightblue", border = "black", breaks = 10, freq = FALSE)
-  abline(v = true_values[i], col = "red", lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "black", lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.1), col = "purple", lty = 2, lwd = 2)
-  }
-  
-}
-
-
-proportions_list_a3_notrunc <-  lapply(param_list3_notrunc[[1]], function(matrix) {
-  # Extract columns for mean, lower hdi, and upper hdi of posterior samples for a
-  col2 <- matrix[, 1]
-  col3 <- matrix[, 3]
-  col4 <- matrix[, 4]
-  # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.a) > col3 & log(true.a) < col4)
-  return(proportion)
-  })
-# Calculate average proportion of coverage for all 100 models
-mean(unlist(proportions_list_a3_notrunc))
-
-proportions_list_b3_notrunc <-  lapply(param_list3_notrunc[[2]], function(matrix) {
-  # Extract columns for mean, lower hdi, and upper hdi of posterior samples for b
-  col2 <- matrix[, 1]
-  col3 <- matrix[, 3]
-  col4 <- matrix[, 4]
-  # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.b) > col3 & log(true.b) < col4)
-  return(proportion)
-  })
-# Calculate average proportion of coverage for all 100 models
-mean(unlist(proportions_list_b3_notrunc))
-
-proportions_list_c3_notrunc <-  lapply(param_list3_notrunc[[3]], function(matrix) {
-  # Extract columns for mean, lower hdi, and upper hdi of posterior samples for c
-  col2 <- matrix[, 1]
-  col3 <- matrix[, 3]
-  col4 <- matrix[, 4]
-  # Calculate average proportion of coverage for each model
-  proportion <- mean(true.c > col3 & true.c < col4)
-  return(proportion)
-  })
-# Calculate average proportion of coverage for all 100 models
-mean(unlist(proportions_list_c3_notrunc))
-
-calculate_rmse_a_lambda_inv_notrunc <- function(mat) {
-  # Get the first column, which is posterior mean of the chain
-  observed <- mat[, 1]  
-  # True values
-  predicted <- rep(log(true.a), length(observed))  
-  # Calculate RMSE
-  rmse <- sqrt(mean((observed - predicted)^2))
-  return(rmse)
-  }
-
-calculate_rmse_b_lambda_inv_notrunc <- function(mat) {
-  # Get the first column, which is posterior mean of the chain
-  observed <- mat[, 1]  
-  # True values
-  predicted <- rep(log(true.b), length(observed))  
-  # Calculate RMSE
-  rmse <- sqrt(mean((observed - predicted)^2))
-  return(rmse)
-  }
-
-calculate_rmse_c_lambda_inv_notrunc <- function(mat) {
-  # Get the first column, which is posterior mean of the chain
-  observed <- mat[, 1]  
-  # True values
-  predicted <- rep(true.c, length(observed))  
-  # Calculate RMSE
-  rmse <- sqrt(mean((observed - predicted)^2))
-  return(rmse)
-  }
-
-
-# Apply the function to each element in the list
-rmse_values_a_lambda_inv_notrunc <- sapply(param_list3_notrunc[[1]], calculate_rmse_a_lambda_inv_notrunc)
-rmse_values_b_lambda_inv_notrunc <- sapply(param_list3_notrunc[[2]], calculate_rmse_b_lambda_inv_notrunc)
-rmse_values_c_lambda_inv_notrunc <- sapply(param_list3_notrunc[[3]], calculate_rmse_c_lambda_inv_notrunc)
-
-# Create a table with true value, posterior mean,
-# lower and upper hdi of posterior mean, coverage, and RMSE
-tab.inv.lambda_notrunc <- matrix(0, nrow = 3, ncol = 6)
-row.names(tab.inv.lambda_notrunc) <- c("a", "b", "c")
-colnames(tab.inv.lambda_notrunc) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
-tab.inv.lambda_notrunc[1, 1] <- true.a
-tab.inv.lambda_notrunc[2, 1] <- true.b
-tab.inv.lambda_notrunc[3, 1] <- true.c
-tab.inv.lambda_notrunc[1, 2] <- exp(mean(unlist(lapply(param_list3_notrunc[[1]], function(matrix) matrix[, 1]))))
-tab.inv.lambda_notrunc[2, 2] <- exp(mean(unlist(lapply(param_list3_notrunc[[2]], function(matrix) matrix[, 1]))))
-tab.inv.lambda_notrunc[3, 2] <- mean(unlist(lapply(param_list3_notrunc[[3]], function(matrix) matrix[, 1])))
-tab.inv.lambda_notrunc[1, 3] <- exp(hdi(unlist(lapply(param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[1])
-tab.inv.lambda_notrunc[2, 3] <- exp(hdi(unlist(lapply(param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[1])
-tab.inv.lambda_notrunc[3, 3] <- hdi(unlist(lapply(param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[1]
-tab.inv.lambda_notrunc[1, 4] <- exp(hdi(unlist(lapply(param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[2])
-tab.inv.lambda_notrunc[2, 4] <- exp(hdi(unlist(lapply(param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[2])
-tab.inv.lambda_notrunc[3, 4] <- hdi(unlist(lapply(param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[2]
-tab.inv.lambda_notrunc[1, 5] <- mean(unlist(proportions_list_a3_notrunc))
-tab.inv.lambda_notrunc[2, 5] <- mean(unlist(proportions_list_b3_notrunc))
-tab.inv.lambda_notrunc[3, 5] <- mean(unlist(proportions_list_c3_notrunc))
-tab.inv.lambda_notrunc[1, 6] <- mean(rmse_values_a_lambda_inv_notrunc)
-tab.inv.lambda_notrunc[2, 6] <- mean(rmse_values_b_lambda_inv_notrunc)
-tab.inv.lambda_notrunc[3, 6] <- mean(rmse_values_c_lambda_inv_notrunc)
-
-save(param_list3_notrunc,
-     xdf3.NT,
-     df.new3.NT,
-     mean.xdf3.NT,
-     hist_list3_notrunc,
-     plot3_mean_NT, 
-     plot3_med_NT,
-     plot3_mean.inv_NT, 
-     plot3_med.inv_NT,
-     proportions_list_a3_notrunc,
-     proportions_list_b3_notrunc,
-     proportions_list_c3_notrunc,
-     rmse_values_a_lambda_inv_notrunc,
-     rmse_values_b_lambda_inv_notrunc,
-     rmse_values_c_lambda_inv_notrunc,
-     tab.inv.lambda_notrunc,
-     file="inverse_notrunc.RData")
-
-##########################################Mean Inverse Lambda NOT TRUNCATED #############################################
-
-# Create list of matrices to store parameter summary statistics
-param_list4_notrunc <- vector("list", length = 5)
-for (i in 1:5) {
-  # Initialize the inner list
-  inner_list4_notrunc <- vector("list", length = b)
-  # Populate the inner list
-  for (j in 1:b) {
-    # Initialize a 5x4 matrix
-    matrix_data4_notrunc <- matrix(0, nrow = 5, ncol = 4)
-    inner_list4_notrunc[[j]] <- matrix_data4_notrunc
-  }
-  param_list4_notrunc[[i]] <- inner_list4_notrunc
-}
-# Create JAGS model for each of the 100 datasets
-for(i in 1:b){
-  if (i %% 10 == 0) {
-    print(i)
-  }
-  data.raw <- data.list[[i]]
-  data <- data.list[[i]] 
-  # Get 10 groups of 10, and calculate the means
-  group_means <- tapply(data$trait, data$T, function(x) {
-    split_values <- split(x, rep(1:10, each = 10))
-    means <- sapply(split_values, mean)
-    return(means)
-  })
-  df.mean <-  data.frame(
-    T = c(rep(10, 10), rep(17, 10), rep(21, 10), rep(25, 10), rep(32, 10)), # Extract T values as numeric
-    trait = unlist(group_means)  # Extract means and unlist the result
-  )
-  data <- df.mean
-  trait <- 1/(data$trait)
-  N.obs <- length(trait)
-  temp <- data$T
-  # Model
-  sink("mean_inv_lambda_nt.txt")
-  cat("model{
-  # Priors
-  # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) 
-  b.l ~ dnorm(0, 1/10) 
-  c ~ dexp(0.5) # Has to be positive
-  tau ~ dexp(0.5)
-  # Set epsilon to avoid negative or small values
-  epsilon <- 0.01
-  # Likelihood
-  for (i in 1:N.obs){
-    mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) * ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) > epsilon) + ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)<= epsilon) * epsilon
-    trait[i] ~ dnorm(mu[i], tau)
-  }
-}", file = "mean_inv_lambda_nt.txt")
-  
-  # Settings
-  parameters <- c("la", "b.l", "c", "tau")
-  inits <- function(){list(
-    # a and b in log space
-    la = log(0.001), 
-    b.l = log(0.05), 
-    c = 0.6, 
-    tau = 0.2
-  )}
-  ni <- 60000 
-  nb <- 30000 
-  nt <- 8 
-  nc <- 5 
-  
-  
-  # List data
-  jag.data <- list(trait = trait, N.obs = N.obs, temp = temp)
-  
-  # Run model  
-  mod.fit <- jags(data = jag.data, inits = inits, parameters.to.save = parameters, 
-                  model.file = "mean_inv_lambda_nt.txt", n.thin = nt, n.chains = nc, n.burnin = nb, 
-                  n.iter = ni, DIC = T, working.directory = getwd())
-  # Turn into mcmc object
-  mod.fit.mcmc <- as.mcmc(mod.fit) 
-  closeAllConnections()
-  # Turn into mcmc list
-  samp <- as.mcmc.list(mod.fit.mcmc)
-  for(j in 1:nc){
-    # For each chain, store mean, median, and hdi bounds for a in log space
-    # Statistics are all in a different column, each row is a chain
-    # 100 matrices of 5x4 for each parameter
-    param_list4_notrunc[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    param_list4_notrunc[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    param_list4_notrunc[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    param_list4_notrunc[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b in log space
-    param_list4_notrunc[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    param_list4_notrunc[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    param_list4_notrunc[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    param_list4_notrunc[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
-    # For each chain, store mean, median, and hdi bounds for c
-    param_list4_notrunc[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    param_list4_notrunc[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    param_list4_notrunc[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    param_list4_notrunc[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
-    # For each chain, store mean, median, and hdi bounds for deviance
-    param_list4_notrunc[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    param_list4_notrunc[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    param_list4_notrunc[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    param_list4_notrunc[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
-    # For each chain, store mean, median, and hdi bounds for tau
-    param_list4_notrunc[[5]][[i]][j, 1] <- mean(samp[[j]][, 5])
-    param_list4_notrunc[[5]][[i]][j, 2] <- median(samp[[j]][, 5])
-    param_list4_notrunc[[5]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
-    param_list4_notrunc[[5]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
-  }
-  
-  
-}
-# Take samp, the mcmc list, chain 1 and save every fourth row
-# Saved every fourth row to avoid autocorrelation
-df.new4.NT = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
-# Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
-# Create a grid with point as each temperature, and iteration being
-# the number of rows we selected from samp
-# The idea is to evaluate each row of df.new4.NT as a function at each of those temperatures
-xdf4.NT <- expand.grid(point = xseq, iteration = 1:nrow(df.new4.NT))
-
-# Apply the quadratic equation for each combination
-xdf4.NT$value <- apply(xdf4.NT, 1, function(row) {
-  i <- row["iteration"]
-  location <- row["point"]
-  exp(df.new4.NT[i, 4]) * location^2 - exp(df.new4.NT[i, 1]) * location + df.new4.NT[i, 2]
-})
-# Apply truncation so that if the evaluated function gives a value smaller than epsilon,
-# it gets truncated to epsilon
-xdf4.NT <-  xdf4.NT|> mutate(trunc.eval = ifelse(xdf4.NT$value > epsilon, xdf4.NT$value, epsilon), 
-                           trunc.inv = 1/trunc.eval)
-# At each temperature point, summarize to get the mean, median, and hdi bounds
-# of the evaluated function
-mean.xdf4.NT <- xdf4.NT |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                                      avg.value = mean(trunc.eval), 
-                                                      med.value.inv = median(trunc.inv), 
-                                                      med.value = median(trunc.eval), 
-                                                      lower.hdi.inv = hdi(trunc.inv)[1], 
-                                                      upper.hdi.inv = hdi(trunc.inv)[2], 
-                                                      lower.hdi = hdi(trunc.eval)[1], 
-                                                      upper.hdi = hdi(trunc.eval)[2])
-# Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) 1/(true.a * x^2 - true.b * x + true.c)
-true_curve <- function(x) (true.a * x^2 - true.b * x + true.c)
-mean.xdf4.NT$true_curve <- true_curve(xseq)
-mean.xdf4.NT$true_curve.inv <- true_curve.inv(xseq)
-# Plot mean mortality rate response
-plot4_mean_NT <- ggplot(mean.xdf4.NT, aes(x = point)) + 
-  geom_line(aes(y = avg.value), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
-  # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
-       y = "Mortality Rate") + 
-  theme_minimal()
-# Plot median mortality rate response
-plot4_med_NT <- ggplot(mean.xdf4.NT, aes(x = point)) + 
-  geom_line(aes(y = med.value), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
-  # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
-  labs(title = "Median Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
-       y = "Mortality Rate") + 
-  theme_minimal()
-# Plot mean lifetime response
-plot4_mean.inv_NT <- ggplot(mean.xdf4.NT, aes(x = point)) + 
-  geom_line(aes(y = avg.value.inv), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
-  geom_point(aes(x = T, y = trait), data = data.raw) + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
-       y = "Lifetime") + 
-  theme_minimal()
-# Plot median lifetime response
-plot4_med.inv_NT <- ggplot(mean.xdf4.NT, aes(x = point)) + 
-  geom_line(aes(y = med.value.inv), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
-  geom_point(aes(x = T, y = trait), data = data.raw) + 
-  labs(title = "Median Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
-       y = "Lifetime") + 
-  theme_minimal()
-
-gridExtra::grid.arrange(plot4_mean_NT, plot4_med_NT, nrow = 1)
-gridExtra::grid.arrange(plot4_mean.inv_NT, plot4_med.inv_NT, nrow = 1)
-
-
-# Assign true values 
-# Create a list to store histograms of the posterior distribution of each parameter
-hist_list4_notrunc <- vector("list", length = 4)
-par(mfrow = c(2, 3))
-for (i in 1:5) {
-  # Extract the first column from each matrix in param_list[[i]]
-  # This column is the mean of each param for each chain
-  first_column_list4_notrunc <- lapply(param_list4_notrunc[[i]], function(matrix) matrix[, 1])
-  # Combine the vectors into a single vector
-  combined_vector4_notrunc <- unlist(first_column_list4_notrunc)
-  # Sequence of x values to overlay prior distribution onto histograms
-  x <- seq(min(combined_vector4_notrunc)-1, max(combined_vector4_notrunc) + 1, length = 1000)
-  # Create a histogram and store it in the list
-  hist_list4_notrunc[[i]] <- hist(combined_vector4_notrunc, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                                  xlab = "Values", col = "lightblue", border = "black", breaks = 10, freq = FALSE)
-  abline(v = true_values[i], col = "red", lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "black", lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.5), col = "purple", lty = 2, lwd = 2)
-  }
-}
-
-
-proportions_list_a4_notrunc <-  lapply(param_list4_notrunc[[1]], function(matrix) {
-  # Extract columns for mean, lower hdi, and upper hdi of posterior samples for a
-  col2 <- matrix[, 1]
-  col3 <- matrix[, 3]
-  col4 <- matrix[, 4]
-  # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.a) > col3 & log(true.a) < col4)
-  return(proportion)
-  })
-# Calculate average proportion of coverage for all 100 models
-mean(unlist(proportions_list_a4_notrunc))
-
-proportions_list_b4_notrunc <-  lapply(param_list4_notrunc[[2]], function(matrix) {
-  # Extract columns for mean, lower hdi, and upper hdi of posterior samples for b
-  col2 <- matrix[, 1]
-  col3 <- matrix[, 3]
-  col4 <- matrix[, 4]
-  # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.b) > col3 & log(true.b) < col4)
-  return(proportion)
-  })
-# Calculate average proportion of coverage for all 100 models
-mean(unlist(proportions_list_b4_notrunc))
-
-proportions_list_c4_notrunc <-  lapply(param_list4_notrunc[[3]], function(matrix) {
-  # Extract columns for mean, lower hdi, and upper hdi of posterior samples for c
-  col2 <- matrix[, 1]
-  col3 <- matrix[, 3]
-  col4 <- matrix[, 4]
-  # Calculate average proportion of coverage for each model
-  proportion <- mean(true.c > col3 & true.c < col4)
-  return(proportion)
-  })
-# Calculate average proportion of coverage for all 100 models
-mean(unlist(proportions_list_c4_notrunc))
-
-calculate_rmse_a_lambda_mean_inv_notrunc <- function(mat) {
-  # Get the first column, which is posterior mean of the chain
-  observed <- mat[, 1]  
-  # True values
-  predicted <- rep(log(true.a), length(observed))  
-  # Calculate RMSE
-  rmse <- sqrt(mean((observed - predicted)^2))
-  return(rmse)
-  }
-
-calculate_rmse_b_lambda_mean_inv_notrunc <- function(mat) {
-  # Get the first column, which is posterior mean of the chain
-  observed <- mat[, 1]  
-  # True values
-  predicted <- rep(log(true.b), length(observed))  
-  # Calculate RMSE
-  rmse <- sqrt(mean((observed - predicted)^2))
-  return(rmse)
-  }
-
-calculate_rmse_c_lambda_mean_inv_notrunc <- function(mat) {
-  # Get the first column, which is posterior mean of the chain
-  observed <- mat[, 1]  
-  # True values
-  predicted <- rep(true.c, length(observed))  
-  # Calculate RMSE
-  rmse <- sqrt(mean((observed - predicted)^2))
-  return(rmse)
-  }
-
-
-# Apply the function to each element in the list
-rmse_values_a_lambda_mean_inv_notrunc <- sapply(param_list4_notrunc[[1]], calculate_rmse_a_lambda_mean_inv_notrunc)
-rmse_values_b_lambda_mean_inv_notrunc <- sapply(param_list4_notrunc[[2]], calculate_rmse_b_lambda_mean_inv_notrunc)
-rmse_values_c_lambda_mean_inv_notrunc <- sapply(param_list4_notrunc[[3]], calculate_rmse_c_lambda_mean_inv_notrunc)
-
-# Create a table with true value, posterior mean,
-# lower and upper hdi of posterior mean, coverage, and RMSE
-tab.mean.inv.lambda_notrunc <- matrix(0, nrow = 3, ncol = 6)
-row.names(tab.mean.inv.lambda_notrunc) <- c("a", "b", "c")
-colnames(tab.mean.inv.lambda_notrunc) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
-tab.mean.inv.lambda_notrunc[1, 1] <- true.a
-tab.mean.inv.lambda_notrunc[2, 1] <- true.b
-tab.mean.inv.lambda_notrunc[3, 1] <- true.c
-tab.mean.inv.lambda_notrunc[1, 2] <- exp(mean(unlist(lapply(param_list4_notrunc[[1]], function(matrix) matrix[, 1]))))
-tab.mean.inv.lambda_notrunc[2, 2] <- exp(mean(unlist(lapply(param_list4_notrunc[[2]], function(matrix) matrix[, 1]))))
-tab.mean.inv.lambda_notrunc[3, 2] <- mean(unlist(lapply(param_list4_notrunc[[3]], function(matrix) matrix[, 1])))
-tab.mean.inv.lambda_notrunc[1, 3] <- exp(hdi(unlist(lapply(param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[1])
-tab.mean.inv.lambda_notrunc[2, 3] <- exp(hdi(unlist(lapply(param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[1])
-tab.mean.inv.lambda_notrunc[3, 3] <- hdi(unlist(lapply(param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[1]
-tab.mean.inv.lambda_notrunc[1, 4] <- exp(hdi(unlist(lapply(param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[2])
-tab.mean.inv.lambda_notrunc[2, 4] <- exp(hdi(unlist(lapply(param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[2])
-tab.mean.inv.lambda_notrunc[3, 4] <- hdi(unlist(lapply(param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[2]
-tab.mean.inv.lambda_notrunc[1, 5] <- mean(unlist(proportions_list_a4_notrunc))
-tab.mean.inv.lambda_notrunc[2, 5] <- mean(unlist(proportions_list_b4_notrunc))
-tab.mean.inv.lambda_notrunc[3, 5] <- mean(unlist(proportions_list_c4_notrunc))
-tab.mean.inv.lambda_notrunc[1, 6] <- mean(rmse_values_a_lambda_mean_inv_notrunc)
-tab.mean.inv.lambda_notrunc[2, 6] <- mean(rmse_values_b_lambda_mean_inv_notrunc)
-tab.mean.inv.lambda_notrunc[3, 6] <- mean(rmse_values_c_lambda_mean_inv_notrunc)
-
-save(param_list4_notrunc,
-     xdf4.NT,
-     df.new4.NT,
-     mean.xdf4.NT,
-     hist_list4_notrunc,
-     plot4_mean_NT, 
-     plot4_med_NT,
-     plot4_mean.inv_NT, 
-     plot4_med.inv_NT,
-     proportions_list_a4_notrunc,
-     proportions_list_b4_notrunc,
-     proportions_list_c4_notrunc,
-     rmse_values_a_lambda_mean_inv_notrunc,
-     rmse_values_b_lambda_mean_inv_notrunc,
-     rmse_values_c_lambda_mean_inv_notrunc,
-     tab.mean.inv.lambda_notrunc,
-     file="mean_inverse_notrunc.RData")
-
-
-##########################################Inverse Mean Lambda NOT TRUNCATED #############################################
-
-# Create list of matrices to store parameter summary statistics
-param_list5_notrunc <- vector("list", length = 5)
-for (i in 1:5) {
-  # Initialize the inner list
-  inner_list5_notrunc <- vector("list", length = b)
-  # Populate the inner list
-  for (j in 1:b) {
-    # Initialize a 5x4 matrix
-    matrix_data5_notrunc <- matrix(0, nrow = 5, ncol = 4)
-    inner_list5_notrunc[[j]] <- matrix_data5_notrunc
-  }
-  param_list5_notrunc[[i]] <- inner_list5_notrunc
-}
-# Create JAGS model for each of the 100 datasets
-for(i in 1:b){
-  if (i %% 10 == 0) {
-    print(i)
-  }
-  data.raw <- data.list[[i]]
-  data <- data.list[[i]] 
-  data$inv.trait <- 1/(data$trait)
-  # Get 10 groups of 10, and calculate the means
-  group_means <- tapply(data$inv.trait, data$T, function(x) {
-    split_values <- split(x, rep(1:10, each = 10))
-    means <- sapply(split_values, mean)
-    return(means)
-  })
-  df.mean <-  data.frame(
-    T = c(rep(10, 10), rep(17, 10), rep(21, 10), rep(25, 10), rep(32, 10)),  # Extract T values as numeric
-    trait = unlist(group_means)  # Extract means and unlist the result
-  )
-  data <- df.mean
-  trait <- data$trait
-  data.raw <-  data.list[[i]]
-  N.obs <- length(trait)
-  temp <- data$T
-  # Model
-  sink("inv_mean_lambda_nt.txt")
-  cat("model{
-  # Priors
-  # If mu<0,  make it small number
-  la ~ dnorm(0, 1/10) 
-  b.l ~ dnorm(0, 1/10) 
-  c ~ dexp(0.5) # Has to be positive
-  tau ~ dexp(0.1)
-  # Set epsilon to avoid negative or small values
-  epsilon <- 0.01
-  # Likelihood
-  for (i in 1:N.obs){
-    mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) * ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) > epsilon) + ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)<= epsilon) * epsilon
-    trait[i] ~ dnorm(mu[i], tau)
-  }
-}", file = "inv_mean_lambda_nt.txt")
-  # Settings
-  parameters <- c("la", "b.l", "c", "tau")
-  inits <- function(){list(
-    # a and b in log space
-    la = log(0.001), 
-    b.l = log(0.05), 
-    c = 0.6, 
-    tau = 0.2
-  )}
-  ni <- 60000 
-  nb <- 30000 
-  nt <- 8 
-  nc <- 5 
-  
-  
-  # List data
-  jag.data <- list(trait = trait, N.obs = N.obs, temp = temp)
-  
-  # Run model  
-  mod.fit <- jags(data = jag.data, inits = inits, parameters.to.save = parameters, 
-                  model.file = "inv_mean_lambda_nt.txt", n.thin = nt, n.chains = nc, n.burnin = nb, 
-                  n.iter = ni, DIC = T, working.directory = getwd())
-  # Turn into mcmc object
-  mod.fit.mcmc <- as.mcmc(mod.fit) 
-  closeAllConnections()
-  # Turn into mcmc list
-  samp <- as.mcmc.list(mod.fit.mcmc)
-  for(j in 1:nc){
-    # For each chain, store mean, median, and hdi bounds for a in log space
-    # Statistics are all in a different column, each row is a chain
-    # 100 matrices of 5x4 for each parameter
-    param_list5_notrunc[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    param_list5_notrunc[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    param_list5_notrunc[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    param_list5_notrunc[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b in log space
-    param_list5_notrunc[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    param_list5_notrunc[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    param_list5_notrunc[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    param_list5_notrunc[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
-    # For each chain, store mean, median, and hdi bounds for c
-    param_list5_notrunc[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    param_list5_notrunc[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    param_list5_notrunc[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    param_list5_notrunc[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
-    # For each chain, store mean, median, and hdi bounds for deviance
-    param_list5_notrunc[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    param_list5_notrunc[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    param_list5_notrunc[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    param_list5_notrunc[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
-    # For each chain, store mean, median, and hdi bounds for tau
-    param_list5_notrunc[[5]][[i]][j, 1] <- mean(samp[[j]][, 5])
-    param_list5_notrunc[[5]][[i]][j, 2] <- median(samp[[j]][, 5])
-    param_list5_notrunc[[5]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
-    param_list5_notrunc[[5]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
-  }
-  
-  
-}
-# Take samp, the mcmc list, chain 1 and save every fourth row
-# Saved every fourth row to avoid autocorrelation
-df.new5.NT = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
-# Create a sequence of temperatures from 10 to 35
-xseq <- seq(from = 10, to = 35, length.out = 250)
-# Create a grid with point as each temperature, and iteration being
-# the number of rows we selected from samp
-# The idea is to evaluate each row of df.new5.NT as a function at each of those temperatures
-xdf5.NT <- expand.grid(point = xseq, iteration = 1:nrow(df.new5.NT))
-
-# Apply the quadratic equation for each combination
-xdf5.NT$value <- apply(xdf5.NT, 1, function(row) {
-  i <- row["iteration"]
-  location <- row["point"]
-  exp(df.new5.NT[i, 4]) * location^2 - exp(df.new5.NT[i, 1]) * location + df.new5.NT[i, 2]
-})
-# Apply truncation so that if the evaluated function gives a value smaller than epsilon,
-# it gets truncated to epsilon
-xdf5.NT <-  xdf5.NT|> mutate(trunc.eval = ifelse(xdf5.NT$value > epsilon, xdf5.NT$value, epsilon), 
-                           trunc.inv = 1/trunc.eval)
-# At each temperature point, summarize to get the mean, median, and hdi bounds
-# of the evaluated function
-mean.xdf5.NT <- xdf5.NT |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                                      avg.value = mean(trunc.eval), 
-                                                      med.value.inv = median(trunc.inv), 
-                                                      med.value = median(trunc.eval), 
-                                                      lower.hdi.inv = hdi(trunc.inv)[1], 
-                                                      upper.hdi.inv = hdi(trunc.inv)[2], 
-                                                      lower.hdi = hdi(trunc.eval)[1], 
-                                                      upper.hdi = hdi(trunc.eval)[2])
-# Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) 1/(true.a * x^2 - true.b * x + true.c)
-true_curve <- function(x) (true.a * x^2 - true.b * x + true.c)
-mean.xdf5.NT$true_curve <- true_curve(xseq)
-mean.xdf5.NT$true_curve.inv <- true_curve.inv(xseq)
-# Plot mean mortality rate response
-plot5_mean_NT <- ggplot(mean.xdf5.NT, aes(x = point)) + 
-  geom_line(aes(y = avg.value), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
-  # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
-       y = "Mortality Rate") + 
-  theme_minimal()
-# Plot median mortality rate response
-plot5_med_NT <- ggplot(mean.xdf5.NT, aes(x = point)) + 
-  geom_line(aes(y = med.value), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = "deepskyblue2", linetype = "dashed") + 
-  # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
-  labs(title = "Median Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
-       y = "Mortality Rate") + 
-  theme_minimal()
-# Plot mean lifetime response
-plot5_mean.inv_NT <- ggplot(mean.xdf5.NT, aes(x = point)) + 
-  geom_line(aes(y = avg.value.inv), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
-  geom_point(aes(x = T, y = trait), data = data.raw) + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
-       y = "Response") + 
-  theme_minimal()
-# Plot median lifetime response
-plot5_med.inv_NT <- ggplot(mean.xdf5.NT, aes(x = point)) + 
-  geom_line(aes(y = med.value.inv), color = "black") + 
-  geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = "coral1", alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = "deepskyblue2", linetype = "dashed") + 
-  geom_point(aes(x = T, y = trait), data = data.raw) + 
-  labs(title = "Median Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
-       y = "Response") + 
-  theme_minimal()
-
-gridExtra::grid.arrange(plot5_mean_NT, plot5_med_NT, nrow = 1)
-gridExtra::grid.arrange(plot5_mean.inv_NT, plot5_med.inv_NT, nrow = 1)
-
-# Assign true values 
-# Create a list to store histograms of the posterior distribution of each parameter
-hist_list5_notrunc <- vector("list", length = 5)
-par(mfrow = c(2, 3))
-for (i in 1:5) {
-  # Extract the first column from each matrix in param_list[[i]]
-  # This column is the mean of each param for each chain
-  first_column_list5_notrunc <- lapply(param_list5_notrunc[[i]], function(matrix) matrix[, 1])
-  # Combine the vectors into a single vector
-  combined_vector5_notrunc <- unlist(first_column_list5_notrunc)
-  # Sequence of x values to overlay prior distribution onto histograms
-  x <- seq(min(combined_vector5_notrunc)-1, max(combined_vector5_notrunc) + 1, length = 3500)
-  # Create a histogram and store it in the list
-  hist_list5_notrunc[[i]] <- hist(combined_vector5_notrunc, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                                  xlab = "Values", col = "lightblue", border = "black", breaks = 10, freq = FALSE)
-  abline(v = true_values[i], col = "red", lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "green", lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = "black", lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = "yellow", lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.1), col = "purple", lty = 2, lwd = 2)
-  }
-}
-
-
-proportions_list_a5_notrunc <-  lapply(param_list5_notrunc[[1]], function(matrix) {
-  # Extract columns for mean, lower hdi, and upper hdi of posterior samples for a
-  col2 <- matrix[, 1]
-  col3 <- matrix[, 3]
-  col4 <- matrix[, 4]
-  # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.a) > col3 & log(true.a) < col4)
-  return(proportion)
-  })
-# Calculate average proportion of coverage for all 100 models
-mean(unlist(proportions_list_a5_notrunc))
-
-proportions_list_b5_notrunc <-  lapply(param_list5_notrunc[[2]], function(matrix) {
-  # Extract columns for mean, lower hdi, and upper hdi of posterior samples for b
-  col2 <- matrix[, 1]
-  col3 <- matrix[, 3]
-  col4 <- matrix[, 4]
-  # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.b) > col3 & log(true.b) < col4)
-  return(proportion)
-  })
-# Calculate average proportion of coverage for all 100 models
-mean(unlist(proportions_list_b5_notrunc))
-
-proportions_list_c5_notrunc <-  lapply(param_list5_notrunc[[3]], function(matrix) {
-  # Extract columns for mean, lower hdi, and upper hdi of posterior samples for c
-  col2 <- matrix[, 1]
-  col3 <- matrix[, 3]
-  col4 <- matrix[, 4]
-  # Calculate average proportion of coverage for each model
-  proportion <- mean(true.c > col3 & true.c < col4)
-  return(proportion)
-  })
-# Calculate average proportion of coverage for all 100 models
-mean(unlist(proportions_list_c5_notrunc))
-
-calculate_rmse_a_lambda_inv_mean_notrunc <- function(mat) {
-  # Get the first column, which is posterior mean of the chain
-  observed <- mat[, 1]  
-  # True values
-  predicted <- rep(log(true.a), length(observed))  
-  # Calculate RMSE
-  rmse <- sqrt(mean((observed - predicted)^2))
-  return(rmse)
-  }
-
-calculate_rmse_b_lambda_inv_mean_notrunc <- function(mat) {
-  # Get the first column, which is posterior mean of the chain
-  observed <- mat[, 1]  
-  # True values
-  predicted <- rep(log(true.b), length(observed))  
-  # Calculate RMSE
-  rmse <- sqrt(mean((observed - predicted)^2))
-  return(rmse)
-  }
-
-calculate_rmse_c_lambda_inv_mean_notrunc <- function(mat) {
-  # Get the first column, which is posterior mean of the chain
-  observed <- mat[, 1]  
-  # True values
-  predicted <- rep(true.c, length(observed))  
-  # Calculate RMSE
-  rmse <- sqrt(mean((observed - predicted)^2))
-  return(rmse)
-  }
-
-
-# Apply the function to each element in the list
-rmse_values_a_lambda_inv_mean_notrunc <- sapply(param_list5_notrunc[[1]], calculate_rmse_a_lambda_inv_mean_notrunc)
-rmse_values_b_lambda_inv_mean_notrunc <- sapply(param_list5_notrunc[[2]], calculate_rmse_b_lambda_inv_mean_notrunc)
-rmse_values_c_lambda_inv_mean_notrunc <- sapply(param_list5_notrunc[[3]], calculate_rmse_c_lambda_inv_mean_notrunc)
-
-# Create a table with true value, posterior mean,
-# lower and upper hdi of posterior mean, coverage, and RMSE
-tab.inv.mean.lambda_notrunc <- matrix(0, nrow = 3, ncol = 6)
-row.names(tab.inv.mean.lambda_notrunc) <- c("a", "b", "c")
-colnames(tab.inv.mean.lambda_notrunc) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
-tab.inv.mean.lambda_notrunc[1, 1] <- true.a
-tab.inv.mean.lambda_notrunc[2, 1] <- true.b
-tab.inv.mean.lambda_notrunc[3, 1] <- true.c
-tab.inv.mean.lambda_notrunc[1, 2] <- exp(mean(unlist(lapply(param_list5_notrunc[[1]], function(matrix) matrix[, 1]))))
-tab.inv.mean.lambda_notrunc[2, 2] <- exp(mean(unlist(lapply(param_list5_notrunc[[2]], function(matrix) matrix[, 1]))))
-tab.inv.mean.lambda_notrunc[3, 2] <- mean(unlist(lapply(param_list5_notrunc[[3]], function(matrix) matrix[, 1])))
-tab.inv.mean.lambda_notrunc[1, 3] <- exp(hdi(unlist(lapply(param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[1])
-tab.inv.mean.lambda_notrunc[2, 3] <- exp(hdi(unlist(lapply(param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[1])
-tab.inv.mean.lambda_notrunc[3, 3] <- hdi(unlist(lapply(param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[1]
-tab.inv.mean.lambda_notrunc[1, 4] <- exp(hdi(unlist(lapply(param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[2])
-tab.inv.mean.lambda_notrunc[2, 4] <- exp(hdi(unlist(lapply(param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[2])
-tab.inv.mean.lambda_notrunc[3, 4] <- hdi(unlist(lapply(param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[2]
-tab.inv.mean.lambda_notrunc[1, 5] <- mean(unlist(proportions_list_a5_notrunc))
-tab.inv.mean.lambda_notrunc[2, 5] <- mean(unlist(proportions_list_b5_notrunc))
-tab.inv.mean.lambda_notrunc[3, 5] <- mean(unlist(proportions_list_c5_notrunc))
-tab.inv.mean.lambda_notrunc[1, 6] <- mean(rmse_values_a_lambda_inv_mean_notrunc)
-tab.inv.mean.lambda_notrunc[2, 6] <- mean(rmse_values_b_lambda_inv_mean_notrunc)
-tab.inv.mean.lambda_notrunc[3, 6] <- mean(rmse_values_c_lambda_inv_mean_notrunc)
-
-
-save(param_list5_notrunc,
-     xdf5.NT,
-     df.new5.NT,
-     mean.xdf5.NT,
-     hist_list5_notrunc,
-     plot5_mean_NT, 
-     plot5_med_NT,
-     plot5_mean.inv_NT, 
-     plot5_med.inv_NT,
-     proportions_list_a5_notrunc,
-     proportions_list_b5_notrunc,
-     proportions_list_c5_notrunc,
-     rmse_values_a_lambda_inv_mean_notrunc,
-     rmse_values_b_lambda_inv_mean_notrunc,
-     rmse_values_c_lambda_inv_mean_notrunc,
-     tab.inv.mean.lambda_notrunc,
-     file="inverse_mean_notrunc.RData")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
