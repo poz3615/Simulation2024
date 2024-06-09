@@ -11,9 +11,6 @@ load("mean_exp_narrow.RData")
 load("inverse_exp_narrow.RData")
 load("mean_inverse_exp_narrow.RData")
 load("inverse_mean_exp_narrow.RData")
-load("inverse_exp_narrow_NT.RData")
-load("mean_inverse_exp_narrow_NT.RData")
-load("inverse_mean_exp_narrow_NT.RData")
 ```
 
 ```{r load.narrow.wb}
@@ -52,8 +49,8 @@ N_df.a <- data.frame(
 N_df.a$x <- factor(N_df.a$x, levels = desired_order)
 
 N_a.plot <- ggplot(N_df.a, aes(x, Mean))+
-  geom_point(col="blue") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="A",x="Method")+
-  geom_hline(yintercept = true.a, linetype = "dashed", color = "darkorchid")+
+  geom_point(col=cividis(3)[1]) + geom_linerange(aes(ymin = lower, ymax = upper), col = cividis(3)[2])+labs(title="A",x="Method")+
+  geom_hline(yintercept = true.a, linetype = "dashed", color = cividis(3)[3])+
   theme_classic()+
   coord_flip()
 N_a.plot
@@ -84,8 +81,8 @@ N_df.b <- data.frame(
 N_df.b$x <- factor(N_df.b$x, levels = desired_order)
 
 N_b.plot <- ggplot(N_df.b, aes(x, Mean))+
-  geom_point(col="blue")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="B",x="Method")+
-  geom_hline(yintercept = true.b, linetype = "dashed", color = "darkorchid")+
+  geom_point(col=cividis(3)[1])+ geom_linerange(aes(ymin = lower, ymax = upper), col = cividis(3)[2])+labs(title="B",x="Method")+
+  geom_hline(yintercept = true.b, linetype = "dashed", color = cividis(3)[3])+
   theme_classic()+
   coord_flip()
 N_b.plot
@@ -116,107 +113,11 @@ N_df.c <- data.frame(
 N_df.c$x <- factor(N_df.c$x, levels = desired_order)
 
 N_c.plot <- ggplot(N_df.c, aes(x, Mean))+
-  geom_point(col="blue")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="C",x="Method")+
-  geom_hline(yintercept = true.c, linetype = "dashed", color = "darkorchid")+
+  geom_point(col=cividis(3)[1])+ geom_linerange(aes(ymin = lower, ymax = upper), col = cividis(3)[2])+labs(title="C",x="Method")+
+  geom_hline(yintercept = true.c, linetype = "dashed", color = cividis(3)[3])+
   theme_classic()+
   coord_flip()
 N_c.plot
-```
-
-```{r plot.a.narrow.nt}
-desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
-                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
-N_df.a_notrunc <- data.frame(
-  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
-  Mean = c(exp(mean(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1]))))),
-  upper = c(exp(hdi(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[2])),
-  lower = c(exp(hdi(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[1]))
-)
-N_df.a_notrunc$x <- factor(N_df.a_notrunc$x, levels = desired_order)
-
-N_a_notrunc.plot <- ggplot(N_df.a, aes(x, Mean))+
-  geom_point(col="blue") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="A",x="Method")+
-  geom_hline(yintercept = true.a, linetype = "dashed", color = "darkorchid")+
-  theme_classic()+
-  coord_flip()
-N_a_notrunc.plot
-```
-
-```{r plot.b.narrow.nt}
-desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
-                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
-N_df.b_notrunc <- data.frame(
-  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
-  Mean = c(exp(mean(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1]))))),
-  upper = c(exp(hdi(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[2])),
-  lower = c(exp(hdi(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[1]))
-)
-N_df.b_notrunc$x <- factor(N_df.b_notrunc$x, levels = desired_order)
-
-N_b_notrunc.plot <- ggplot(N_df.b, aes(x, Mean))+
-  geom_point(col="blue")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="B",x="Method")+
-  geom_hline(yintercept = true.b, linetype = "dashed", color = "darkorchid")+
-  theme_classic()+
-  coord_flip()
-N_b_notrunc.plot
-```
-
-```{r plot.c.narrow.nt}
-desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
-                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
-N_df.c_notrunc <- data.frame(
-  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
-  Mean = c((mean(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))),
-           (mean(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))),
-           (mean(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1])))),
-           (mean(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1])))),
-           (mean(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1]))))),
-  upper = c((hdi(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))[2]),
-            (hdi(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))[2]),
-            (hdi(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[2]),
-            (hdi(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[2]),
-            (hdi(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[2])),
-  lower = c((hdi(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))[1]),
-            (hdi(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))[1]),
-            (hdi(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[1]),
-            (hdi(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[1]),
-            (hdi(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[1]))
-)
-N_df.c_notrunc$x <- factor(N_df.c_notrunc$x, levels = desired_order)
-
-N_c_notrunc.plot <- ggplot(N_df.c, aes(x, Mean))+
-  geom_point(col="blue")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="C",x="Method")+
-  geom_hline(yintercept = true.c, linetype = "dashed", color = "darkorchid")+
-  theme_classic()+
-  coord_flip()
-N_c_notrunc.plot
 ```
 
 ```{r plot.a.narrow.log}
@@ -244,8 +145,8 @@ log_N_df.a <- data.frame(
 log_N_df.a$x <- factor(log_N_df.a$x, levels = desired_order)
 
 log_N_a.plot <- ggplot(log_N_df.a, aes(x, log(Mean)))+
-  geom_point(col="blue") + geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="A",x="Method")+
-  geom_hline(yintercept = log(true.a), linetype = "dashed", color = "darkorchid")+
+  geom_point(col=cividis(3)[1]) + geom_linerange(aes(ymin = log(lower), ymax = log(upper)), col = cividis(3)[2])+labs(title="A",x="Method")+
+  geom_hline(yintercept = log(true.a), linetype = "dashed", color = cividis(3)[3])+
   theme_classic()+
   coord_flip()
 log_N_a.plot
@@ -276,8 +177,8 @@ log_N_df.b <- data.frame(
 log_N_df.b$x <- factor(log_N_df.b$x, levels = desired_order)
 
 log_N_b.plot <- ggplot(log_N_df.b, aes(x, log(Mean)))+
-  geom_point(col="blue")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="B",x="Method")+
-  geom_hline(yintercept = log(true.b), linetype = "dashed", color = "darkorchid")+
+  geom_point(col=cividis(3)[1])+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)), col = cividis(3)[2])+labs(title="B",x="Method")+
+  geom_hline(yintercept = log(true.b), linetype = "dashed", color = cividis(3)[3])+
   theme_classic()+
   coord_flip()
 log_N_b.plot
@@ -308,107 +209,11 @@ log_N_df.c <- data.frame(
 log_N_df.c$x <- factor(log_N_df.c$x, levels = desired_order)
 
 log_N_c.plot <- ggplot(log_N_df.c, aes(x, log(Mean)))+
-  geom_point(col="blue")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="C",x="Method")+
-  geom_hline(yintercept = log(true.c), linetype = "dashed", color = "darkorchid")+
+  geom_point(col=cividis(3)[1])+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)), col = cividis(3)[2])+labs(title="C",x="Method")+
+  geom_hline(yintercept = log(true.c), linetype = "dashed", color = cividis(3)[3])+
   theme_classic()+
   coord_flip()
 log_N_c.plot
-```
-
-```{r plot.a.narrow.nt.log}
-desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
-                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
-log_N_df.a_notrunc <- data.frame(
-  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
-  Mean = c(exp(mean(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1]))))),
-  upper = c(exp(hdi(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[2])),
-  lower = c(exp(hdi(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1])))[1]))
-)
-log_N_df.a_notrunc$x <- factor(log_N_df.a_notrunc$x, levels = desired_order)
-
-log_N_a_notrunc.plot <- ggplot(log_N_df.a, aes(x, log(Mean)))+
-  geom_point(col="blue") + geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="A",x="Method")+
-  geom_hline(yintercept = log(true.a), linetype = "dashed", color = "darkorchid")+
-  theme_classic()+
-  coord_flip()
-log_N_a_notrunc.plot
-```
-
-```{r plot.b.narrow.nt.log}
-desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
-                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
-log_N_df.b_notrunc <- data.frame(
-  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
-  Mean = c(exp(mean(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1])))),
-           exp(mean(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1]))))),
-  upper = c(exp(hdi(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[2]),
-            exp(hdi(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[2])),
-  lower = c(exp(hdi(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1])))[1]),
-            exp(hdi(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1])))[1]))
-)
-log_N_df.b_notrunc$x <- factor(log_N_df.b_notrunc$x, levels = desired_order)
-
-log_N_b_notrunc.plot <- ggplot(log_N_df.b, aes(x, log(Mean)))+
-  geom_point(col="blue")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="B",x="Method")+
-  geom_hline(yintercept = log(true.b), linetype = "dashed", color = "darkorchid")+
-  theme_classic()+
-  coord_flip()
-log_N_b_notrunc.plot
-```
-
-```{r plot.c.narrow.nt.log}
-desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
-                      "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
-log_N_df.c_notrunc <- data.frame(
-  x = factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
-  Mean = c((mean(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))),
-           (mean(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))),
-           (mean(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1])))),
-           (mean(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1])))),
-           (mean(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1]))))),
-  upper = c((hdi(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))[2]),
-            (hdi(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))[2]),
-            (hdi(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[2]),
-            (hdi(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[2]),
-            (hdi(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[2])),
-  lower = c((hdi(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1])))[1]),
-            (hdi(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1])))[1]),
-            (hdi(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1])))[1]),
-            (hdi(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1])))[1]),
-            (hdi(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1])))[1]))
-)
-log_N_df.c_notrunc$x <- factor(log_N_df.c_notrunc$x, levels = desired_order)
-
-log_N_c_notrunc.plot <- ggplot(log_N_df.c, aes(x, log(Mean)))+
-  geom_point(col="blue")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="C",x="Method")+
-  geom_hline(yintercept = log(true.c), linetype = "dashed", color = "darkorchid")+
-  theme_classic()+
-  coord_flip()
-log_N_c_notrunc.plot
 ```
 
 
@@ -441,8 +246,8 @@ df.a.wb.n <- data.frame(
 )
 df.a.wb.n$x <- factor(df.a.wb.n$x, levels = desired_order.wb)
 a.wb.plot.n <- ggplot(df.a.wb.n, aes(x, Mean))+
-  geom_point(col="orange") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="A",x="Method")+
-  geom_hline(yintercept = true.exp.a, linetype = "dashed", color = "slateblue3")+
+  geom_point(col=plasma(3)[1]) + geom_linerange(aes(ymin = lower, ymax = upper), col = plasma(3)[2])+labs(title="A",x="Method")+
+  geom_hline(yintercept = true.exp.a, linetype = "dashed", color = plasma(3)[3])+
   theme_classic()+
   coord_flip()
 a.wb.plot.n
@@ -476,8 +281,8 @@ df.b.wb.n <- data.frame(
 )
 df.b.wb.n$x <- factor(df.b.wb.n$x, levels = desired_order.wb)
 b.wb.plot.n <- ggplot(df.b.wb.n, aes(x, Mean))+
-  geom_point(col="orange")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="B",x="Method")+
-  geom_hline(yintercept = true.exp.b, linetype = "dashed", color = "slateblue3")+
+  geom_point(col=plasma(3)[1])+ geom_linerange(aes(ymin = lower, ymax = upper), col = plasma(3)[2])+labs(title="B",x="Method")+
+  geom_hline(yintercept = true.exp.b, linetype = "dashed", color = plasma(3)[3])+
   theme_classic()+
   coord_flip()
 b.wb.plot.n
@@ -510,8 +315,8 @@ df.c.wb.n <- data.frame(
 )
 df.c.wb.n$x <- factor(df.c.wb.n$x, levels = desired_order.wb)
 c.wb.plot.n <- ggplot(df.c.wb.n, aes(x, Mean))+
-  geom_point(col="orange")+ geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="C",x="Method")+
-  geom_hline(yintercept = true.exp.c, linetype = "dashed", color = "slateblue3")+
+  geom_point(col=plasma(3)[1])+ geom_linerange(aes(ymin = lower, ymax = upper), col = plasma(3)[2])+labs(title="C",x="Method")+
+  geom_hline(yintercept = true.exp.c, linetype = "dashed", color = plasma(3)[3])+
   theme_classic()+
   coord_flip()
 c.wb.plot.n
@@ -544,8 +349,8 @@ df.a.wb.log.n <- data.frame(
 )
 df.a.wb.log.n$x <- factor(df.a.wb.log.n$x, levels = desired_order.wb)
 a.wb.log.plot.n <- ggplot(df.a.wb.log.n, aes(x, log(Mean)))+
-  geom_point(col="orange") + geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="A",x="Method")+
-  geom_hline(yintercept = log(true.exp.a), linetype = "dashed", color = "slateblue3")+
+  geom_point(col=plasma(3)[1]) + geom_linerange(aes(ymin = log(lower), ymax = log(upper)), col = plasma(3)[2])+labs(title="A",x="Method")+
+  geom_hline(yintercept = log(true.exp.a), linetype = "dashed", color = plasma(3)[3])+
   theme_classic()+
   coord_flip()
 a.wb.log.plot.n
@@ -578,8 +383,8 @@ df.b.wb.log.n <- data.frame(
 )
 df.b.wb.log.n$x <- factor(df.b.wb.log.n$x, levels = desired_order.wb)
 b.wb.log.plot.n <- ggplot(df.b.wb.log.n, aes(x, log(Mean)))+
-  geom_point(col="orange")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="B",x="Method")+
-  geom_hline(yintercept = log(true.exp.b), linetype = "dashed", color = "slateblue3")+
+  geom_point(col=plasma(3)[1])+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)), col = plasma(3)[2])+labs(title="B",x="Method")+
+  geom_hline(yintercept = log(true.exp.b), linetype = "dashed", color = plasma(3)[3])+
   theme_classic()+
   coord_flip()
 b.wb.log.plot.n
@@ -612,8 +417,8 @@ df.c.wb.log.n <- data.frame(
 )
 df.c.wb.log.n$x <- factor(df.c.wb.log.n$x, levels = desired_order.wb)
 c.wb.log.plot.n <- ggplot(df.c.wb.log.n, aes(x, log(Mean)))+
-  geom_point(col="orange")+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)))+labs(title="C",x="Method")+
-  geom_hline(yintercept = log(true.exp.c), linetype = "dashed", color = "slateblue3")+
+  geom_point(col=plasma(3)[1])+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)), col = plasma(3)[2])+labs(title="C",x="Method")+
+  geom_hline(yintercept = log(true.exp.c), linetype = "dashed", color = plasma(3)[3])+
   theme_classic()+coord_flip()
 c.wb.log.plot.n
 ```
@@ -669,8 +474,8 @@ df.a.compare.n <- data.frame(
 df.a.compare.n$x <- factor(df.a.compare.n$x, levels = desired_order.compare)
 df.a.compare.n$upper<-ifelse(df.a.compare.n$upper>0.002,0.002,df.a.compare.n$upper)
 a.compare.plot.n <- ggplot(df.a.compare.n, aes(x, Mean))+
-  geom_point(col="magenta") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="A",x="Method")+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "springgreen3")+
+  geom_point(col= viridis(3)[1]) + geom_linerange(aes(ymin = lower, ymax = upper), col = viridis(3)[2])+labs(title="A",x="Method")+
+  geom_hline(yintercept = 0, linetype = "dashed", color = viridis(3)[3])+
   theme_classic()+
   ylim(-0.002,0.002)+
   coord_flip()
@@ -726,8 +531,8 @@ df.b.compare.n <- data.frame(
 df.b.compare.n$x <- factor(df.b.compare.n$x, levels = desired_order.compare)
 df.b.compare.n$upper<-ifelse(df.b.compare.n$upper>0.16 & df.b.compare.n$lower<0.16,0.16,df.b.compare.n$upper)
 b.compare.plot.n <- ggplot(df.b.compare.n, aes(x, Mean))+
-  geom_point(col="magenta") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="B",x="Method")+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "springgreen3")+
+  geom_point(col= viridis(3)[1]) + geom_linerange(aes(ymin = lower, ymax = upper), col = viridis(3)[2])+labs(title="B",x="Method")+
+  geom_hline(yintercept = 0, linetype = "dashed", color = viridis(3)[3])+
   theme_classic()+
   ylim(-0.16,0.16)+
   coord_flip()
@@ -783,8 +588,8 @@ df.c.compare.n <- data.frame(
 df.c.compare.n$x <- factor(df.c.compare.n$x, levels = desired_order.compare)
 df.c.compare.n$upper<-ifelse(df.c.compare.n$upper>0.95,0.95,df.c.compare.n$upper)
 c.compare.plot.n <- ggplot(df.c.compare.n, aes(x, Mean))+
-  geom_point(col="magenta") + geom_linerange(aes(ymin = lower, ymax = upper))+labs(title="C",x="Method")+
-  geom_hline(yintercept = 0, linetype = "dashed", color = "springgreen3")+
+  geom_point(col=viridis(3)[1]) + geom_linerange(aes(ymin = lower, ymax = upper), col = viridis(3)[2])+labs(title="C",x="Method")+
+  geom_hline(yintercept = 0, linetype = "dashed", color = viridis(3)[3])+
   theme_classic()+
   ylim(-0.95,0.95)+
   coord_flip()
@@ -843,89 +648,52 @@ inv.mean.exp.trunc.n<-function(x){
   ifelse(inv.mean.exp.n(x) < 0, 0.01, inv.mean.exp.n(x))
 }
 
-# INV EXP DATA EXP MODEL NT
-inv.exp.nt.n<-function(x){
-  (exp(mean(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 1]))))*x^2-
-         exp(mean(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 1]))))*x+
-         mean(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 1]))))
-}
-inv.exp.nt.trunc.n<-function(x){
-  ifelse(inv.exp.nt.n(x) < 0, 0.01, inv.exp.nt.n(x))
-}
-
-# MEAN INV EXP DATA EXP MODEL NT
-mean.inv.exp.nt.n<-function(x){
-  (exp(mean(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 1]))))*x^2-
-         exp(mean(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 1]))))*x+
-         mean(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 1]))))
-}
-mean.inv.exp.nt.trunc.n<-function(x){
-  ifelse(mean.inv.exp.nt.n(x) < 0, 0.01, mean.inv.exp.nt.n(x))
-}
-
-# INV MEAN EXP DATA EXP MODEL NT
-inv.mean.exp.nt.n<-function(x){
-  (exp(mean(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 1]))))*x^2-
-         exp(mean(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 1]))))*x+
-         mean(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 1]))))
-}
-inv.mean.exp.nt.trunc.n<-function(x){
-  ifelse(inv.mean.exp.nt.n(x) < 0, 0.01, inv.mean.exp.nt.n(x))
-}
-
 topt.mean.exp.n<-data.frame(
   Topt=c(optimize(ind.exp.n, interval = c(-100, 200))$minimum,
          optimize(mean.exp.n, interval = c(-100, 200))$minimum,
          optimize(inv.exp.trunc.n, interval = c(-100, 200))$minimum,
          optimize(mean.inv.exp.trunc.n, interval = c(-100, 200))$minimum,
          optimize(inv.mean.exp.trunc.n, interval = c(-100, 200))$minimum,
-         optimize(inv.exp.nt.trunc.n, interval = c(-100, 200))$minimum,
-         optimize(mean.inv.exp.nt.trunc.n, interval = c(-100, 200))$minimum,
-         optimize(inv.mean.exp.nt.trunc.n, interval = c(-100, 200))$minimum,
          optimize(f,interval = c(-100, 200))$minimum),
   Lifetime=c(1/optimize(ind.exp.n, interval = c(-100, 200))$objective,
             1/optimize(mean.exp.n, interval = c(-100, 200))$objective,
             1/optimize(inv.exp.trunc.n, interval = c(-100, 200))$objective,
             1/optimize(mean.inv.exp.trunc.n, interval = c(-100, 200))$objective,
             1/optimize(inv.mean.exp.trunc.n, interval = c(-100, 200))$objective,
-            1/optimize(inv.exp.nt.trunc.n, interval = c(-100, 200))$objective,
-            1/optimize(mean.inv.exp.nt.trunc.n, interval = c(-100, 200))$objective,
-            1/optimize(inv.mean.exp.nt.trunc.n, interval = c(-100, 200))$objective,
             1/optimize(f,interval = c(-100, 200))$objective
             ),
   Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model",
-               "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model","True Curve"),levels=c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model",
-               "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model", "True Curve"))
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","True Curve"),levels=c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model", "True Curve"))
 )
 
 # Center point coordinates
-center_x.exp.n <- topt.mean.exp.n$Topt[9]
-center_y.exp.n <- topt.mean.exp.n$Lifetime[9]
+center_x.exp.n <- topt.mean.exp.n$Topt[6]
+center_y.exp.n <- topt.mean.exp.n$Lifetime[6]
 
 # Plotting
 ggplot(topt.mean.exp.n, aes(x = Topt, y = Lifetime,color=Method)) +
   geom_point() +
-  geom_point(x = center_x.exp.n, y = center_y.exp.n, size = 3,col="#FF61CC",shape=8) +
+  geom_point(x = center_x.exp.n, y = center_y.exp.n, size = 3,col= viridis(6)[6],shape=8) +
   labs(title = "Lifetime vs Topt, Narrow Interval (Posterior Mean)",
        subtitle="Data Generated from Exponential Distribution",
        x = "Topt",
        y = "Lifetime") +
   theme_minimal()+
+  scale_color_manual(values = viridis(6))+
   coord_cartesian(xlim = c(center_x.exp.n - 10, center_x.exp.n + 10), ylim = c(center_y.exp.n - 85, center_y.exp.n + 85))
 
 ```
 
 ```{r exp.topt.maxlife.boxplot.narrow}
-xseq.n <- seq(from = 13, to = 29, length.out = 250)
+xseq.n <- seq(from = 5, to = 37, length.out = 250)
 evaluate_expression <- function(x, a, b, c) {
   result <- a * x^2 - b * x + c
   result[result < 0.01] <- 0.01
   return(result)
 }
 
-df_list.n <- list(df.new1_N, df.new2_N, df.new3_N, df.new4_N, df.new5_N, df.new3_N.NT, df.new4_N.NT, df.new5_N.NT)
+df_list.n <- list(df.new1_N, df.new2_N, df.new3_N, df.new4_N, df.new5_N)
 min_x_values_list.n <- list()
 min_values_list.n <- list()
 
@@ -952,32 +720,25 @@ double.box.df.n<-data.frame(
            min_x_values_list.n[[3]],
            min_x_values_list.n[[4]],
            min_x_values_list.n[[5]],
-           min_x_values_list.n[[6]],
-           min_x_values_list.n[[7]],
-           min_x_values_list.n[[8]],
            23.3034735),
   Lifetime = c(1/min_values_list.n[[1]],
                1/min_values_list.n[[2]],
                1/min_values_list.n[[3]],
                1/min_values_list.n[[4]],
                1/min_values_list.n[[5]],
-               1/min_values_list.n[[6]],
-               1/min_values_list.n[[7]],
-               1/min_values_list.n[[8]],
                15.433231),
   Method=factor(c(rep("Individual Exp Data, Exp Model",938), rep("Mean Exp Data, Exp Model", 938), rep("Individual Inverse Exp Data, Exp Model", 938),
-               rep("Mean Inverse Exp Data, Exp Model", 938), rep("Inverse Mean Exp Data, Exp Model", 938), rep("Individual Inverse Exp Data, Exp NT Model", 938),
-               rep("Mean Inverse Exp Data, Exp NT Model",938), rep("Inverse Mean Exp Data, Exp NT Model",938), "True Curve")
+               rep("Mean Inverse Exp Data, Exp Model", 938), rep("Inverse Mean Exp Data, Exp Model", 938), "True Curve")
                )
 )
 
 plot.x.n <- ggplot(double.box.df.n, aes(x= Method,y= Topt))+
   geom_boxplot()
-plot.x.n <- layer_data(plot.x.n)[,1:18]
+plot.x.n <- layer_data(plot.x.n)[,1:6]
 
 plot.y.n <- ggplot(double.box.df.n, aes(x= Method,y= Lifetime))+
   geom_boxplot() 
-plot.y.n <- layer_data(plot.y.n)[,1:18]
+plot.y.n <- layer_data(plot.y.n)[,1:6]
 
 dub.n<- double.box.df.n |> group_by(Method) |> summarise(medianTopt=median(Topt),
                                                      medianLife=median(Lifetime),
@@ -992,37 +753,38 @@ dub.n<- double.box.df.n |> group_by(Method) |> summarise(medianTopt=median(Topt)
          maxLife=ifelse(q3Life+1.5*iqrLife>100,100,q3Life+1.5*iqrLife),
          minLife=ifelse(q1Life-1.5*iqrLife<0,0,q1Life-1.5*iqrLife),
          Middle.Topt = plot.x.n$middle,
-         Middle.Life = plot.y.n$middle,)
+         Middle.Life = plot.y.n$middle)
 
-medianTopt.True.n<- as.numeric(rep(dub.n[9,2],8))
-medianLife.True.n<- as.numeric(rep(dub.n[9,3],8))
+medianTopt.True.n<- as.numeric(rep(dub.n[6,2],5))
+medianLife.True.n<- as.numeric(rep(dub.n[6,3],5))
 
 colnames(plot.x.n) <- paste0("x.", gsub("y", "", colnames(plot.x.n)))
 colnames(plot.y.n) <- paste0("y.", gsub("y", "", colnames(plot.y.n)))
 df.n <- cbind(plot.x.n, plot.y.n)
 df.n$Method <- factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp NT Model",
-               "Mean Inverse Exp Data, Exp NT Model", "Inverse Mean Exp Data, Exp NT Model", "True Curve"))
+               "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model", "True Curve"))
 df.outliers.n <- df.n |>
   select(Method, x.middle, x.outliers, y.middle, y.outliers) |>
   data.table::data.table()
-df.outliers.n <- df.outliers.n[, list(x.outliers = c(unlist(df.outliers.n$x.outliers),rep(NA, 29)), y.outliers = c(unlist(df.outliers.n$y.outliers))),
-                           by = list(Method, x.middle, y.middle)]
+#df.outliers.n <- df.outliers.n[, list(x.outliers = c(unlist(df.outliers.n$x.outliers)), y.outliers = c(unlist(df.outliers.n$y.outliers), rep(NA, 154))),
+  #                         by = list(Method, x.middle, y.middle)]
 
-ggplot(data=dub.n[1:8,], aes(fill = Method, color = Method)) +
+ggplot(data=dub.n[1:5,], aes(fill = Method, color = Method)) +
+  scale_color_manual(values = viridis(5))+
+  scale_fill_manual(values = viridis(5))+
   geom_rect(aes(xmin = q1Topt, xmax = q3Topt, ymin = q1Life, ymax = q3Life), alpha = 0.3) +
   geom_rect(aes(xmin = q1Topt, xmax = q3Topt, ymin = q1Life, ymax = q3Life), 
             color = "black", fill = NA) +
-  geom_segment(aes(x = minTopt, y = plot.y.n$y.middle[1:8], xend = maxTopt, yend = plot.y.n$y.middle[1:8])) + #whiskers
+  geom_segment(aes(x = minTopt, y = plot.y.n$y.middle[1:5], xend = maxTopt, yend = plot.y.n$y.middle[1:5])) + #whiskers
   geom_segment(aes(x = minTopt, y = q1Life, xend = minTopt, yend = q3Life)) + #lower end
   geom_segment(aes(x = maxTopt, y = q1Life, xend = maxTopt, yend = q3Life)) + #upper end
-  geom_segment(aes(x = plot.x.n$x.middle[1:8], y = minLife, xend = plot.x.n$x.middle[1:8], yend = maxLife)) + #whiskers
+  geom_segment(aes(x = plot.x.n$x.middle[1:5], y = minLife, xend = plot.x.n$x.middle[1:5], yend = maxLife)) + #whiskers
   geom_segment(aes(x = q1Topt, y = minLife, xend = q3Topt, yend = minLife)) + #lower end
   geom_segment(aes(x = q1Topt, y = maxLife, xend = q3Topt, yend = maxLife)) + #upper end
   #geom_point(data = df.outliers.n, aes(x = x.outliers, y = y.middle), size = 1, shape = 1) + # x-direction
   #geom_point(data = df.outliers.n, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
   theme_classic()+
-  facet_wrap(dub.n$Method[1:8],nrow=2)+
+  facet_wrap(dub.n$Method[1:5],nrow=2)+
   geom_point(aes(x=medianTopt.True.n, y= medianLife.True.n),color="black")+
   theme(legend.position="none")+
   labs(title= "Boxplot of Topt and Lifetime",
@@ -1081,76 +843,39 @@ inv.mean.exp.med.trunc.n<-function(x){
   ifelse(inv.mean.exp.med.n(x) < 0, 0.01, inv.mean.exp.med.n(x))
 }
 
-# INV EXP DATA EXP MODEL NT
-inv.exp.med.nt.n<-function(x){
-  (exp(median(unlist(lapply(N_param_list3_notrunc[[1]], function(matrix) matrix[, 2]))))*x^2-
-         exp(median(unlist(lapply(N_param_list3_notrunc[[2]], function(matrix) matrix[, 2]))))*x+
-         median(unlist(lapply(N_param_list3_notrunc[[3]], function(matrix) matrix[, 2]))))
-}
-inv.exp.med.nt.trunc.n<-function(x){
-  ifelse(inv.exp.med.nt.n(x) < 0, 0.01, inv.exp.med.nt.n(x))
-}
-
-# MEAN INV EXP DATA EXP MODEL NT
-mean.inv.exp.med.nt.n<-function(x){
-  (exp(median(unlist(lapply(N_param_list4_notrunc[[1]], function(matrix) matrix[, 2]))))*x^2-
-         exp(median(unlist(lapply(N_param_list4_notrunc[[2]], function(matrix) matrix[, 2]))))*x+
-         median(unlist(lapply(N_param_list4_notrunc[[3]], function(matrix) matrix[, 2]))))
-}
-mean.inv.exp.med.nt.trunc.n<-function(x){
-  ifelse(mean.inv.exp.med.nt.n(x) < 0, 0.01, mean.inv.exp.med.nt.n(x))
-}
-
-# INV MEAN EXP DATA EXP MODEL NT
-inv.mean.exp.med.nt.n<-function(x){
-  (exp(median(unlist(lapply(N_param_list5_notrunc[[1]], function(matrix) matrix[, 2]))))*x^2-
-         exp(median(unlist(lapply(N_param_list5_notrunc[[2]], function(matrix) matrix[, 2]))))*x+
-         median(unlist(lapply(N_param_list5_notrunc[[3]], function(matrix) matrix[, 2]))))
-}
-inv.mean.exp.med.nt.trunc.n<-function(x){
-  ifelse(inv.mean.exp.med.nt.n(x) < 0, 0.01, inv.mean.exp.med.nt.n(x))
-}
-
 topt.mean.exp.med.n<-data.frame(
   Topt=c(optimize(ind.exp.med.n, interval = c(min(xseq), max(xseq)))$minimum,
          optimize(mean.exp.med.n, interval = c(min(xseq), max(xseq)))$minimum,
          optimize(inv.exp.med.trunc.n, interval = c(-100, 200))$minimum,
          optimize(mean.inv.exp.med.trunc.n, interval = c(min(xseq), max(xseq)))$minimum,
          optimize(inv.mean.exp.med.trunc.n, interval = c(-100, 200))$minimum,
-         optimize(inv.exp.med.nt.trunc.n, interval = c(-100, 200))$minimum,
-         optimize(mean.inv.exp.med.nt.trunc.n, interval = c(min(xseq), max(xseq)))$minimum,
-         optimize(inv.mean.exp.med.nt.trunc.n, interval = c(-100, 200))$minimum,
          optimize(f,interval = c(min(xseq), max(xseq)))$minimum),
   Lifetime=c(1/optimize(ind.exp.med.n, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(mean.exp.med.n, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(inv.exp.med.trunc.n, interval = c(-100, 200))$objective,
             1/optimize(mean.inv.exp.med.trunc.n, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(inv.mean.exp.med.trunc.n, interval = c(-100, 200))$objective,
-            1/optimize(inv.exp.med.nt.trunc.n, interval = c(-100, 200))$objective,
-            1/optimize(mean.inv.exp.med.nt.trunc.n, interval = c(min(xseq), max(xseq)))$objective,
-            1/optimize(inv.mean.exp.med.nt.trunc.n, interval = c(-100, 200))$objective,
             1/optimize(f,interval = c(min(xseq), max(xseq)))$objective
             ),
   Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model",
-               "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model", "True Curve"), levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model",
-               "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model", "True Curve"))
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model", "True Curve"), levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model", "True Curve"))
 )
 
 # Center point coordinates
-center_x.exp.med.n <- topt.mean.exp.med.n$Topt[9]
-center_y.exp.med.n <- topt.mean.exp.med.n$Lifetime[9]
+center_x.exp.med.n <- topt.mean.exp.med.n$Topt[6]
+center_y.exp.med.n <- topt.mean.exp.med.n$Lifetime[6]
 
 # Plotting
 ggplot(topt.mean.exp.med.n, aes(x = Topt, y = Lifetime,color=Method)) +
   geom_point() +
-  geom_point(x = center_x.exp.med.n, y = center_y.exp.med.n, size = 3,col="#FF61CC",shape=8) +
+  geom_point(x = center_x.exp.med.n, y = center_y.exp.med.n, size = 3,col= viridis(6)[6],shape=8) +
   labs(title = "Lifetime vs Topt, Narrow Interval (Posterior Median)",
        subtitle="Data Generated from Exponential Distribution",
        x = "Topt",
        y = "Lifetime") +
   theme_minimal()+
+  scale_color_manual(values = viridis(6))+
   coord_cartesian(xlim = c(center_x.exp.med.n - 1, center_x.exp.med.n + 1), ylim = c(center_y.exp.med.n - 85, center_y.exp.med.n + 85))
 
 ```
@@ -1232,12 +957,13 @@ center_y.wb.n <- topt.mean.wb.n$Lifetime[7]
 # Plotting
 ggplot(topt.mean.wb.n, aes(x = Topt, y = Lifetime,color=Method)) +
   geom_point() +
-  geom_point(x = center_x.wb, y = center_y.wb, size = 3,col="#FF61CC",shape=8) +
+  geom_point(x = center_x.wb.n, y = center_y.wb.n, size = 3,col= plasma(7)[7],shape=8) +
   labs(title = "Lifetime vs Topt, Narrow Interval (Posterior Mean)",
        subtitle="Data Generated from Weibull Distribution",
        x = "Topt",
        y = "Lifetime") +
   theme_minimal()+
+  scale_color_manual(values = plasma(7))+
   coord_cartesian(xlim = c(center_x.wb.n - 2, center_x.wb.n + 2), ylim = c(center_y.wb.n - 5, center_y.wb.n + 5))
 ```
 
@@ -1334,6 +1060,8 @@ medianLife.True.wb.n<- as.numeric(rep(dub.wb.n[7,3],6))
 
 
 ggplot(data=dub.wb.n[1:6,], aes(fill = Method, color = Method)) +
+  scale_color_manual(values = plasma(6))+
+  scale_fill_manual(values = plasma(6))+
   geom_rect(aes(xmin = q1Topt, xmax = q3Topt, ymin = q1Life, ymax = q3Life), alpha = 0.3) +
   geom_rect(aes(xmin = q1Topt, xmax = q3Topt, ymin = q1Life, ymax = q3Life), 
             color = "black", fill = NA) +
@@ -1428,29 +1156,19 @@ center_y.wb.med.n <- topt.mean.wb.med.n$Lifetime[7]
 # Plotting
 ggplot(topt.mean.wb.med.n, aes(x = Topt, y = Lifetime,color=Method)) +
   geom_point() +
-  geom_point(x = center_x.wb.med.n, y = center_y.wb.med.n, size = 3,col="#FF61CC",shape=8) +
+  geom_point(x = center_x.wb.med.n, y = center_y.wb.med.n, size = 3,col=plasma(7)[7],shape=8) +
   labs(title = "Lifetime vs Topt, Narrow Interval (Posterior Median)",
        subtitle="Data Generated from Weibull Distribution",
        x = "Topt",
        y = "Lifetime") +
   theme_minimal()+
+  scale_color_manual(values = plasma(7))+
   coord_cartesian(xlim = c(center_x.wb.med.n - 1, center_x.wb.med.n + 1), ylim = c(center_y.wb.med.n - 3, center_y.wb.med.n + 3))
 ```
 
 
 
 ```{r exp.extreme.mean.narrow}
-inv.exp.nt <- function(x){
-  (exp(mean(unlist(lapply(param_list3_notrunc[[1]], function(matrix) matrix[, 1]))))*x^2-
-         exp(mean(unlist(lapply(param_list3_notrunc[[2]], function(matrix) matrix[, 1]))))*x+
-         mean(unlist(lapply(param_list3_notrunc[[3]], function(matrix) matrix[, 1]))))
-}
-inv.mean.exp.nt <- function(x){
-  (exp(mean(unlist(lapply(param_list5_notrunc[[1]], function(matrix) matrix[, 1]))))*x^2-
-         exp(mean(unlist(lapply(param_list5_notrunc[[2]], function(matrix) matrix[, 1]))))*x+
-         mean(unlist(lapply(param_list5_notrunc[[3]], function(matrix) matrix[, 1]))))
-}
-
 solve_quadratic.mean <- function(f) {
   # Calculate discriminant
   a <- exp(mean(unlist(lapply(f[[1]], function(matrix) matrix[, 1]))))
@@ -1471,18 +1189,13 @@ solve_quadratic.mean <- function(f) {
 
 ext.narrow.df <- data.frame(
   Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model",
-               "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model","True Curve"), levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model",
-               "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model","True Curve")),
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","True Curve"), levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","True Curve")),
   Low=c(solve_quadratic.mean(N_param_list1)[2],
         solve_quadratic.mean(N_param_list2)[2],
         solve_quadratic.mean(N_param_list3)[2],
         solve_quadratic.mean(N_param_list4)[2],
         solve_quadratic.mean(N_param_list5)[2],
-        uniroot(inv.exp.nt,lower=-5,upper=50)$root,
-        solve_quadratic.mean(N_param_list4_notrunc)[2],
-        uniroot(inv.mean.exp.nt,lower=-5,upper=50)$root,
         -6.935
         ),
   High=c(solve_quadratic.mean(N_param_list1)[1],
@@ -1490,31 +1203,29 @@ ext.narrow.df <- data.frame(
          solve_quadratic.mean(N_param_list3)[1],
          solve_quadratic.mean(N_param_list4)[1],
          solve_quadratic.mean(N_param_list5)[1],
-         uniroot(inv.exp.nt,lower=50,upper=100)$root,
-         solve_quadratic.mean(N_param_list4_notrunc)[1],
-         uniroot(inv.mean.exp.nt,lower=50,upper=100)$root,
          51.542)
 )
 
-center_x.exp.extreme.n <- ext.narrow.df$Low[9]
-center_y.exp.extreme.n <- ext.narrow.df$High[9]
+center_x.exp.extreme.n <- ext.narrow.df$Low[6]
+center_y.exp.extreme.n <- ext.narrow.df$High[6]
 
 # Plotting
 ggplot(ext.narrow.df, aes(x = Low, y = High,color=Method)) +
   geom_point() +
-  geom_point(x = center_x.exp.extreme.n, y = center_y.exp.extreme.n, size = 3,col="#FF61CC",shape=8) +
+  geom_point(x = center_x.exp.extreme.n, y = center_y.exp.extreme.n, size = 3,col=viridis(6)[6],shape=8) +
   labs(title = "Temperatures where Predicted Lifetime Hits 1 Day, Narrow Interval (Posterior Mean)",
        subtitle="Data Generated from Exponential Distribution",
        x = "Low",
        y = "High") +
   theme_minimal()+
+  scale_color_manual(values = viridis(6))+
   coord_cartesian(xlim = c(center_x.exp.extreme.n - 25, center_x.exp.extreme.n + 25), ylim = c(center_y.exp.extreme.n - 30, center_y.exp.extreme.n + 30))
 ```
 
 ```{r exp.extreme.boxplot.narrow}
 
 df_list.n <- list(df.new1_N, df.new2_N, df.new3_N, df.new4_N,
-                  df.new5_N, df.new3_N.NT, df.new4_N.NT, df.new5_N.NT)
+                  df.new5_N)
 
 # Lists to store results
 x_values_list.n <- list()
@@ -1557,8 +1268,7 @@ for (i in seq_along(x_values_list.n)) {
 double.box.df.ex.n <- rbind(double.box.df.ex.n, data.frame(Low = -6.935,	 High = 51.542))
 
 double.box.df.ex.n$Method <- factor(c(rep("Individual Exp Data, Exp Model",938), rep("Mean Exp Data, Exp Model", 938), rep("Individual Inverse Exp Data, Exp Model", 938),
-               rep("Mean Inverse Exp Data, Exp Model", 938), rep("Inverse Mean Exp Data, Exp Model", 938), rep("Individual Inverse Exp Data, Exp NT Model", 938),
-               rep("Mean Inverse Exp Data, Exp NT Model",938), rep("Inverse Mean Exp Data, Exp NT Model",938) , "True Curve" 
+               rep("Mean Inverse Exp Data, Exp Model", 938), rep("Inverse Mean Exp Data, Exp Model", 938) , "True Curve" 
                )
 )
 
@@ -1566,11 +1276,11 @@ double.box.df.ex.n$Method <- factor(c(rep("Individual Exp Data, Exp Model",938),
 
 plot.x.ex.n <- ggplot(double.box.df.ex.n, aes(x= Method,y= Low))+
   geom_boxplot()
-plot.x.ex.n <- layer_data(plot.x.ex.n)[,1:18]
+plot.x.ex.n <- layer_data(plot.x.ex.n)[,1:6]
 
 plot.y.ex.n <- ggplot(double.box.df.ex.n, aes(x= Method,y= High))+
   geom_boxplot() 
-plot.y.ex.n <- layer_data(plot.y.ex.n)[,1:18]
+plot.y.ex.n <- layer_data(plot.y.ex.n)[,1:6]
 
 dub.ex.n<- double.box.df.ex.n |> group_by(Method) |> summarise(medianLow=median(Low),
                                                      medianHigh=median(High),
@@ -1584,43 +1294,43 @@ dub.ex.n<- double.box.df.ex.n |> group_by(Method) |> summarise(medianLow=median(
          minLow=q1Low-1.5*iqrLow,
          maxHigh=q3High+1.5*iqrHigh,
          minHigh=q3High-1.5*iqrHigh,
-         Middle.Low = plot.x.ex$middle,
-         Middle.High = plot.y.ex$middle)
+         Middle.Low = plot.x.ex.n$middle,
+         Middle.High = plot.y.ex.n$middle)
 
 dub.ex.n$Method <-factor(dub.ex.n$Method, levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp NT Model",
-               "Mean Inverse Exp Data, Exp NT Model", "Inverse Mean Exp Data, Exp NT Model", "True Curve"))
+               "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model", "True Curve"))
 
-medianLow.True.ex.n<- as.numeric(rep(dub.ex.n[9,2],8))
-medianHigh.True.ex.n<- as.numeric(rep(dub.ex.n[9,3],8))
+medianLow.True.ex.n<- as.numeric(rep(dub.ex.n[6,2],5))
+medianHigh.True.ex.n<- as.numeric(rep(dub.ex.n[6,3],5))
 
 colnames(plot.x.ex.n) <- paste0("x.", gsub("y", "", colnames(plot.x.ex.n)))
 colnames(plot.y.ex.n) <- paste0("y.", gsub("y", "", colnames(plot.y.ex.n)))
 df.ex.n <- cbind(plot.x.ex.n, plot.y.ex.n)
 df.ex.n$Method <- factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp NT Model",
-               "Mean Inverse Exp Data, Exp NT Model", "Inverse Mean Exp Data, Exp NT Model", "True Curve"))
+               "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model", "True Curve"))
 df.outliers.ex.n <- df.ex.n |>
   select(Method, x.middle, x.outliers, y.middle, y.outliers) |>
   data.table::data.table()
 
-df.outliers.ex.n <- df.outliers.ex.n[, list(x.outliers = c(unlist(df.outliers.ex.n$x.outliers)), y.outliers = c(unlist(df.outliers.ex.n$y.outliers),rep(NA,16))),
-                           by = list(Method, x.middle, y.middle)]
+#df.outliers.ex.n <- df.outliers.ex.n[, list(x.outliers = c(unlist(df.outliers.ex.n$x.outliers)), y.outliers = c(unlist(df.outliers.ex.n$y.outliers),rep(NA,53))),
+    #                       by = list(Method, x.middle, y.middle)]
 
-ggplot(data=dub.ex.n[1:8,], aes(fill = Method, color = Method)) +
+ggplot(data=dub.ex.n[1:5,], aes(fill = Method, color = Method)) +
+  scale_fill_manual(values = viridis(5))+
+  scale_color_manual(values = viridis(5))+
   geom_rect(aes(xmin = q1Low, xmax = q3Low, ymin = q1High, ymax = q3High), alpha = 0.3) +
   geom_rect(aes(xmin = q1Low, xmax = q3Low, ymin = q1High, ymax = q3High), 
             color = "black", fill = NA) +
-  geom_segment(aes(x = minLow, y = plot.y.ex.n$y.middle[1:8], xend = maxLow, yend = plot.y.ex.n$y.middle[1:8])) + #whiskers
+  geom_segment(aes(x = minLow, y = plot.y.ex.n$y.middle[1:5], xend = maxLow, yend = plot.y.ex.n$y.middle[1:5])) + #whiskers
   geom_segment(aes(x = minLow, y = q1High, xend = minLow, yend = q3High)) + #lower end
   geom_segment(aes(x = maxLow, y = q1High, xend = maxLow, yend = q3High)) + #upper end
-  geom_segment(aes(x = plot.x.ex.n$x.middle[1:8], y = minHigh, xend = plot.x.ex.n$x.middle[1:8], yend = maxHigh)) + #whiskers
+  geom_segment(aes(x = plot.x.ex.n$x.middle[1:5], y = minHigh, xend = plot.x.ex.n$x.middle[1:5], yend = maxHigh)) + #whiskers
   geom_segment(aes(x = q1Low, y = minHigh, xend = q3Low, yend = minHigh)) + #lower end
   geom_segment(aes(x = q1Low, y = maxHigh, xend = q3Low, yend = maxHigh)) + #upper end
   #geom_point(data = df.outliers.ex.n, aes(x = x.outliers, y = y.middle), size = 1, shape = 1) + # x-direction
   #geom_point(data = df.outliers.ex.n, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
   theme_classic()+
-  facet_wrap(dub.ex.n$Method[1:8],nrow=2)+
+  facet_wrap(dub.ex.n$Method[1:5],nrow=2)+
   geom_point(aes(x=medianLow.True.ex.n, y= medianHigh.True.ex.n),color="black")+
   theme(legend.position="none")+
   labs(title= "Boxplot of Extreme Temperatures, Narrow Interval",
@@ -1676,12 +1386,13 @@ center_y.wb.extreme.n <- ext.narrow.df.mean.wb$High[7]
 # Plotting
 ggplot(ext.narrow.df.mean.wb, aes(x = Low, y = High,color=Method)) +
   geom_point() +
-  geom_point(x = center_x.wb.extreme.n, y = center_y.wb.extreme.n, size = 3,col="#FF61CC",shape=8) +
+  geom_point(x = center_x.wb.extreme.n, y = center_y.wb.extreme.n, size = 3,col=plasma(7)[7],shape=8) +
   labs(title = "Temperatures where Predicted Lifetime Hits 1 Day, Narrow Interval (Posterior Mean)",
        subtitle="Data Generated from Weibull Distribution",
        x = "Low",
        y = "High") +
   theme_minimal()+
+  scale_color_manual(values = plasma(7))+
   coord_cartesian(xlim = c(center_x.wb.extreme.n - 1, center_x.wb.extreme.n + 1), ylim = c(center_y.wb.extreme.n - 20, center_y.wb.extreme.n + 20))
 ```
 
@@ -1775,10 +1486,12 @@ df.outliers.ex.wb.n <- df.ex.wb.n |>
   select(Method, x.middle, x.outliers, y.middle, y.outliers) |>
   data.table::data.table()
 
-df.outliers.ex.wb.n <- df.outliers.ex.wb.n[, list(x.outliers = c(unlist(df.outliers.ex.wb.n$x.outliers),rep(NA,30)), y.outliers = c(unlist(df.outliers.ex.wb.n$y.outliers))),
-                           by = list(Method, x.middle, y.middle)]
+#df.outliers.ex.wb.n <- df.outliers.ex.wb.n[, list(x.outliers = c(unlist(df.outliers.ex.wb.n$x.outliers),rep(NA,30)), y.outliers = c(unlist(df.outliers.ex.wb.n$y.outliers))),
+    #                       by = list(Method, x.middle, y.middle)]
 
 ggplot(data=dub.ex.wb.n[1:6,], aes(fill = Method, color = Method)) +
+  scale_color_manual(values = plasma(6))+
+  scale_fill_manual(values = plasma(6))+
   geom_rect(aes(xmin = q1Low, xmax = q3Low, ymin = q1High, ymax = q3High), alpha = 0.3) +
   geom_rect(aes(xmin = q1Low, xmax = q3Low, ymin = q1High, ymax = q3High), 
             color = "black", fill = NA) +
@@ -1821,18 +1534,13 @@ solve_quadratic.med <- function(f) {
 
 ext.narrow.df.med <- data.frame(
   Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model",
-               "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model","True Curve"), levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model",
-               "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model","True Curve")),
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","True Curve"), levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","True Curve")),
   Low=c(solve_quadratic.med(N_param_list1)[2],
         solve_quadratic.med(N_param_list2)[2],
         solve_quadratic.med(N_param_list3)[2],
         solve_quadratic.med(N_param_list4)[2],
         solve_quadratic.med(N_param_list5)[2],
-        solve_quadratic.med(N_param_list3_notrunc)[2],
-        solve_quadratic.med(N_param_list4_notrunc)[2],
-        solve_quadratic.med(N_param_list5_notrunc)[2],
         -6.935
         ),
   High=c(solve_quadratic.med(N_param_list1)[1],
@@ -1840,24 +1548,22 @@ ext.narrow.df.med <- data.frame(
          solve_quadratic.med(N_param_list3)[1],
          solve_quadratic.med(N_param_list4)[1],
          solve_quadratic.med(N_param_list5)[1],
-         solve_quadratic.med(N_param_list3_notrunc)[1],
-         solve_quadratic.med(N_param_list4_notrunc)[1],
-         solve_quadratic.med(N_param_list5_notrunc)[1],
          51.542)
 )
 
-center_x.exp.extreme.med.n <- ext.narrow.df.med$Low[9]
-center_y.exp.extreme.med.n <- ext.narrow.df.med$High[9]
+center_x.exp.extreme.med.n <- ext.narrow.df.med$Low[6]
+center_y.exp.extreme.med.n <- ext.narrow.df.med$High[6]
 
 # Plotting
 ggplot(ext.narrow.df.med, aes(x = Low, y = High,color=Method)) +
   geom_point() +
-  geom_point(x = center_x.exp.extreme.med.n, y = center_y.exp.extreme.med.n, size = 3,col="#FF61CC",shape=8) +
+  geom_point(x = center_x.exp.extreme.med.n, y = center_y.exp.extreme.med.n, size = 3,col=viridis(6)[6],shape=8) +
   labs(title = "Temperatures where Predicted Lifetime Hits 1 Day, Narrow Interval (Posterior Median)",
        subtitle="Data Generated from Exponential Distribution",
        x = "Low",
        y = "High") +
   theme_minimal()+
+  scale_color_manual(values = viridis(6))+
   coord_cartesian(xlim = c(center_x.exp.extreme.med.n - 17, center_x.exp.extreme.med.n + 17), ylim = c(center_y.exp.extreme.med.n - 15, center_y.exp.extreme.med.n + 15))
 
 ```
@@ -1909,12 +1615,13 @@ center_y.wb.extreme.med.n <- ext.narrow.df.med.wb$High[7]
 # Plotting
 ggplot(ext.narrow.df.med.wb, aes(x = Low, y = High,color=Method)) +
   geom_point() +
-  geom_point(x = center_x.wb.extreme.med.n, y = center_y.wb.extreme.med.n, size = 3,col="#FF61CC",shape=8) +
+  geom_point(x = center_x.wb.extreme.med.n, y = center_y.wb.extreme.med.n, size = 3,col=plasma(7)[7],shape=8) +
   labs(title = "Temperatures where Predicted Lifetime Hits 1 Day, Narrow Interval (Posterior Median)",
        subtitle="Data Generated from Weibull Distribution",
        x = "Low",
        y = "High") +
   theme_minimal()+
+  scale_color_manual(values = plasma(7))+
   coord_cartesian(xlim = c(center_x.wb.extreme.med.n - 2, center_x.wb.extreme.med.n + 2), ylim = c(center_y.wb.extreme.med.n - 5, center_y.wb.extreme.med.n + 5))
 ```
 
@@ -1948,17 +1655,17 @@ ind.exp.29.n<-qqPlot(N_data.list[[100]]$trait[N_data.list[[100]]$T==29],
                                mean(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
 
 
-plot(ind.exp.13.n,pch=20,xlim=c(0,70),ylim=c(0,100),
+plot(ind.exp.13.n,pch=20,xlim=c(0,70),ylim=c(0,100), col = plasma(5)[1],
      main="QQ-Plot for Exp Data and Exp Distribution, Narrow Interval",
        xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
-points(ind.exp.17.n,pch=20,col="chocolate1")
-points(ind.exp.21.n,pch=20,col="cornflowerblue")
-points(ind.exp.25.n,pch=20,col="mediumorchid4")
-points(ind.exp.29.n,pch=20,col="darkslategray3")
+points(ind.exp.17.n,pch=20,col= plasma(5)[2])
+points(ind.exp.21.n,pch=20,col= plasma(5)[3])
+points(ind.exp.25.n,pch=20,col= plasma(5)[4])
+points(ind.exp.29.n,pch=20,col= plasma(5)[5])
 legend("topleft",legend=c("13","17","21","25","29"),
-       pch=c(20,20,20,20,20),col=c("black","chocolate1","cornflowerblue","mediumorchid4","darkslategray3"))
-abline(a=0,b=1,lwd=2,col="magenta")
+       pch=c(20,20,20,20,20),col=c(plasma(5)[1],plasma(5)[2],plasma(5)[3],plasma(5)[4],plasma(5)[5]))
+abline(a=0,b=1,lwd=2,col="black")
 ```
 
 ```{r QQPlot.Mean.Exp.Data.Narrow}
@@ -1998,17 +1705,17 @@ mean.exp.29.n<-qqPlot(df.mean.mean.exp.n$trait[df.mean.mean.exp.n$T==29],
                                mean(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
 
 
-plot(mean.exp.13.n,pch=20,xlim=c(0,20),ylim=c(0,40),
+plot(mean.exp.13.n,pch=20,xlim=c(0,20),ylim=c(0,40), col = plasma(5)[1],
      main="QQ-Plot for Mean Exp Data and Exp Distribution, Narrow Interval",
        xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
-points(mean.exp.17.n,pch=20,col="chocolate1")
-points(mean.exp.21.n,pch=20,col="dodgerblue")
-points(mean.exp.25.n,pch=20,col="mediumorchid4")
-points(mean.exp.29.n,pch=20,col="darkslategray3")
+points(mean.exp.17.n,pch=20,col= plasma(5)[2])
+points(mean.exp.21.n,pch=20,col= plasma(5)[3])
+points(mean.exp.25.n,pch=20,col= plasma(5)[4])
+points(mean.exp.29.n,pch=20,col= plasma(5)[5])
 legend("topleft",legend=c("13","17","21","25","29"),
-       pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
-abline(a=0,b=1,lwd=2,col="magenta")
+       pch=c(20,20,20,20,20),col=c(plasma(5)[1],plasma(5)[2],plasma(5)[3],plasma(5)[4],plasma(5)[5]))
+abline(a=0,b=1,lwd=2,col="black")
 ```
 
 ```{r QQPlot.Inv.Exp.Data.Narrow}
@@ -2049,17 +1756,17 @@ inv.exp.29.n<-qqPlot(1/N_data.list[[100]]$trait[N_data.list[[100]]$T==29],
        plot.it=FALSE)
 
 
-plot(inv.exp.13.n,pch=20,ylim=c(0,12),
+plot(inv.exp.13.n,pch=20,ylim=c(0,12), col = plasma(5)[1],
      main="QQ-Plot for Inverse Exp Data and Trunc Norm Distribution, Narrow Interval",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
-points(inv.exp.17.n,pch=20,col="chocolate1")
-points(inv.exp.21.n,pch=20,col="dodgerblue")
-points(inv.exp.25.n,pch=20,col="mediumorchid4")
-points(inv.exp.29.n,pch=20,col="darkslategray3")
+points(inv.exp.17.n,pch=20,col= plasma(5)[2])
+points(inv.exp.21.n,pch=20,col= plasma(5)[3])
+points(inv.exp.25.n,pch=20,col= plasma(5)[4])
+points(inv.exp.29.n,pch=20,col= plasma(5)[5])
 legend("topleft",legend=c("13","17","21","25","29"),
-       pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
-abline(a=0,b=1,lwd=2,col="magenta")
+       pch=c(20,20,20,20,20),col=c(plasma(5)[1],plasma(5)[2],plasma(5)[3],plasma(5)[4],plasma(5)[5]))
+abline(a=0,b=1,lwd=2,col="black")
 ```
 
 ```{r QQPlot.Mean.Inv.Exp.Data.Narrow}
@@ -2119,17 +1826,17 @@ mean.inv.exp.29.n<-qqPlot(1/df.mean.mean.exp.n$trait[df.mean.mean.exp.n$T==29],
        plot.it=FALSE)
 
 
-plot(mean.inv.exp.13.n,pch=20,xlim=c(0,50),ylim=c(0,0.3),
+plot(mean.inv.exp.13.n,pch=20,xlim=c(0,50),ylim=c(0,0.3), col = plasma(5)[1],
      main="QQ-Plot for Mean Inverse Exp Data and Trunc Norm Distribution, Narrow Interval",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
-points(mean.inv.exp.17.n,pch=20,col="chocolate1")
-points(mean.inv.exp.21.n,pch=20,col="dodgerblue")
-points(mean.inv.exp.25.n,pch=20,col="mediumorchid4")
-points(mean.inv.exp.29.n,pch=20,col="darkslategray3")
+points(mean.inv.exp.17.n,pch=20,col= plasma(5)[2])
+points(mean.inv.exp.21.n,pch=20,col= plasma(5)[3])
+points(mean.inv.exp.25.n,pch=20,col= plasma(5)[4])
+points(mean.inv.exp.29.n,pch=20,col= plasma(5)[5])
 legend("topleft",legend=c("13","17","21","25","29"),
-       pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
-abline(a=0,b=1,lwd=2,col="magenta")
+       pch=c(20,20,20,20,20),col=c(plasma(5)[1],plasma(5)[2],plasma(5)[3],plasma(5)[4],plasma(5)[5]))
+abline(a=0,b=1,lwd=2,col="black")
 ```
 
 ```{r QQPlot.Inv.Mean.Exp.Data.Narrow}
@@ -2189,17 +1896,17 @@ inv.mean.exp.29.n<-qqPlot(df.mean.inv.exp.n$trait[df.mean.inv.exp.n$T==29],
        plot.it=FALSE)
 
 
-plot(inv.mean.exp.13.n,pch=20,xlim=c(0,6.5),ylim=c(0,10),
+plot(inv.mean.exp.13.n,pch=20,xlim=c(0,6.5),ylim=c(0,10), col = plasma(5)[1],
      main="QQ-Plot for Inverse Mean Exp Data and Trunc Norm Distribution, Narrow Interval",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
-points(inv.mean.exp.17.n,pch=20,col="chocolate1")
-points(inv.mean.exp.21.n,pch=20,col="dodgerblue")
-points(inv.mean.exp.25.n,pch=20,col="mediumorchid4")
-points(inv.mean.exp.29.n,pch=20,col="darkslategray3")
+points(inv.mean.exp.17.n,pch=20,col= plasma(5)[2])
+points(inv.mean.exp.21.n,pch=20,col= plasma(5)[3])
+points(inv.mean.exp.25.n,pch=20,col= plasma(5)[4])
+points(inv.mean.exp.29.n,pch=20,col= plasma(5)[5])
 legend("topleft",legend=c("13","17","21","25","29"),
-       pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
-abline(a=0,b=1,lwd=2,col="magenta")
+       pch=c(20,20,20,20,20),col=c(plasma(5)[1],plasma(5)[2],plasma(5)[3],plasma(5)[4],plasma(5)[5]))
+abline(a=0,b=1,lwd=2,col="black")
 ```
 
 
@@ -2231,17 +1938,17 @@ ind.wb.29.n<-qqPlot(Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]]$
                                (mean(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1]))))*29+
                                mean(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
 
-plot(ind.wb.13.n,xlim=c(0,90),ylim=c(0,35),pch=20,
+plot(ind.wb.13.n,xlim=c(0,90),ylim=c(0,35),pch=20, col = plasma(5)[1],
        main="QQ-Plot for WB Data and Exponential Distribution, Narrow Interval",
        xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
-points(ind.wb.17.n,pch=20,col="chocolate1")
-points(ind.wb.21.n,pch=20,col="dodgerblue")
-points(ind.wb.25.n,pch=20,col="mediumorchid4")
-points(ind.wb.29.n,pch=20,col="darkslategray3")
+points(ind.wb.17.n,pch=20,col= plasma(5)[2])
+points(ind.wb.21.n,pch=20,col= plasma(5)[3])
+points(ind.wb.25.n,pch=20,col= plasma(5)[4])
+points(ind.wb.29.n,pch=20,col= plasma(5)[5])
 legend("topleft",legend=c("13","17","21","25","29"),
-       pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
-abline(a=0,b=1,lwd=2,col="magenta")
+       pch=c(20,20,20,20,20),col=c(plasma(5)[1],plasma(5)[2],plasma(5)[3],plasma(5)[4],plasma(5)[5]))
+abline(a=0,b=1,lwd=2,col="black")
 
 ```
 
@@ -2282,17 +1989,17 @@ mean.wb.29.n<-qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T==29],
                                mean(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 1]))))),plot.it=FALSE)
 
 
-plot(mean.wb.13.n,pch=20,xlim=c(0,60),ylim=c(0,30),
+plot(mean.wb.13.n,pch=20,xlim=c(0,60),ylim=c(0,30), col = plasma(5)[1],
      main="QQ-Plot for Mean WB Data and Exp Distribution, Narrow Interval",
        xlab="Quantiles of Exponential with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
-points(mean.wb.17.n,pch=20,col="chocolate1")
-points(mean.wb.21.n,pch=20,col="dodgerblue")
-points(mean.wb.25.n,pch=20,col="mediumorchid4")
-points(mean.wb.29.n,pch=20,col="darkslategray3")
+points(mean.wb.17.n,pch=20,col= plasma(5)[2])
+points(mean.wb.21.n,pch=20,col= plasma(5)[3])
+points(mean.wb.25.n,pch=20,col= plasma(5)[4])
+points(mean.wb.29.n,pch=20,col= plasma(5)[5])
 legend("topleft",legend=c("13","17","21","25","29"),
-       pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
-abline(a=0,b=1,lwd=2,col="magenta")
+       pch=c(20,20,20,20,20),col=c(plasma(5)[1],plasma(5)[2],plasma(5)[3],plasma(5)[4],plasma(5)[5]))
+abline(a=0,b=1,lwd=2,col="black")
 ```
 
 ```{r QQPlot.Inv.WB.Data.Narrow}
@@ -2338,17 +2045,17 @@ inv.wb.29.n<-qqPlot(1/Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]
                        min=0,
                        max=Inf),plot.it=FALSE)
 
-plot(inv.wb.13.n,xlim=c(0,500),ylim=c(0,0.4),pch=20,
+plot(inv.wb.13.n,xlim=c(0,500),ylim=c(0,0.4),pch=20, col = plasma(5)[1],
        main="QQ-Plot for Inverse WB Data and Exp Distribution, Narrow Interval",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
-points(inv.wb.17.n,pch=20,col="chocolate1")
-points(inv.wb.21.n,pch=20,col="dodgerblue")
-points(inv.wb.25.n,pch=20,col="mediumorchid4")
-points(inv.wb.29.n,pch=20,col="darkslategray3")
+points(inv.wb.17.n,pch=20,col= plasma(5)[2])
+points(inv.wb.21.n,pch=20,col= plasma(5)[3])
+points(inv.wb.25.n,pch=20,col= plasma(5)[4])
+points(inv.wb.29.n,pch=20,col= plasma(5)[5])
 legend("topleft",legend=c("13","17","21","25","29"),
-       pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
-abline(a=0,b=1,lwd=2,col="magenta")
+       pch=c(20,20,20,20,20),col=c(plasma(5)[1],plasma(5)[2],plasma(5)[3],plasma(5)[4],plasma(5)[5]))
+abline(a=0,b=1,lwd=2,col="black")
 
 ```
 
@@ -2404,17 +2111,17 @@ mean.inv.wb.29.n<-qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T==29],
                        min=0,
                        max=Inf),plot.it=FALSE)
 
-plot(mean.inv.wb.13.n,pch=20,ylim=c(0,30),xlim=c(0,15000),
+plot(mean.inv.wb.13.n,pch=20,ylim=c(0,30),xlim=c(0,15000), col = plasma(5)[1],
        main="QQ-Plot for Mean Inverse WB Data and Trunc Norm Distribution, Narrow Interval",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
-points(mean.inv.wb.17.n,pch=20,col="chocolate1")
-points(mean.inv.wb.21.n,pch=20,col="dodgerblue")
-points(mean.inv.wb.25.n,pch=20,col="mediumorchid4")
-points(mean.inv.wb.29.n,pch=20,col="darkslategray3")
+points(mean.inv.wb.17.n,pch=20,col= plasma(5)[2])
+points(mean.inv.wb.21.n,pch=20,col= plasma(5)[3])
+points(mean.inv.wb.25.n,pch=20,col= plasma(5)[4])
+points(mean.inv.wb.29.n,pch=20,col= plasma(5)[5])
 legend("topleft",legend=c("13","17","21","25","29"),
-       pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
-abline(a=0,b=1,lwd=2,col="magenta")
+       pch=c(20,20,20,20,20),col=c(plasma(5)[1],plasma(5)[2],plasma(5)[3],plasma(5)[4],plasma(5)[5]))
+abline(a=0,b=1,lwd=2,col="black")
 
 ```
 
@@ -2471,17 +2178,17 @@ inv.mean.wb.29.n<-qqPlot(df.mean.inv.wb.n$trait[df.mean.inv.wb.n$T==29],
                        min=0,
                        max=Inf),plot.it=FALSE)
 
-plot(inv.mean.wb.13.n,pch=20,xlim=c(0,4000),ylim=c(0,0.3),
+plot(inv.mean.wb.13.n,pch=20,xlim=c(0,4000),ylim=c(0,0.3), col = plasma(5)[1],
        main="QQ-Plot for Inverse Mean WB Data and Trunc Norm Distribution, Narrow Interval",
        xlab="Quantiles of Truncated Normal with Posterior Mean Rate Parameter",
        ylab="Quantiles of Generated Data with True Parameters")
-points(inv.mean.wb.17.n,pch=20,col="chocolate1")
-points(inv.mean.wb.21.n,pch=20,col="dodgerblue")
-points(inv.mean.wb.25.n,pch=20,col="mediumorchid4")
-points(inv.mean.wb.29.n,pch=20,col="darkslategray3")
+points(inv.mean.wb.17.n,pch=20,col= plasma(5)[2])
+points(inv.mean.wb.21.n,pch=20,col= plasma(5)[3])
+points(inv.mean.wb.25.n,pch=20,col= plasma(5)[4])
+points(inv.mean.wb.29.n,pch=20,col= plasma(5)[5])
 legend("topleft",legend=c("13","17","21","25","29"),
-       pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
-abline(a=0,b=1,lwd=2,col="magenta")
+       pch=c(20,20,20,20,20),col=c(plasma(5)[1],plasma(5)[2],plasma(5)[3],plasma(5)[4],plasma(5)[5]))
+abline(a=0,b=1,lwd=2,col="black")
 
 ```
 
@@ -2512,65 +2219,58 @@ wb.wb.29.n<-qqPlot(Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]]$T
                                (mean(unlist(lapply(Weibull_N_param_list6[[2]], function(matrix) matrix[, 1]))))*29+
                                mean(unlist(lapply(Weibull_N_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_N_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_N_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
 
-plot(wb.wb.13.n,xlim=c(0,35),ylim=c(0,35),pch=20,
+plot(wb.wb.13.n,xlim=c(0,35),ylim=c(0,35),pch=20, col = plasma(5)[1],
        main="QQ-Plot for WB Data and WB Distribution, Narrow Interval",
        xlab="Quantiles of Weibull with Posterior Mean Parameters",
        ylab="Quantiles of Generated Data with True Parameters")
-points(wb.wb.17.n,pch=20,col="chocolate1")
-points(wb.wb.21.n,pch=20,col="dodgerblue")
-points(wb.wb.25.n,pch=20,col="mediumorchid4")
-points(wb.wb.29.n,pch=20,col="darkslategray3")
+points(wb.wb.17.n,pch=20,col=plasma(5)[2])
+points(wb.wb.21.n,pch=20,col=plasma(5)[3])
+points(wb.wb.25.n,pch=20,col=plasma(5)[4])
+points(wb.wb.29.n,pch=20,col=plasma(5)[5])
 legend("topleft",legend=c("13","17","21","25","29"),
-       pch=c(20,20,20,20,20),col=c("black","chocolate1","dodgerblue","mediumorchid4","darkslategray3"))
-abline(a=0,b=1,lwd=2,col="magenta")
+       pch=c(20,20,20,20,20),col=c(plasma(5)[1],plasma(5)[2],plasma(5)[3],plasma(5)[4],plasma(5)[5]))
+abline(a=0,b=1,lwd=2,col="black")
 ```
 
 
 
 ```{r RMSE.Boxplot.Narrow.Exp}
-xdf1_N$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
-xdf2_N$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
-xdf3_N$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
-xdf4_N$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
-xdf5_N$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
-xdf3_N.NT$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
-xdf4_N.NT$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
-xdf5_N.NT$true.value<-rep(true_curve(seq(from= 13, to = 29, length.out = 250)),938)
+xdf1_N$true.value<-rep(true_curve(seq(from= 5, to = 37, length.out = 250)),938)
+xdf2_N$true.value<-rep(true_curve(seq(from= 5, to = 37, length.out = 250)),938)
+xdf3_N$true.value<-rep(true_curve(seq(from= 5, to = 37, length.out = 250)),938)
+xdf4_N$true.value<-rep(true_curve(seq(from= 5, to = 37, length.out = 250)),938)
+xdf5_N$true.value<-rep(true_curve(seq(from= 5, to = 37, length.out = 250)),938)
 
 
-rmse1_N<-xdf1_N |> group_by(point) |> summarize(rmse1=sqrt(mean((trunc.inv-1/true.value)^2))) |> select(rmse1)
-rmse2_N<-xdf2_N |> group_by(point) |> summarize(rmse2=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse2)
-rmse3_N<-xdf3_N |> group_by(point) |> summarize(rmse3=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse3)
-rmse4_N<-xdf4_N |> group_by(point) |> summarize(rmse4=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse4)
-rmse5_N<-xdf5_N |> group_by(point) |> summarize(rmse5=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse5)
-rmse3_N.NT<-xdf3_N.NT |> group_by(point) |> summarize(rmse3.NT=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse3.NT)
-rmse4_N.NT<-xdf4_N.NT |> group_by(point) |> summarize(rmse4.NT=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse4.NT)
-rmse5_N.NT<-xdf5_N.NT |> group_by(point) |> summarize(rmse5.NT=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse5.NT)
+rmse1_N<-xdf1_N |> group_by(point) |> summarize(rmse1=sqrt(mean((trunc.inv-true.value)^2))) |> select(rmse1)
+rmse2_N<-xdf2_N |> group_by(point) |> summarize(rmse2=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse2)
+rmse3_N<-xdf3_N |> group_by(point) |> summarize(rmse3=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse3)
+rmse4_N<-xdf4_N |> group_by(point) |> summarize(rmse4=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse4)
+rmse5_N<-xdf5_N |> group_by(point) |> summarize(rmse5=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse5)
+
 
 boxplot.df_N<-data.frame(
-  Method=factor(c(rep("Individual Exp Data, Exp Model",250),rep("Mean Exp Data, Exp Model",250),rep("Individual Inverse Exp Data, Exp Model",250),rep("Mean Inverse Exp Data, Exp Model",250),rep("Inverse Mean Exp Data, Exp Model",250),rep("Individual Inverse Exp Data, Exp NT Model",250),rep("Mean Inverse Exp Data, Exp NT Model",250),rep("Inverse Mean Exp Data, Exp NT Model",250)),levels=c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model","Mean Inverse Exp Data, Exp Model",
-                                                                                                                                                                                                                                                                                                                                                                                                      "Inverse Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp NT Model", "Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model")),
+  Method=factor(c(rep("Individual Exp Data, Exp Model",250),rep("Mean Exp Data, Exp Model",250),rep("Individual Inverse Exp Data, Exp Model",250),rep("Mean Inverse Exp Data, Exp Model",250),rep("Inverse Mean Exp Data, Exp Model",250)),levels=c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model","Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model")),
   RMSE=c(rmse1_N$rmse1,
          rmse2_N$rmse2,
          rmse3_N$rmse3,
          rmse4_N$rmse4,
-         rmse5_N$rmse5,
-         rmse3_N.NT$rmse3.NT,
-         rmse4_N.NT$rmse4.NT,
-         rmse5_N.NT$rmse5.NT
+         rmse5_N$rmse5
   ),
-  Temperature=c(rep(seq(from=13,to=29,length.out=250),8))
+  Temperature=c(rep(seq(from=5,to=37,length.out=250),5))
 )
 
 
 ggplot(boxplot.df_N,aes(y=Method,x=RMSE,fill=Method))+
   geom_boxplot()+
   theme_classic()+
+  scale_fill_manual(values = viridis(5))+
   theme(legend.position="none")+
   labs(title="Boxplot of RMSE Comparisons",
        subtitle="Data Generated from Exponential Distribution, Narrow Interval")
 ggplot(boxplot.df_N,aes(y=RMSE,x=Temperature,col=Method))+
   geom_line(aes(col=Method))+
+  scale_color_manual(values = viridis(5))+
   theme_classic()+
   labs(title="Plot of RMSE Comparisons",
        subtitle="Data Generated from Exponential Distribution, Narrow Interval")
@@ -2579,12 +2279,12 @@ ggplot(boxplot.df_N,aes(y=RMSE,x=Temperature,col=Method))+
 ```
 
 ```{r RMSE.Boxplot.Narrow.WB}
-xdf1_W_N$true.value<-rep(my.med(seq(from= 13, to = 29, length.out = 250)),938)
-xdf2_W_N$true.value<-rep(my.med(seq(from= 13, to = 29, length.out = 250)),938)
-xdf3_W_N$true.value<-rep(my.med(seq(from= 13, to = 29, length.out = 250)),938)
-xdf4_W_N$true.value<-rep(my.med(seq(from= 13, to = 29, length.out = 250)),938)
-xdf5_W_N$true.value<-rep(my.med(seq(from= 13, to = 29, length.out = 250)),938)
-xdf6_W_N$true.value<-rep(my.med(seq(from= 13, to = 29, length.out = 250)),938)
+xdf1_W_N$true.value<-rep(my.med(seq(from= 5, to = 37, length.out = 250)),938)
+xdf2_W_N$true.value<-rep(my.med(seq(from= 5, to = 37, length.out = 250)),938)
+xdf3_W_N$true.value<-rep(my.med(seq(from= 5, to = 37, length.out = 250)),938)
+xdf4_W_N$true.value<-rep(my.med(seq(from= 5, to = 37, length.out = 250)),938)
+xdf5_W_N$true.value<-rep(my.med(seq(from= 5, to = 37, length.out = 250)),938)
+xdf6_W_N$true.value<-rep(my.med(seq(from= 5, to = 37, length.out = 250)),938)
 
 
 rmse1.wb_N<-xdf1_W_N |> group_by(point) |> summarize(rmse1.wb=sqrt(mean((trunc.eval-true.value)^2))) |> select(rmse1.wb)
@@ -2605,7 +2305,7 @@ boxplot.df.wb_N<-data.frame(
          rmse5.wb_N$rmse5.wb,
          rmse6.wb_N$rmse6.wb
   ),
-  Temperature=c(rep(seq(from=13,to=29, length.out = 250),6))
+  Temperature=c(rep(seq(from=5,to=37, length.out = 250),6))
 )
 
 joint.box_N <- rbind(boxplot.df_N[!(boxplot.df_N$Method %in% c("Individual Inverse Exp Data, Exp NT Model","Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model")),],boxplot.df.wb_N)
@@ -2616,23 +2316,27 @@ ggplot(boxplot.df.wb_N,aes(y=Method,x=RMSE,fill=Method))+
   geom_boxplot()+
   theme_classic()+
   theme(legend.position="none")+
+  scale_fill_manual(values = viridis(6))+
   labs(title="Boxplot of RMSE Comparisons",
        subtitle="Data Generated from Weibull Distribution, Narrow Interval")
 ggplot(boxplot.df.wb_N,aes(y=RMSE,x=Temperature,col=Method))+
   geom_line()+
   theme_classic()+
+  scale_color_manual(values = viridis(6))+
   labs(title="Plot of RMSE Comparisons",
        subtitle="Data Generated from Weibull Distribution, Narrow Interval")
 
 ggplot(joint.box_N,aes(y=Method,x=RMSE,fill=Method))+
   geom_boxplot()+
   theme_classic()+
+  scale_fill_manual(values = viridis(11))+
   theme(legend.position="none")+
   labs(title="Boxplot of RMSE Comparisons",
        subtitle="Data Generated from Weibull Distribution, Narrow Interval")
 ggplot(joint.box_N,aes(y=RMSE,x=Temperature,col=Method))+
   geom_line()+
   theme_classic()+
+  scale_color_manual(values = viridis(11))+
   labs(title="Plot of RMSE Comparisons",
        subtitle="Data Generated from Weibull Distribution, Narrow Interval")
 
@@ -2640,14 +2344,11 @@ ggplot(joint.box_N,aes(y=RMSE,x=Temperature,col=Method))+
 
 ```{r RMSE.Table.Exp.Narrow}
 summary_list_N <- list(
-  xdf1_N |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
-  xdf2_N |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
-  xdf3_N |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
-  xdf4_N |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
-  xdf5_N |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
-  xdf3_N.NT |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
-  xdf4_N.NT |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
-  xdf5_N.NT |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2)))
+  xdf1_N |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf2_N |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf3_N |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf4_N |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf5_N |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2)))
 )
 
 # Convert the list into a matrix
@@ -2658,25 +2359,19 @@ RMSE.tab.exp_N$Method <- factor(c(
   "Mean Exp Data, Exp Model",
   "Individual Inverse Exp Data, Trunc Norm Model",
   "Mean Inverse Exp Data, Trunc Norm Model",
-  "Inverse Mean Exp Data, Trunc Norm Model",
-  "Individual Inverse Exp Data, Normal Model",
-  "Mean Inverse Exp Data, Normal Model",
-  "Inverse Mean Exp Data, Normal Model"
+  "Inverse Mean Exp Data, Trunc Norm Model"
 ), levels = c(
   "Individual Exp Data, Exp Model",
   "Mean Exp Data, Exp Model",
   "Individual Inverse Exp Data, Trunc Norm Model",
   "Mean Inverse Exp Data, Trunc Norm Model",
-  "Inverse Mean Exp Data, Trunc Norm Model",
-  "Individual Inverse Exp Data, Normal Model",
-  "Mean Inverse Exp Data, Normal Model",
-  "Inverse Mean Exp Data, Normal Model"
+  "Inverse Mean Exp Data, Trunc Norm Model"
 ))
 
 RMSE.tab.exp_N
 
 RMSE.tab.exp_N |> ggplot(aes(x=Method, y=RMSE))+
-  geom_bar(stat = "identity", position = "dodge", color = "black", fill = "blanchedalmond")+
+  geom_bar(stat = "identity", position = "dodge", color = "black", fill = viridis(10)[5])+
   geom_text(aes(label = round(RMSE, 4)), hjust = -0.2, position = position_dodge(width = 0.9)) +
   scale_x_discrete(limits = rev(levels(RMSE.tab.exp_N$Method)))+
   labs(title="RMSE Boxplot, Narrow Interval",
@@ -2717,7 +2412,7 @@ RMSE.tab.wb_N$Method <- factor(c(
 RMSE.tab.wb_N
 
 RMSE.tab.wb_N |> ggplot(aes(x=Method, y=RMSE))+
-  geom_bar(stat = "identity", position = "dodge", color = "black", fill = "khaki1")+
+  geom_bar(stat = "identity", position = "dodge", color = "black", fill = mako(10)[5])+
   geom_text(aes(label = round(RMSE, 2)), hjust = -0.2, position = position_dodge(width = 0.9)) +
   scale_x_discrete(limits = rev(levels(RMSE.tab.wb_N$Method)))+
   labs(title="RMSE Boxplot, Narrow Interval",
@@ -2728,20 +2423,17 @@ RMSE.tab.wb_N |> ggplot(aes(x=Method, y=RMSE))+
 
 ```{r RMSE.Table.Compare.Narrow}
 summary_list.compare_N <- list(
-  xdf1_N |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf1_N |> summarize(rmse = sqrt(mean((trunc.inv - true.value)^2))),
   xdf1_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
   xdf6_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf2_N |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf2_N |> summarize(rmse = sqrt(mean((trunc.inv - true.value)^2))),
   xdf2_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf3_N |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf3_N |> summarize(rmse = sqrt(mean((trunc.inv - true.value)^2))),
   xdf3_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf4_N |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf4_N |> summarize(rmse = sqrt(mean((trunc.inv - true.value)^2))),
   xdf4_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf5_N |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
-  xdf5_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf3_N.NT |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
-  xdf4_N.NT |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2))),
-  xdf5_N.NT |> summarize(rmse = sqrt(mean((trunc.inv - 1/true.value)^2)))
+  xdf5_N |> summarize(rmse = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf5_W_N |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2)))
 )
 
 # Convert the list into a matrix
@@ -2758,10 +2450,7 @@ row.names(RMSE.tab.compare_N) <- c(
   "Mean Inverse Exp Data, Trunc Norm Model",
   "Mean Inverse WB Data, Trunc Norm Model",
   "Inverse Mean Exp Data, Trunc Norm Model",
-  "Inverse Mean WB Data, Trunc Norm Model",
-  "Individual Inverse Exp Data, Normal Model",
-  "Mean Inverse Exp Data, Normal Model",
-  "Inverse Mean Exp Data, Normal Model"
+  "Inverse Mean WB Data, Trunc Norm Model"
 )
 
 colnames(RMSE.tab.compare_N) <- "RMSE"
