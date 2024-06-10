@@ -436,15 +436,15 @@ ggsave("c_wb_compare.png", plot = c.wb.log.plot, width = 10)
 
 
 ```{r plot.a.wide.compare}
-desired_order.compare<-c("WB Data, WB Model","Inverse Mean WB Data, Exp Model","Inverse Mean Exp Data, Exp Model",
-                         "Mean Inverse WB Data, Exp Model","Mean Inverse Exp Data, Exp Model",
-                         "Individual Inverse WB Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+desired_order.compare<-c("WB Data, WB Model","Inverse Mean WB Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model",
+                         "Mean Inverse WB Data, Trunc Norm Model","Mean Inverse Exp Data, Trunc Norm Model",
+                         "Individual Inverse WB Data, Trunc Norm Model","Individual Inverse Exp Data, Trunc Norm Model",
                          "Mean WB Data, Exp Model","Mean Exp Data, Exp Model","Individual WB Data, Exp Model","Individual Exp Data, Exp Model")
 df.a.compare <- data.frame(
   x = factor(c("Individual Exp Data, Exp Model","Individual WB Data, Exp Model","Mean Exp Data, Exp Model","Mean WB Data, Exp Model",
-               "Individual Inverse Exp Data, Exp Model",  "Individual Inverse WB Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model", "Mean Inverse WB Data, Exp Model","Inverse Mean Exp Data, Exp Model",
-               "Inverse Mean WB Data, Exp Model","WB Data, WB Model")),
+               "Individual Inverse Exp Data, Trunc Norm Model",  "Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model", "Mean Inverse WB Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model",
+               "Inverse Mean WB Data, Trunc Norm Model","WB Data, WB Model")),
   Mean = c(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1]))))-true.a,
            exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))-true.exp.a,
            exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1]))))-true.a,
@@ -487,21 +487,21 @@ a.compare.plot <- ggplot(df.a.compare, aes(x, Mean))+
   geom_point(col=viridis(3)[1]) + geom_linerange(aes(ymin = lower, ymax = upper), col = viridis(3)[2])+labs(title="A",x="Method")+
   geom_hline(yintercept = 0, linetype = "dashed", color = viridis(3)[3])+
   theme_classic()+
-  #ylim(-0.01,0.01)+
+  ylim(-0.01,0.01)+
   coord_flip()
 a.compare.plot
 ```
 
 ```{r plot.b.wide.compare}
-desired_order.compare<-c("WB Data, WB Model","Inverse Mean WB Data, Exp Model","Inverse Mean Exp Data, Exp Model",
-                         "Mean Inverse WB Data, Exp Model","Mean Inverse Exp Data, Exp Model",
-                         "Individual Inverse WB Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+desired_order.compare<-c("WB Data, WB Model","Inverse Mean WB Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model",
+                         "Mean Inverse WB Data, Trunc Norm Model","Mean Inverse Exp Data, Trunc Norm Model",
+                         "Individual Inverse WB Data, Trunc Norm Model","Individual Inverse Exp Data, Trunc Norm Model",
                          "Mean WB Data, Exp Model","Mean Exp Data, Exp Model","Individual WB Data, Exp Model","Individual Exp Data, Exp Model")
 df.b.compare <- data.frame(
   x = factor(c("Individual Exp Data, Exp Model","Individual WB Data, Exp Model","Mean Exp Data, Exp Model","Mean WB Data, Exp Model",
-               "Individual Inverse Exp Data, Exp Model",  "Individual Inverse WB Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model", "Mean Inverse WB Data, Exp Model","Inverse Mean Exp Data, Exp Model",
-               "Inverse Mean WB Data, Exp Model","WB Data, WB Model")),
+               "Individual Inverse Exp Data, Trunc Norm Model",  "Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model", "Mean Inverse WB Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model",
+               "Inverse Mean WB Data, Trunc Norm Model","WB Data, WB Model")),
   Mean = c(exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))))-true.b,
            (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))-true.exp.b,
            exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))))-true.b,
@@ -544,21 +544,21 @@ b.compare.plot <- ggplot(df.b.compare, aes(x, Mean))+
   geom_point(col= viridis(3)[1]) + geom_linerange(aes(ymin = lower, ymax = upper), col = viridis(3)[2])+labs(title="B",x="Method")+
   geom_hline(yintercept = 0, linetype = "dashed", color = viridis(3)[3])+
   theme_classic()+
-  #ylim(-0.16,0.16)+
+  ylim(-0.16,0.16)+
   coord_flip()
 b.compare.plot
 ```
 
 ```{r plot.c.wide.compare}
-desired_order.compare<-c("WB Data, WB Model","Inverse Mean WB Data, Exp Model","Inverse Mean Exp Data, Exp Model",
-                         "Mean Inverse WB Data, Exp Model","Mean Inverse Exp Data, Exp Model",
-                         "Individual Inverse WB Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+desired_order.compare<-c("WB Data, WB Model","Inverse Mean WB Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model",
+                         "Mean Inverse WB Data, Trunc Norm Model","Mean Inverse Exp Data, Trunc Norm Model",
+                         "Individual Inverse WB Data, Trunc Norm Model","Individual Inverse Exp Data, Trunc Norm Model",
                          "Mean WB Data, Exp Model","Mean Exp Data, Exp Model","Individual WB Data, Exp Model","Individual Exp Data, Exp Model")
 df.c.compare <- data.frame(
   x = factor(c("Individual Exp Data, Exp Model","Individual WB Data, Exp Model","Mean Exp Data, Exp Model","Mean WB Data, Exp Model",
-               "Individual Inverse Exp Data, Exp Model",  "Individual Inverse WB Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model", "Mean Inverse WB Data, Exp Model","Inverse Mean Exp Data, Exp Model",
-               "Inverse Mean WB Data, Exp Model","WB Data, WB Model")),
+               "Individual Inverse Exp Data, Trunc Norm Model",  "Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model", "Mean Inverse WB Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model",
+               "Inverse Mean WB Data, Trunc Norm Model","WB Data, WB Model")),
   Mean = c((mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))-true.c,
            (mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))-true.exp.c,
            (mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1]))))-true.c,
@@ -596,12 +596,12 @@ df.c.compare <- data.frame(
             (hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c)
 )
 df.c.compare$x <- factor(df.c.compare$x, levels = desired_order.compare)
-df.c.compare$upper<-ifelse(df.c.compare$upper>0.55,0.55,df.c.compare$upper)
+#df.c.compare$upper<-ifelse(df.c.compare$upper>0.55,0.55,df.c.compare$upper)
 c.compare.plot <- ggplot(df.c.compare, aes(x, Mean))+
   geom_point(col = viridis(3)[1]) + geom_linerange(aes(ymin = lower, ymax = upper), col = viridis(3)[2])+labs(title="C",x="Method")+
   geom_hline(yintercept = 0, linetype = "dashed", col = viridis(3)[3])+
   theme_classic()+
-  ylim(-0.55,0.55)+
+  #ylim(-0.55,0.55)+
   coord_flip()
 c.compare.plot
 ```
@@ -672,9 +672,9 @@ topt.mean.exp<-data.frame(
             1/optimize(inv.mean.exp.trunc, interval = c(-100, 200))$objective,
             1/optimize(f,interval = c(-100, 200))$objective
             ),
-  Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","True Curve"),levels=c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model", "True Curve"))
+  Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model","True Curve"),levels=c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model", "True Curve"))
 )
 
 # Center point coordinates
@@ -736,8 +736,8 @@ double.box.df<-data.frame(
                1/min_values_list[[4]],
                1/min_values_list[[5]],
                15.433231),
-  Method=factor(c(rep("Individual Exp Data, Exp Model",938), rep("Mean Exp Data, Exp Model", 938), rep("Individual Inverse Exp Data, Exp Model", 938),
-               rep("Mean Inverse Exp Data, Exp Model", 938), rep("Inverse Mean Exp Data, Exp Model", 938), "True Curve")
+  Method=factor(c(rep("Individual Exp Data, Exp Model",938), rep("Mean Exp Data, Exp Model", 938), rep("Individual Inverse Exp Data, Trunc Norm Model", 938),
+               rep("Mean Inverse Exp Data, Trunc Norm Model", 938), rep("Inverse Mean Exp Data, Trunc Norm Model", 938), "True Curve")
                )
 )
 
@@ -764,8 +764,8 @@ dub<- double.box.df |> group_by(Method) |> summarise(medianTopt=median(Topt),
          Middle.Topt = plot.x$middle,
          Middle.Life = plot.y$middle)
 
-dub$Method <-factor(dub$Method, levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model", "True Curve"))
+dub$Method <-factor(dub$Method, levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model", "True Curve"))
 
 medianTopt.True<- as.numeric(rep(dub[6,2],5))
 medianLife.True<- as.numeric(rep(dub[6,3],5))
@@ -773,13 +773,13 @@ medianLife.True<- as.numeric(rep(dub[6,3],5))
 colnames(plot.x) <- paste0("x.", gsub("y", "", colnames(plot.x)))
 colnames(plot.y) <- paste0("y.", gsub("y", "", colnames(plot.y)))
 df <- cbind(plot.x, plot.y)
-df$Method <- factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model", "True Curve"))
+df$Method <- factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model", "True Curve"))
 df.outliers <- df |>
   select(Method, x.middle, x.outliers, y.middle, y.outliers) |>
   data.table::data.table()
-#df.outliers <- df.outliers[, list(x.outliers = unlist(df.outliers$x.outliers), y.outliers = c(unlist(df.outliers$y.outliers),rep(NA,10))),
-       #                    by = list(Method, x.middle, y.middle)]
+df.outliers <- df.outliers[, list(x.outliers = c(unlist(df.outliers$x.outliers),rep(NA,53)), y.outliers = c(unlist(df.outliers$y.outliers))),
+                           by = list(Method, x.middle, y.middle)]
 
 ggplot(data=dub[1:5,], aes(fill = Method, color = Method)) +
   scale_color_manual(values = viridis(5))+
@@ -802,7 +802,7 @@ ggplot(data=dub[1:5,], aes(fill = Method, color = Method)) +
   labs(title= "Boxplot of Topt and Lifetime",
        x="Topt",
        y="Lifetime")
-ggsave("Topt_Life_Exp.png", width = 10)
+#ggsave("Topt_Life_Exp.png", width = 10)
 ```
 
 ```{r WB.topt.maxlife.mean}
@@ -870,9 +870,9 @@ topt.mean.wb<-data.frame(
             1/optimize(ind.wb.wb, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(true_curve.inv.wb,interval = c(min(xseq), max(xseq)))$objective
             ),
-  Method=factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
-               "Mean Inverse WB Data, Exp Model","Inverse Mean WB Data, Exp Model","WB Data, WB Model", "True Curve"), levels= c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
-               "Mean Inverse WB Data, Exp Model","Inverse Mean WB Data, Exp Model","WB Data, WB Model", "True Curve"))
+  Method=factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse WB Data, Trunc Norm Model","Inverse Mean WB Data, Trunc Norm Model","WB Data, WB Model", "True Curve"), levels= c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse WB Data, Trunc Norm Model","Inverse Mean WB Data, Trunc Norm Model","WB Data, WB Model", "True Curve"))
 )
 
 # Center point coordinates
@@ -936,9 +936,9 @@ double.box.df.wb<-data.frame(
                1/min_values_list.wb[[5]],
                1/min_values_list.wb[[6]],
                15.44774),
-  Method=factor(c(rep("Individual WB Data, Exp Model",938), rep("Mean WB Data, Exp Model", 938), rep("Individual Inverse WB Data, Exp Model", 938),
-               rep("Mean Inverse WB Data, Exp Model", 938), rep("Inverse Mean WB Data, Exp Model", 938), rep("Individual WB Data, WB Model", 938),"True Curve"), levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Exp Model",
-               "Mean Inverse WB Data, Exp Model", "Inverse Mean WB Data, Exp Model", "Individual WB Data, WB Model",
+  Method=factor(c(rep("Individual WB Data, Exp Model",938), rep("Mean WB Data, Exp Model", 938), rep("Individual Inverse WB Data, Trunc Norm Model", 938),
+               rep("Mean Inverse WB Data, Trunc Norm Model", 938), rep("Inverse Mean WB Data, Trunc Norm Model", 938), rep("Individual WB Data, WB Model", 938),"True Curve"), levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", "Individual WB Data, WB Model",
                 "True Curve")
                )
 )
@@ -953,14 +953,14 @@ plot.y.wb <- layer_data(plot.y.wb)[,1:18]
 colnames(plot.x.wb) <- paste0("x.", gsub("y", "", colnames(plot.x.wb)))
 colnames(plot.y.wb) <- paste0("y.", gsub("y", "", colnames(plot.y.wb)))
 df.wb <- cbind(plot.x.wb, plot.y.wb)
-df.wb$Method <- factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Exp Model",
-               "Mean Inverse WB Data, Exp Model", "Inverse Mean WB Data, Exp Model", "Individual WB Data, WB Model",
+df.wb$Method <- factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", "Individual WB Data, WB Model",
                 "True Curve"))
 df.outliers.wb<- df.wb |>
   select(Method, x.middle, x.outliers, y.middle, y.outliers) |>
   data.table::data.table()
-#df.outliers.wb <- df.outliers.wb[, list(x.outliers = unlist(df.outliers.wb$x.outliers), y.outliers = c(unlist(df.outliers.wb$y.outliers),rep(NA, 205))),
-                #           by = list(Method, x.middle, y.middle)]
+df.outliers.wb <- df.outliers.wb[, list(x.outliers = unlist(df.outliers.wb$x.outliers), y.outliers = c(unlist(df.outliers.wb$y.outliers),rep(NA, 27))),
+                           by = list(Method, x.middle, y.middle)]
 
 dub.wb<- double.box.df.wb |> group_by(Method) |> summarise(medianTopt=median(Topt),
                                                      medianLife=median(Lifetime),
@@ -976,8 +976,8 @@ dub.wb<- double.box.df.wb |> group_by(Method) |> summarise(medianTopt=median(Top
          minLife=ifelse(q1Life-1.5*iqrLife<0,0,q1Life-1.5*iqrLife),
          Middle.Topt = plot.x.wb$middle,
          Middle.Life = plot.y.wb$middle,)
-dub.wb$Method <- factor(dub.wb$Method, levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Exp Model",
-               "Mean Inverse WB Data, Exp Model", "Inverse Mean WB Data, Exp Model", "Individual WB Data, WB Model",
+dub.wb$Method <- factor(dub.wb$Method, levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", "Individual WB Data, WB Model",
                 "True Curve"))
 medianTopt.True.wb<- as.numeric(rep(dub.wb[7,2],6))
 medianLife.True.wb<- as.numeric(rep(dub.wb[7,3],6))
@@ -999,12 +999,12 @@ ggplot(data=dub.wb[1:6,], aes(fill = Method, color = Method)) +
   #geom_point(data = df.outliers.wb, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
   theme_classic()+
   geom_point(aes(x=medianTopt.True.wb, y= medianLife.True.wb),color="black")+
-  facet_wrap(dub.wb$Method[1:6],nrow=2)+
+  facet_wrap(dub.wb$Method[1:6],nrow=2, scales = "free_y")+
   theme(legend.position="none")+
   labs(title= "Boxplot of Topt and Lifetime",
        x="Topt",
        y="Lifetime")
-ggsave("Topt_Life_WB.png", width = 10)
+#ggsave("Topt_Life_WB.png", width = 10)
 
 ```
 
@@ -1072,9 +1072,9 @@ topt.mean.exp.med<-data.frame(
             1/optimize(inv.mean.exp.med.trunc, interval = c(-100, 200))$objective,
             1/optimize(f,interval = c(min(xseq), max(xseq)))$objective
             ),
-  Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","True Curve"), levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","True Curve"))
+  Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model","True Curve"), levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model","True Curve"))
 )
 
 # Center point coordinates
@@ -1157,9 +1157,9 @@ topt.mean.wb.med<-data.frame(
             1/optimize(ind.wb.wb.med, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(true_curve.inv.wb,interval = c(min(xseq), max(xseq)))$objective
             ),
-  Method=factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
-               "Mean Inverse WB Data, Exp Model","Inverse Mean WB Data, Exp Model","WB Data, WB Model","True Curve"), levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
-               "Mean Inverse WB Data, Exp Model","Inverse Mean WB Data, Exp Model","WB Data, WB Model","True Curve"))
+  Method=factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse WB Data, Trunc Norm Model","Inverse Mean WB Data, Trunc Norm Model","WB Data, WB Model","True Curve"), levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse WB Data, Trunc Norm Model","Inverse Mean WB Data, Trunc Norm Model","WB Data, WB Model","True Curve"))
 )
 
 # Center point coordinates
@@ -1201,9 +1201,9 @@ solve_quadratic.mean <- function(f) {
 }
 
 ext.df.mean <- data.frame(
-  Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","True Curve"), levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","True Curve")),
+  Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model","True Curve"), levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model","True Curve")),
   Low=c(solve_quadratic.mean(param_list1)[2],
         solve_quadratic.mean(param_list2)[2],
         solve_quadratic.mean(param_list3)[2],
@@ -1280,8 +1280,8 @@ for (i in seq_along(x_values_list)) {
 }
 double.box.df.ex <- rbind(double.box.df.ex, data.frame(Low = -6.935,	 High = 51.542))
 
-double.box.df.ex$Method <- factor(c(rep("Individual Exp Data, Exp Model",938), rep("Mean Exp Data, Exp Model", 938), rep("Individual Inverse Exp Data, Exp Model", 938),
-               rep("Mean Inverse Exp Data, Exp Model", 938), rep("Inverse Mean Exp Data, Exp Model", 938) , "True Curve")
+double.box.df.ex$Method <- factor(c(rep("Individual Exp Data, Exp Model",938), rep("Mean Exp Data, Exp Model", 938), rep("Individual Inverse Exp Data, Trunc Norm Model", 938),
+               rep("Mean Inverse Exp Data, Trunc Norm Model", 938), rep("Inverse Mean Exp Data, Trunc Norm Model", 938) , "True Curve")
 )
 
 
@@ -1309,9 +1309,8 @@ dub.ex<- double.box.df.ex |> group_by(Method) |> summarise(medianLow=median(Low)
          Middle.Low = plot.x.ex$middle,
          Middle.High = plot.y.ex$middle)
 
-dub.ex$Method <-factor(dub.ex$Method, levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp NT Model",
-               "Mean Inverse Exp Data, Exp NT Model", "Inverse Mean Exp Data, Exp NT Model", "True Curve"))
+dub.ex$Method <-factor(dub.ex$Method, levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model", "True Curve"))
 
 medianLow.True.ex<- as.numeric(rep(dub.ex[6,2],5))
 medianHigh.True.ex<- as.numeric(rep(dub.ex[6,3],5))
@@ -1319,14 +1318,14 @@ medianHigh.True.ex<- as.numeric(rep(dub.ex[6,3],5))
 colnames(plot.x.ex) <- paste0("x.", gsub("y", "", colnames(plot.x.ex)))
 colnames(plot.y.ex) <- paste0("y.", gsub("y", "", colnames(plot.y.ex)))
 df.ex <- cbind(plot.x.ex, plot.y.ex)
-df.ex$Method <- factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model","True Curve"))
+df.ex$Method <- factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model","True Curve"))
 df.outliers.ex <- df.ex |>
   select(Method, x.middle, x.outliers, y.middle, y.outliers) |>
   data.table::data.table()
 
-#df.outliers.ex <- df.outliers.ex[, list(x.outliers = c(unlist(df.outliers.ex$x.outliers),rep(NA,18)), y.outliers = c(unlist(df.outliers.ex$y.outliers))),
-                     #      by = list(Method, x.middle, y.middle)]
+df.outliers.ex <- df.outliers.ex[, list(x.outliers = c(unlist(df.outliers.ex$x.outliers)), y.outliers = c(unlist(df.outliers.ex$y.outliers), rep(NA,2))),
+                           by = list(Method, x.middle, y.middle)]
 
 ggplot(data=dub.ex[1:5,], aes(fill = Method, color = Method)) +
   scale_fill_manual(values = viridis(5))+
@@ -1343,7 +1342,7 @@ ggplot(data=dub.ex[1:5,], aes(fill = Method, color = Method)) +
   #geom_point(data = df.outliers.ex, aes(x = x.outliers, y = y.middle), size = 1, shape = 1) + # x-direction
   #geom_point(data = df.outliers.ex, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
   theme_classic()+
-  facet_wrap(dub.ex$Method[1:5],nrow=2)+
+  facet_wrap(dub.ex$Method[1:5],nrow=2, scales = "free_y")+
   geom_point(aes(x=medianLow.True.ex, y= medianHigh.True.ex),color="black")+
   theme(legend.position="none")+
   labs(title= "Boxplot of Extreme Temperatures",
@@ -1373,10 +1372,10 @@ solve_quadratic.mean.wb <- function(f) {
 }
 
 ext.df.mean.wb <- data.frame(
-  Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual WB Data, WB Model", "True Curve"), 
-               levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual WB Data, WB Model", "True Curve")),
+  Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model","Individual WB Data, WB Model", "True Curve"), 
+               levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model","Individual WB Data, WB Model", "True Curve")),
   Low=c(solve_quadratic.mean.wb(Weibull_param_list1)[2],
         solve_quadratic.mean.wb(Weibull_param_list2)[2],
         solve_quadratic.mean.wb(Weibull_param_list3)[2],
@@ -1455,10 +1454,10 @@ for (i in seq_along(x_values_list.wb)) {
 }
 double.box.df.ex.wb <- rbind(double.box.df.ex.wb, data.frame(Low = 4.192,	 High = 40.602))
 
-double.box.df.ex.wb$Method <- factor(c(rep("Individual WB Data, Exp Model",938), rep("Mean WB Data, Exp Model", 938), rep("Individual Inverse WB Data, Exp Model", 938),
-               rep("Mean Inverse WB Data, Exp Model", 938), rep("Inverse Mean WB Data, Exp Model", 938), rep("WB Data, WB Model", 938), "True Curve" 
-               ),levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Exp Model",
-               "Mean Inverse WB Data, Exp Model", "Inverse Mean WB Data, Exp Model", "WB Data, WB Model", "True Curve")
+double.box.df.ex.wb$Method <- factor(c(rep("Individual WB Data, Exp Model",938), rep("Mean WB Data, Exp Model", 938), rep("Individual Inverse WB Data, Trunc Norm Model", 938),
+               rep("Mean Inverse WB Data, Trunc Norm Model", 938), rep("Inverse Mean WB Data, Trunc Norm Model", 938), rep("WB Data, WB Model", 938), "True Curve" 
+               ),levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", "WB Data, WB Model", "True Curve")
 )
 
 
@@ -1486,8 +1485,8 @@ dub.ex.wb<- double.box.df.ex.wb |> group_by(Method) |> summarise(medianLow=media
          Middle.Low = plot.x.ex.wb$middle,
          Middle.High = plot.y.ex.wb$middle)
 
-dub.ex.wb$Method <-factor(dub.ex.wb$Method, levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Exp Model",
-               "Mean Inverse WB Data, Exp Model", "Inverse Mean WB Data, Exp Model", "WB Data, WB Model", "True Curve"))
+dub.ex.wb$Method <-factor(dub.ex.wb$Method, levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", "WB Data, WB Model", "True Curve"))
 
 medianLow.True.ex.wb<- as.numeric(rep(dub.ex.wb[7,2],6))
 medianHigh.True.ex.wb<- as.numeric(rep(dub.ex.wb[7,3],6))
@@ -1495,14 +1494,14 @@ medianHigh.True.ex.wb<- as.numeric(rep(dub.ex.wb[7,3],6))
 colnames(plot.x.ex.wb) <- paste0("x.", gsub("y", "", colnames(plot.x.ex.wb)))
 colnames(plot.y.ex.wb) <- paste0("y.", gsub("y", "", colnames(plot.y.ex.wb)))
 df.ex.wb <- cbind(plot.x.ex.wb, plot.y.ex.wb)
-df.ex.wb$Method <- factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Exp Model",
-               "Mean Inverse WB Data, Exp Model", "Inverse Mean WB Data, Exp Model", "WB Data, WB Model", "True Curve"))
+df.ex.wb$Method <- factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model",
+               "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", "WB Data, WB Model", "True Curve"))
 df.outliers.ex.wb <- df.ex.wb |>
   select(Method, x.middle, x.outliers, y.middle, y.outliers) |>
   data.table::data.table()
 
-#df.outliers.ex.wb <- df.outliers.ex.wb[, list(x.outliers = c(unlist(df.outliers.ex.wb$x.outliers),rep(NA,45)), y.outliers = c(unlist(df.outliers.ex.wb$y.outliers))),
-                     #      by = list(Method, x.middle, y.middle)]
+df.outliers.ex.wb <- df.outliers.ex.wb[, list(x.outliers = c(unlist(df.outliers.ex.wb$x.outliers), rep(NA,37)), y.outliers = c(unlist(df.outliers.ex.wb$y.outliers))),
+                           by = list(Method, x.middle, y.middle)]
 
 ggplot(data=dub.ex.wb[1:6,], aes(fill = Method, color = Method)) +
   scale_fill_manual(values = plasma(6))+
@@ -1519,7 +1518,7 @@ ggplot(data=dub.ex.wb[1:6,], aes(fill = Method, color = Method)) +
   #geom_point(data = df.outliers.ex.wb, aes(x = x.outliers, y = y.middle), size = 1, shape = 1) + # x-direction
   #geom_point(data = df.outliers.ex.wb, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
   theme_classic()+
-  facet_wrap(dub.ex.wb$Method[1:6],nrow=2)+
+  facet_wrap(dub.ex.wb$Method[1:6],nrow=2, scales = "free_y")+
   geom_point(aes(x=medianLow.True.ex.wb, y= medianHigh.True.ex.wb),color="black")+
   theme(legend.position="none")+
   labs(title= "Boxplot of Extreme Temperatures",
@@ -1548,9 +1547,9 @@ solve_quadratic.med <- function(f) {
 }
 
 ext.df.med <- data.frame(
-  Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","True Curve"), levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","True Curve")),
+  Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model","True Curve"), levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model","True Curve")),
   Low=c(solve_quadratic.med(param_list1)[2],
         solve_quadratic.med(param_list2)[2],
         solve_quadratic.med(param_list3)[2],
@@ -1603,10 +1602,10 @@ solve_quadratic.med.wb <- function(f) {
 }
 
 ext.df.med.wb <- data.frame(
-  Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual WB Data, WB Model", "True Curve"), 
-               levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
-               "Mean Inverse Exp Data, Exp Model","Inverse Mean Exp Data, Exp Model","Individual WB Data, WB Model", "True Curve")),
+  Method=factor(c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model","Individual WB Data, WB Model", "True Curve"), 
+               levels = c("Individual Exp Data, Exp Model","Mean Exp Data, Exp Model","Individual Inverse Exp Data, Trunc Norm Model",
+               "Mean Inverse Exp Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model","Individual WB Data, WB Model", "True Curve")),
   Low=c(solve_quadratic.med.wb(Weibull_param_list1)[2],
         solve_quadratic.med.wb(Weibull_param_list2)[2],
         solve_quadratic.med.wb(Weibull_param_list3)[2],
@@ -2264,7 +2263,7 @@ rmse4<-xdf4 |> group_by(point) |> summarize(rmse4=sqrt(mean((trunc.inv-1/true.va
 rmse5<-xdf5 |> group_by(point) |> summarize(rmse5=sqrt(mean((trunc.inv-1/true.value)^2)))|> select(rmse5)
 
 boxplot.df<-data.frame(
-  Method=factor(c(rep("Individual Exp Data, Exp Model",250),rep("Mean Exp Data, Exp Model",250),rep("Individual Inverse Exp Data, Exp Model",250),rep("Mean Inverse Exp Data, Exp Model",250),rep("Inverse Mean Exp Data, Exp Model",250)),levels=rev(c("Inverse Mean Exp Data, Exp Model","Mean Inverse Exp Data, Exp Model","Individual Inverse Exp Data, Exp Model",
+  Method=factor(c(rep("Individual Exp Data, Exp Model",250),rep("Mean Exp Data, Exp Model",250),rep("Individual Inverse Exp Data, Trunc Norm Model",250),rep("Mean Inverse Exp Data, Trunc Norm Model",250),rep("Inverse Mean Exp Data, Trunc Norm Model",250)),levels=rev(c("Inverse Mean Exp Data, Trunc Norm Model","Mean Inverse Exp Data, Trunc Norm Model","Individual Inverse Exp Data, Trunc Norm Model",
                "Mean Exp Data, Exp Model","Individual Exp Data, Exp Model"))),
   RMSE=c(rmse1$rmse1,
          rmse2$rmse2,
@@ -2308,7 +2307,7 @@ rmse6.wb<-xdf6_W |> group_by(point) |> summarize(rmse6.wb=sqrt(mean((trunc.eval-
 
 
 boxplot.df.wb<-data.frame(
-  Method=factor(c(rep("Individual WB Data, Exp Model",250),rep("Mean WB Data, Exp Model",250),rep("Individual Inverse WB Data, Exp Model",250),rep("Mean Inverse WB Data, Exp Model",250),rep("Inverse Mean WB Data, Exp Model",250),rep("WB Data, WB Model",250)),levels=rev(c("WB Data, WB Model","Inverse Mean WB Data, Exp Model","Mean Inverse WB Data, Exp Model","Individual Inverse WB Data, Exp Model",
+  Method=factor(c(rep("Individual WB Data, Exp Model",250),rep("Mean WB Data, Exp Model",250),rep("Individual Inverse WB Data, Trunc Norm Model",250),rep("Mean Inverse WB Data, Trunc Norm Model",250),rep("Inverse Mean WB Data, Trunc Norm Model",250),rep("WB Data, WB Model",250)),levels=rev(c("WB Data, WB Model","Inverse Mean WB Data, Trunc Norm Model","Mean Inverse WB Data, Trunc Norm Model","Individual Inverse WB Data, Trunc Norm Model",
                "Mean WB Data, Exp Model","Individual WB Data, Exp Model"))),
   RMSE=c(rmse1.wb$rmse1.wb,
          rmse2.wb$rmse2.wb,
@@ -2336,7 +2335,7 @@ ggplot(boxplot.df.wb,aes(y=RMSE,x=Temperature,col=Method))+
   labs(title="Plot of RMSE Comparisons",
        subtitle="Data Generated from Weibull Distribution")
 
-joint.box <- rbind(boxplot.df[!(boxplot.df$Method %in% c("Individual Inverse Exp Data, Exp NT Model","Mean Inverse Exp Data, Exp NT Model","Inverse Mean Exp Data, Exp NT Model")),],boxplot.df.wb)
+joint.box <- rbind(boxplot.df,boxplot.df.wb)
 joint.box$Method <- factor(joint.box$Method, levels = rev(desired_order.compare))
 
 ggplot(joint.box,aes(y=Method,x=RMSE,fill=Method))+
@@ -2386,7 +2385,7 @@ RMSE.tab.exp$Method <- factor(c(
 RMSE.tab.exp
 RMSE.tab.exp |> ggplot(aes(x=Method, y=RMSE))+
   geom_bar(stat = "identity", position = "dodge", color = "black", fill = viridis(10)[5])+
-  geom_text(aes(label = round(RMSE, 2)), hjust = -0.2, position = position_dodge(width = 0.9)) +
+  geom_text(aes(label = round(RMSE, 4)), hjust = -0.2, position = position_dodge(width = 0.9)) +
   scale_x_discrete(limits = rev(levels(RMSE.tab.exp$Method)))+
   labs(title="RMSE Boxplot",
        subtitle = "Exponential Data")+
@@ -2438,23 +2437,23 @@ RMSE.tab.wb |> ggplot(aes(x=Method, y=RMSE))+
 
 ```{r RMSE.Table.Compare}
 summary_list.compare <- list(
-  xdf1 |> summarize(rmse = sqrt(mean((trunc.inv - true.value)^2))),
-  xdf1_W |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf6_W |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf2 |> summarize(rmse = sqrt(mean((trunc.inv - true.value)^2))),
-  xdf2_W |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf3 |> summarize(rmse = sqrt(mean((trunc.inv - true.value)^2))),
-  xdf3_W |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf4 |> summarize(rmse = sqrt(mean((trunc.inv - true.value)^2))),
-  xdf4_W |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf5 |> summarize(rmse = sqrt(mean((trunc.inv - true.value)^2))),
-  xdf5_W |> summarize(rmse = sqrt(mean((trunc.eval - true.value)^2)))
+  xdf1 |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf1_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf6_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf2 |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf2_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf3 |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf3_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf4 |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf4_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
+  xdf5 |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf5_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2)))
 )
 
 # Convert the list into a matrix
 RMSE.tab.compare <- do.call(rbind, summary_list.compare)
 
-row.names(RMSE.tab.compare) <- c(
+RMSE.tab.compare$Method <- factor(c(
   "Individual Exp Data, Exp Model",
   "Individual WB Data, Exp Model",
   "Individual WB Data, WB Model",
@@ -2466,10 +2465,34 @@ row.names(RMSE.tab.compare) <- c(
   "Mean Inverse WB Data, Trunc Norm Model",
   "Inverse Mean Exp Data, Trunc Norm Model",
   "Inverse Mean WB Data, Trunc Norm Model"
-)
+),
+  levels= c(
+  "Individual Exp Data, Exp Model",
+  "Individual WB Data, Exp Model",
+  "Individual WB Data, WB Model",
+  "Mean Exp Data, Exp Model",
+  "Mean WB Data, Exp Model",
+  "Individual Inverse Exp Data, Trunc Norm Model",
+  "Individual Inverse WB Data, Trunc Norm Model",
+  "Mean Inverse Exp Data, Trunc Norm Model",
+  "Mean Inverse WB Data, Trunc Norm Model",
+  "Inverse Mean Exp Data, Trunc Norm Model",
+  "Inverse Mean WB Data, Trunc Norm Model"
+))
 
-colnames(RMSE.tab.compare) <- "RMSE"
 RMSE.tab.compare
+
+RMSE.tab.compare$Set <- factor(c("Exponential", "Weibull", "Weibull", rep(c("Exponential", "Weibull"),4)))
+
+RMSE.tab.compare |> ggplot(aes(x=Method, y=RMSE, fill = Set))+
+  geom_bar(stat = "identity", position = "dodge", color = "black")+
+  scale_fill_manual(values = mako(2))+
+  geom_text(aes(label = round(RMSE, 4)), hjust = -0.2, position = position_dodge(width = 0.9)) +
+  scale_x_discrete(limits = rev(levels(RMSE.tab.compare$Method)))+
+  labs(title="RMSE Boxplot",
+       subtitle = "Weibull Data")+
+  coord_flip()+
+  theme_classic()
 
 ```
 
@@ -2518,14 +2541,18 @@ ggplot() +
        y = "Mortality Rate") +
   theme_minimal()
 ggplot() +
-  geom_line(data=N_mean.xdf5, aes(x = point,y = med.value), color = cividis(10)[1],lwd=1) +
-  geom_ribbon(data=N_mean.xdf5, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = cividis(10)[1], alpha = 0.3) +
-  geom_line(data=mean.xdf5, aes(x = point,y = med.value), color = rocket(10)[5],lwd=1) +
-  geom_ribbon(data=mean.xdf5, aes(ymin = lower.hdi, ymax = upper.hdi, x=point), fill = rocket(10)[5], alpha = 0.2) +
+  geom_line(data=N_mean.xdf5, aes(x = point,y = med.value, color = "Narrow"),lwd=1) +
+  geom_ribbon(data=N_mean.xdf5, aes(ymin = lower.hdi, ymax = upper.hdi, x=point, fill = "Narrow"), alpha = 0.3) +
+  geom_line(data=mean.xdf5, aes(x = point,y = med.value, color = "Wide"),lwd=1) +
+  geom_ribbon(data=mean.xdf5, aes(ymin = lower.hdi, ymax = upper.hdi, x=point, fill = "Wide"), alpha = 0.2) +
   geom_line(data=mean.xdf5, aes(x = point, y = true_curve), color = "black", linetype = "dashed") +
   labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean Data)",
        x = "Temperature",
-       y = "Mortality Rate") +
+       y = "Mortality Rate",
+       fill = "95% HDI Bands",
+       color = "Posterior Curve") +
+  scale_color_manual(values = c("Narrow" = cividis(10)[1], "Wide" = rocket(10)[5], "True Curve" = "black")) +
+  scale_fill_manual(values = c("Narrow" = cividis(10)[1], "Wide" = rocket(10)[5])) +
   theme_minimal()
 ```
 
@@ -2571,14 +2598,18 @@ ggplot() +
        y = "Lifetime") +
   theme_minimal()
 ggplot() +
-  geom_line(data=N_mean.xdf5, aes(x = point,y = med.value.inv), color = cividis(10)[1],lwd=1) +
-  geom_ribbon(data=N_mean.xdf5, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = cividis(10)[1], alpha = 0.3) +
-  geom_line(data=mean.xdf5, aes(x = point,y = med.value.inv), color = rocket(10)[5],lwd=1) +
-  geom_ribbon(data=mean.xdf5, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point), fill = rocket(10)[5], alpha = 0.2) +
+  geom_line(data=N_mean.xdf5, aes(x = point,y = med.value.inv, color = "Narrow"),lwd=1) +
+  geom_ribbon(data=N_mean.xdf5, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point, fill = "Narrow"), alpha = 0.3) +
+  geom_line(data=mean.xdf5, aes(x = point,y = med.value.inv, color = "Wide"), lwd=1) +
+  geom_ribbon(data=mean.xdf5, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x=point, fill = "Wide"), alpha = 0.2) +
   geom_line(data=mean.xdf5, aes(x = point, y = true_curve.inv), color = "black", linetype = "dashed") +
   labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean Data)",
        x = "Temperature",
-       y = "Lifetime") +
+       y = "Lifetime",
+       fill = "95% HDI Bands",
+       color = "Posterior Curve") +
+  scale_color_manual(values = c("Narrow" = cividis(10)[1], "Wide" = rocket(10)[5], "True Curve" = "black")) +
+  scale_fill_manual(values = c("Narrow" = cividis(10)[1], "Wide" = rocket(10)[5])) +
   theme_minimal()
 
 ```
@@ -2625,14 +2656,18 @@ ggplot() +
        y = "Mortality Rate") +
   theme_minimal()
 ggplot() +
-  geom_line(data= mean.xdf5_W_N, aes(x = point,y = med.value.inv), color = mako(10)[8],lwd=1) +
-  geom_ribbon(data = mean.xdf5_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(data= mean.xdf5_W, aes(x = point,y = med.value.inv), color = plasma(10)[8],lwd=1) +
-  geom_ribbon(data = mean.xdf5_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(data= mean.xdf5_W_N, aes(x = point,y = med.value.inv, color = "Narrow"), lwd=1) +
+  geom_ribbon(data = mean.xdf5_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv, fill = "Narrow"), alpha = 0.3) +
+  geom_line(data= mean.xdf5_W, aes(x = point,y = med.value.inv, color = "Wide"), lwd=1) +
+  geom_ribbon(data = mean.xdf5_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv, fill = "Wide"), alpha = 0.3) +
   geom_line(data = mean.xdf5_W, aes(y = true_curve.inv, x=point), color = "black", linetype = "dashed")+
     labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean WB Data)", 
        x = "Temperature", 
-       y = "Mortality Rate") +
+       y = "Mortality Rate",
+       fill = "95% HDI Bands",
+       color = "Posterior Curve") +
+  scale_color_manual(values = c("Narrow" = mako(10)[8], "Wide" = plasma(10)[8], "True Curve" = "black")) +
+  scale_fill_manual(values = c("Narrow" = mako(10)[8], "Wide" = plasma(10)[8])) +
   theme_minimal()
 ```
 
@@ -2646,8 +2681,7 @@ ggplot() +
     labs(title = "Narrow and Wide Median Curve Comparison (Individual WB Data)", 
        x = "Temperature", 
        y = "Lifetime") +
-  theme_minimal()+
-  xlim(13,29)
+  theme_minimal()
 ggplot() +
   geom_line(data= mean.xdf2_W_N, aes(x = point,y = med.value), color = mako(10)[8],lwd=1) +
   geom_ribbon(data = mean.xdf2_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
@@ -2657,8 +2691,7 @@ ggplot() +
     labs(title = "Narrow and Wide Median Curve Comparison (Mean WB Data)", 
        x = "Temperature", 
        y = "Lifetime") +
-  theme_minimal()+
-  xlim(13,29)
+  theme_minimal()
 ggplot() +
   geom_line(data= mean.xdf3_W_N, aes(x = point,y = med.value), color = mako(10)[8],lwd=1) +
   geom_ribbon(data = mean.xdf3_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
@@ -2668,8 +2701,7 @@ ggplot() +
     labs(title = "Narrow and Wide Median Curve Comparison (Inverse WB Data)", 
        x = "Temperature", 
        y = "Lifetime") +
-  theme_minimal()+
-  xlim(13,29)
+  theme_minimal()
 ggplot() +
   geom_line(data= mean.xdf4_W_N, aes(x = point,y = med.value), color = mako(10)[8],lwd=1) +
   geom_ribbon(data = mean.xdf4_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
@@ -2679,19 +2711,21 @@ ggplot() +
     labs(title = "Narrow and Wide Median Curve Comparison (Mean Inverse WB Data)", 
        x = "Temperature", 
        y = "Lifetime") +
-  theme_minimal()+
-  xlim(13,29)
+  theme_minimal()
 ggplot() +
-  geom_line(data= mean.xdf5_W_N, aes(x = point,y = med.value), color = mako(10)[8],lwd=1) +
-  geom_ribbon(data = mean.xdf5_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(data= mean.xdf5_W, aes(x = point,y = med.value), color = plasma(10)[8],lwd=1) +
-  geom_ribbon(data = mean.xdf5_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
+  geom_line(data= mean.xdf5_W_N, aes(x = point,y = med.value, color = "Narrow"),lwd=1) +
+  geom_ribbon(data = mean.xdf5_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi, fill = "Narrow"), alpha = 0.3) +
+  geom_line(data= mean.xdf5_W, aes(x = point,y = med.value, color = "Wide"), lwd=1) +
+  geom_ribbon(data = mean.xdf5_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi, fill = "Wide"), alpha = 0.3) +
   geom_line(data = mean.xdf5_W, aes(y = true_curve, x=point), color = "black", linetype = "dashed")+
     labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean WB Data)", 
        x = "Temperature", 
-       y = "Lifetime") +
-  theme_minimal()+
-  xlim(13,29)
+       y = "Lifetime",
+       fill = "95% HDI Bands",
+       color = "Posterior Curve") +
+  scale_color_manual(values = c("Narrow" = mako(10)[8], "Wide" = plasma(10)[8], "True Curve" = "black")) +
+  scale_fill_manual(values = c("Narrow" = mako(10)[8], "Wide" = plasma(10)[8])) +
+  theme_minimal()
 ```
 
 
