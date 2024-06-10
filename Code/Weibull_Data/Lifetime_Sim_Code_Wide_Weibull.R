@@ -42,7 +42,7 @@ w <- length(Weibull_data.list)
 epsilon <- 0.01
 
 # True value vector with a in log space
-Weibull_true_values <- c(log(true.exp.a), true.exp.b, true.exp.c, NA, NA)
+Weibull_true_values <- c(log(true.exp.a), true.exp.b, true.exp.c, NA, 3)
 
 # Raw data for HDI plot
 data.raw.w <- Weibull_data.list[[100]]
@@ -818,7 +818,7 @@ plot3_mean_W <- ggplot(mean.xdf3_W, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
+  #geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -828,7 +828,7 @@ plot3_med_W <- ggplot(mean.xdf3_W, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = plasma(10)[2], linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
+  #geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1177,7 +1177,7 @@ plot4_mean.inv_W <- ggplot(mean.xdf4_W, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
+  #geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1187,7 +1187,7 @@ plot4_med.inv_W <- ggplot(mean.xdf4_W, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
-  geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
+  #geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1514,7 +1514,7 @@ plot5_mean.inv_W <- ggplot(mean.xdf5_W, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
-  # geom_point(aes(x = T, y = trait), data = data.raw.w) +
+  # geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1524,7 +1524,7 @@ plot5_med.inv_W <- ggplot(mean.xdf5_W, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
-  # geom_point(aes(x = T, y = trait), data = data.raw.w) +
+  # geom_point(aes(x = T, y = 1/trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1838,7 +1838,6 @@ plot6_mean.inv_W <- ggplot(mean.xdf6_W, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
-  # geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1848,7 +1847,6 @@ plot6_med.inv_W <- ggplot(mean.xdf6_W, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve.inv), color = plasma(10)[2], linetype = "dashed") +
-  # geom_point(aes(x = T, y = trait), data = data.raw.w) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") +
@@ -1924,6 +1922,18 @@ Weibull_proportions_list_c6 <- lapply(Weibull_param_list6[[3]], function(matrix)
 # Calculate average proportion of coverage for all 100 models
 mean(unlist(Weibull_proportions_list_c6))
 
+Weibull_proportions_list_shape6 <- lapply(Weibull_param_list6[[5]], function(matrix) {
+  # Extract columns for mean, lower hdi, and upper hdi of posterior samples for shape
+  col2 <- matrix[, 1]
+  col3 <- matrix[, 3]
+  col4 <- matrix[, 4]
+  # Calculate average proportion of coverage for each model
+  proportion <- mean(sh.est > col3 & sh.est < col4)
+  return(proportion)
+})
+# Calculate average proportion of coverage for all 100 models
+mean(unlist(Weibull_proportions_list_shape6))
+
 Weibull_calculate_rmse_a_wb <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
@@ -1952,37 +1962,54 @@ Weibull_calculate_rmse_c_wb <- function(mat) {
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
-  }
+}
+
+Weibull_calculate_rmse_shape_wb <- function(mat) {
+  # Get the first column, which is posterior mean of the chain
+  observed <- mat[, 1]  
+  # True values
+  predicted <- rep(sh.est, length(observed)) 
+  # Calculate RMSE
+  rmse <- sqrt(mean((observed - predicted)^2))
+  return(rmse)
+}
 
 
 # Apply the function to each element in the list
 Weibull_rmse_values_a_wb <- sapply(Weibull_param_list6[[1]], Weibull_calculate_rmse_a_wb)
 Weibull_rmse_values_b_wb <- sapply(Weibull_param_list6[[2]], Weibull_calculate_rmse_b_wb)
 Weibull_rmse_values_c_wb <- sapply(Weibull_param_list6[[3]], Weibull_calculate_rmse_c_wb)
+Weibull_rmse_values_shape_wb <- sapply(Weibull_param_list6[[5]], Weibull_calculate_rmse_shape_wb)
 
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
-Weibull_tab.wb <- matrix(0, nrow = 3, ncol = 6)
-row.names(Weibull_tab.wb) <- c("a", "b", "c")
+Weibull_tab.wb <- matrix(0, nrow = 4, ncol = 6)
+row.names(Weibull_tab.wb) <- c("a", "b", "c", "shape")
 colnames(Weibull_tab.wb) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 Weibull_tab.wb[1, 1] <- true.exp.a
 Weibull_tab.wb[2, 1] <- true.exp.b
 Weibull_tab.wb[3, 1] <- true.exp.c
+Weibull_tab.wb[4, 1] <- sh.est
 Weibull_tab.wb[1, 2] <- exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))
 Weibull_tab.wb[2, 2] <- (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))
 Weibull_tab.wb[3, 2] <- mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))
+Weibull_tab.wb[4, 2] <- mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))
 Weibull_tab.wb[1, 3] <- exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[1])
 Weibull_tab.wb[2, 3] <- (hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[1])
 Weibull_tab.wb[3, 3] <- hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[1]
+Weibull_tab.wb[4, 3] <- hdi(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))[1]
 Weibull_tab.wb[1, 4] <- exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[2])
 Weibull_tab.wb[2, 4] <- (hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[2])
 Weibull_tab.wb[3, 4] <- hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[2]
+Weibull_tab.wb[4, 4] <- hdi(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))[2]
 Weibull_tab.wb[1, 5] <- mean(unlist(Weibull_proportions_list_a6))
 Weibull_tab.wb[2, 5] <- mean(unlist(Weibull_proportions_list_b6))
 Weibull_tab.wb[3, 5] <- mean(unlist(Weibull_proportions_list_c6))
+Weibull_tab.wb[4, 5] <- mean(unlist(Weibull_proportions_list_shape6))
 Weibull_tab.wb[1, 6] <- mean(Weibull_rmse_values_a_wb)
 Weibull_tab.wb[2, 6] <- mean(Weibull_rmse_values_b_wb)
 Weibull_tab.wb[3, 6] <- mean(Weibull_rmse_values_c_wb)
+Weibull_tab.wb[4, 6] <- mean(Weibull_rmse_values_shape_wb)
 
 save(Weibull_param_list6,
      xdf6_W,
