@@ -1160,7 +1160,7 @@ plot4_mean <- ggplot(mean.xdf4, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
-  #geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
+  # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") + 
@@ -1170,7 +1170,7 @@ plot4_med <- ggplot(mean.xdf4, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
-  #geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
+  # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate") + 
@@ -1225,7 +1225,7 @@ for (i in 1:5) {
     lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
+    lines(x, dexp(x, 400), col = rocket(12)[5], lty = 2, lwd = 2)
   }
 }
 
