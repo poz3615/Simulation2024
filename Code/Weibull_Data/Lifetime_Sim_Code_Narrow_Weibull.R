@@ -6,20 +6,24 @@ library(HDInterval)
 
 # Set true mortality curve parameters
 # Parameters chosen to resemble curve with exponential data
-true.exp.a <- 0.00826
-true.exp.b <- 0.37
-true.exp.c <- 1.406
+true.a  <-  0.001094
+Topt <- 22.3
+true.c <- 0.066
+
 # Making median lifetime function (concave down)
 # Exponentiated to avoid negative values
-my.med <- function(x, a = 0.00826, b = 0.37, c = 1.406){
-  exp(-(a * x^2 - b * x + c))
+my.med <- function(x, a = 0.001094, mu = 22.3, c = 0.066){
+  1 / (a * (x - mu)^2 + c)
 }
+
 # Set reasonable shape parameter
 sh.est <- 3
 # Lambda function
-my.lambda <- function(x, a = 0.00826, b = 0.37, c = 1.406, sh.est = 3){ 
-  my.med(x, a, b, c)/(log(2))^(1/sh.est) ## fx0 is the median here
+my.lambda <- function(x, a = 0.001094, mu = 22.3, c = 0.066, sh.est = 3){ 
+  my.med(x, a, mu, c)/(log(2))^(1/sh.est) # # fx0 is the median here
 }
+
+
 
 # Generate 100 datasets and store them in a list
 # Narrow temperature interval
@@ -37,13 +41,10 @@ for(i in 1:100){
   )
 }
 
-# Truncation value
-# Don't expect lifetime to exceed 100 days
 w <- length(Weibull_N_data.list)
-epsilon <- 0.01
 
 # True value vector with a in log space
-Weibull_true_values <- c(log(true.exp.a), true.exp.b, true.exp.c, NA, 3)
+Weibull_true_values <- c(log(true.a), Topt, true.c, NA, sh.est)
 
 ########################################## Lambda #############################################
 
@@ -70,24 +71,24 @@ for(i in 1:w){
   cat("model{
   # Priors
   # If mu<0, make it small number
-  la ~ dnorm(0, 1/10)
-  b ~ dexp(0.5) # Has to be positive, because function has neg sign
+  # And nonzero
+  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
+  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
   # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- exp((exp(la) * temp[i]^2 - b * temp[i] + c))
+    mu[i] <- exp(la) * (temp[i] - Topt)^2 + c
     trait[i] ~ dexp(mu[i])
   }
   }", file = "Weibull_n_lambda.txt")
   
   # Settings
-  parameters <- c("la", "b", "c", "shape")
+  parameters <- c("la", "Topt", "c")
   inits <- function(){list(
     # a in log space
-    la = log(0.001), 
-    b = 0.2, 
-    c = 0.6, 
-    shape = sh.est
+    la = log(0.1), 
+    Topt = 20, 
+    c = 0.6
   )}
   ni <- 60000 
   nb <- 30000 
@@ -115,25 +116,25 @@ for(i in 1:w){
     # For each chain, store mean, median, and hdi bounds for a in log space
     # Statistics are all in a different column, each row is a chain
     # 100 matrices of 5x4 for each parameter
-    Weibull_N_param_list1[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    Weibull_N_param_list1[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    Weibull_N_param_list1[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    Weibull_N_param_list1[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b
-    Weibull_N_param_list1[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    Weibull_N_param_list1[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    Weibull_N_param_list1[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    Weibull_N_param_list1[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
+    Weibull_N_param_list1[[1]][[i]][j, 1] <- mean(samp[[j]][, 3])
+    Weibull_N_param_list1[[1]][[i]][j, 2] <- median(samp[[j]][, 3])
+    Weibull_N_param_list1[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
+    Weibull_N_param_list1[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    # For each chain, store mean, median, and hdi bounds for Topt
+    Weibull_N_param_list1[[2]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    Weibull_N_param_list1[[2]][[i]][j, 2] <- median(samp[[j]][, 4])
+    Weibull_N_param_list1[[2]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    Weibull_N_param_list1[[2]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
     # For each chain, store mean, median, and hdi bounds for c
-    Weibull_N_param_list1[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    Weibull_N_param_list1[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    Weibull_N_param_list1[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    Weibull_N_param_list1[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    Weibull_N_param_list1[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
+    Weibull_N_param_list1[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
+    Weibull_N_param_list1[[3]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
+    Weibull_N_param_list1[[3]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
     # For each chain, store mean, median, and hdi bounds for deviance
-    Weibull_N_param_list1[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    Weibull_N_param_list1[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    Weibull_N_param_list1[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    Weibull_N_param_list1[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    Weibull_N_param_list1[[4]][[i]][j, 1] <- mean(samp[[j]][, 2])
+    Weibull_N_param_list1[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
+    Weibull_N_param_list1[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
+    Weibull_N_param_list1[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
   }
   
 }
@@ -150,63 +151,59 @@ xdf1_W_N <- expand.grid(point = xseq, iteration = 1:nrow(df.new1_W_N))
 xdf1_W_N$value <- apply(xdf1_W_N, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  exp(-(exp(df.new1_W_N[i, 4]) * location^2 - df.new1_W_N[i, 1] * location + df.new1_W_N[i, 2]))
+  exp(df.new1_W_N[i, 3]) *  (location - df.new1_W_N[i, 4])^2 + df.new1_W_N[i, 1]
 })
 # To keep consistent with exponential data
-xdf1_W_N <- xdf1_W_N|> mutate(trunc.eval = ifelse(xdf1_W_N$value > epsilon, xdf1_W_N$value, epsilon), 
-                         trunc.inv = log(2)/trunc.eval)
+xdf1_W_N <- xdf1_W_N|> mutate(trunc.inv = log(2)/value)
 # At each temperature point, summarize to get the mean, median, and hdi bounds
 # of the evaluated function
 mean.xdf1_W_N <- xdf1_W_N |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                                    avg.value = mean(trunc.eval), 
+                                                    avg.value = mean(value), 
                                                     med.value.inv = median(trunc.inv), 
-                                                    med.value = median(trunc.eval), 
+                                                    med.value = median(value), 
                                                     lower.hdi.inv = hdi(trunc.inv)[1], 
                                                     upper.hdi.inv = hdi(trunc.inv)[2], 
-                                                    lower.hdi = hdi(trunc.eval)[1], 
-                                                    upper.hdi = hdi(trunc.eval)[2])
+                                                    lower.hdi = hdi(value)[1], 
+                                                    upper.hdi = hdi(value)[2])
 # Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) log(2)/exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
-true_curve <- function(x) exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
-mean.xdf1_W_N$true_curve <- true_curve(xseq)
-mean.xdf1_W_N$true_curve.inv <- true_curve.inv(xseq)
+mean.xdf1_W_N$true_curve <- f(xseq)
 # Plot the mean lifetime response
 plot1_mean_W_N <- ggplot(mean.xdf1_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = mako(10)[1], linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
+  # geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Lifetime") +
+       y = "Mortality Rate") +
   theme_minimal()
 # Plot the median lifetime response
 plot1_med_W_N <- ggplot(mean.xdf1_W_N, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = mako(10)[1], linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
+  # geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Lifetime") +
+       y = "Mortality Rate") +
   theme_minimal()
 # Plot the mean mortality rate response
 plot1_mean.inv_W_N <- ggplot(mean.xdf1_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = mako(10)[1], linetype = "dashed") +
+  geom_line(aes(y = log(2)/true_curve), color = mako(10)[1], linetype = "dashed") +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Mortlity Rate") +
+       y = "Lifetime") +
   theme_minimal()
 # Plot the median mortality rate response
 plot1_med.inv_W_N <- ggplot(mean.xdf1_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = mako(10)[1], linetype = "dashed") +
+  geom_line(aes(y = log(2)/true_curve), color = mako(10)[1], linetype = "dashed") +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Mortality Rate") +
+       y = "Lifetime") +
   theme_minimal()
 
 gridExtra::grid.arrange(plot1_mean_W_N, plot1_med_W_N, nrow = 1)
@@ -232,7 +229,7 @@ for (i in 1:4) {
     lines(x, dnorm(x, 0, sqrt(10)), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
+    lines(x, dnorm(x, 22, sqrt(10)), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 3){
     lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
@@ -247,7 +244,7 @@ Weibull_N_proportions_list_a1 <- lapply(Weibull_N_param_list1[[1]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.exp.a) > col3 & log(true.exp.a) < col4)
+  proportion <- mean(log(true.a) > col3 & log(true.a) < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -259,7 +256,7 @@ Weibull_N_proportions_list_b1 <- lapply(Weibull_N_param_list1[[2]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(true.exp.b > col3 & true.exp.b < col4)
+  proportion <- mean(Topt > col3 & Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -271,7 +268,7 @@ Weibull_N_proportions_list_c1 <- lapply(Weibull_N_param_list1[[3]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(true.exp.c > col3 & true.exp.c < col4)
+  proportion <- mean(true.c > col3 & true.c < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -281,7 +278,7 @@ Weibull_N_calculate_rmse_a_lambda <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(log(true.exp.a), length(observed))  
+  predicted <- rep(log(true.a), length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -291,7 +288,7 @@ Weibull_N_calculate_rmse_b_lambda <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(true.exp.b, length(observed))  
+  predicted <- rep(Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -301,7 +298,7 @@ Weibull_N_calculate_rmse_c_lambda <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(true.exp.c, length(observed))  
+  predicted <- rep(true.c, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -316,19 +313,19 @@ Weibull_N_rmse_values_c_lambda <- sapply(Weibull_N_param_list1[[3]], Weibull_N_c
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
 Weibull_N_tab.lambda <- matrix(0, nrow = 3, ncol = 6)
-row.names(Weibull_N_tab.lambda) <- c("a", "b", "c")
+row.names(Weibull_N_tab.lambda) <- c("a", "Topt", "c")
 colnames(Weibull_N_tab.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
-Weibull_N_tab.lambda[1, 1] <- true.exp.a
-Weibull_N_tab.lambda[2, 1] <- true.exp.b
-Weibull_N_tab.lambda[3, 1] <- true.exp.c
+Weibull_N_tab.lambda[1, 1] <- true.a
+Weibull_N_tab.lambda[2, 1] <- Topt
+Weibull_N_tab.lambda[3, 1] <- true.c
 Weibull_N_tab.lambda[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 1]))))
-Weibull_N_tab.lambda[2, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1]))))
+Weibull_N_tab.lambda[2, 2] <- mean(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1])))
 Weibull_N_tab.lambda[3, 2] <- mean(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 1])))
 Weibull_N_tab.lambda[1, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 1])))[1])
-Weibull_N_tab.lambda[2, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1])))[1])
+Weibull_N_tab.lambda[2, 3] <- hdi(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1])))[1]
 Weibull_N_tab.lambda[3, 3] <- hdi(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 1])))[1]
 Weibull_N_tab.lambda[1, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 1])))[2])
-Weibull_N_tab.lambda[2, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1])))[2])
+Weibull_N_tab.lambda[2, 4] <- hdi(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1])))[2]
 Weibull_N_tab.lambda[3, 4] <- hdi(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 1])))[2]
 Weibull_N_tab.lambda[1, 5] <- mean(unlist(Weibull_N_proportions_list_a1))
 Weibull_N_tab.lambda[2, 5] <- mean(unlist(Weibull_N_proportions_list_b1))
@@ -391,22 +388,22 @@ for(i in 1:w){
   cat("model{
   # Priors
   # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) 
-  b ~ dexp(0.5) # Has to be positive, because function has neg sign
+  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
+  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
   # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- (exp(exp(la) * temp[i]^2 - b * temp[i] + c))
+    mu[i] <- exp(la) * (temp[i] - Topt)^2 + c
     trait[i] ~ dexp(mu[i])
   }
   }", file = "Weibull_n_mean_lambda.txt")
   
   # Settings
-  parameters <- c("la", "b", "c")
+  parameters <- c("la", "Topt", "c")
   inits <- function(){list(
     # a in log space
-    la = log(0.05), 
-    b = 0.2, 
+    la = log(0.1), 
+    Topt = 20, 
     c = 0.6
   )}
   ni <- 60000 
@@ -435,25 +432,25 @@ for(i in 1:w){
     # For each chain, store mean, median, and hdi bounds for a in log space
     # Statistics are all in a different column, each row is a chain
     # 100 matrices of 5x4 for each parameter
-    Weibull_N_param_list2[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    Weibull_N_param_list2[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    Weibull_N_param_list2[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    Weibull_N_param_list2[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b
-    Weibull_N_param_list2[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    Weibull_N_param_list2[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    Weibull_N_param_list2[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    Weibull_N_param_list2[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
+    Weibull_N_param_list2[[1]][[i]][j, 1] <- mean(samp[[j]][, 3])
+    Weibull_N_param_list2[[1]][[i]][j, 2] <- median(samp[[j]][, 3])
+    Weibull_N_param_list2[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
+    Weibull_N_param_list2[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    # For each chain, store mean, median, and hdi bounds for Topt
+    Weibull_N_param_list2[[2]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    Weibull_N_param_list2[[2]][[i]][j, 2] <- median(samp[[j]][, 4])
+    Weibull_N_param_list2[[2]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    Weibull_N_param_list2[[2]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
     # For each chain, store mean, median, and hdi bounds for c
-    Weibull_N_param_list2[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    Weibull_N_param_list2[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    Weibull_N_param_list2[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    Weibull_N_param_list2[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    Weibull_N_param_list2[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
+    Weibull_N_param_list2[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
+    Weibull_N_param_list2[[3]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
+    Weibull_N_param_list2[[3]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
     # For each chain, store mean, median, and hdi bounds for deviance
-    Weibull_N_param_list2[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    Weibull_N_param_list2[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    Weibull_N_param_list2[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    Weibull_N_param_list2[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    Weibull_N_param_list2[[4]][[i]][j, 1] <- mean(samp[[j]][, 2])
+    Weibull_N_param_list2[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
+    Weibull_N_param_list2[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
+    Weibull_N_param_list2[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
   }
   
 }
@@ -470,63 +467,59 @@ xdf2_W_N <- expand.grid(point = xseq, iteration = 1:nrow(df.new2_W_N))
 xdf2_W_N$value <- apply(xdf2_W_N, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  exp(-(exp(df.new2_W_N[i, 4]) * location^2 - df.new2_W_N[i, 1] * location + df.new2_W_N[i, 2]))
+  exp(df.new2_W_N[i, 3]) *  (location - df.new2_W_N[i, 4])^2 + df.new2_W_N[i, 1]
 })
 # To keep consistent with exponential data
-xdf2_W_N <- xdf2_W_N|> mutate(trunc.eval = ifelse(xdf2_W_N$value > epsilon, xdf2_W_N$value, epsilon), 
-                             trunc.inv = log(2)/trunc.eval)
+xdf2_W_N <- xdf2_W_N|> mutate(trunc.inv = log(2)/value)
 # At each temperature point, summarize to get the mean, median, and hdi bounds
 # of the evaluated function
 mean.xdf2_W_N <- xdf2_W_N |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                                        avg.value = mean(trunc.eval), 
+                                                        avg.value = mean(value), 
                                                         med.value.inv = median(trunc.inv), 
-                                                        med.value = median(trunc.eval), 
+                                                        med.value = median(value), 
                                                         lower.hdi.inv = hdi(trunc.inv)[1], 
                                                         upper.hdi.inv = hdi(trunc.inv)[2], 
-                                                        lower.hdi = hdi(trunc.eval)[1], 
-                                                        upper.hdi = hdi(trunc.eval)[2])
+                                                        lower.hdi = hdi(value)[1], 
+                                                        upper.hdi = hdi(value)[2])
 # Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) log(2)/exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
-true_curve <- function(x) exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
-mean.xdf2_W_N$true_curve <- true_curve(xseq)
-mean.xdf2_W_N$true_curve.inv <- true_curve.inv(xseq)
+mean.xdf2_W_N$true_curve <- f(xseq)
 # Plot the mean lifetime response
 plot2_mean_W_N <- ggplot(mean.xdf2_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = mako(10)[1], linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
+  #geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Lifetime") +
+       y = "Mortality Rate") +
   theme_minimal()
 # Plot the median lifetime response
 plot2_med_W_N <- ggplot(mean.xdf2_W_N, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = mako(10)[1], linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
+  # geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Lifetime") +
+       y = "Mortality Rate") +
   theme_minimal()
 # Plot the mean mortality rate response
 plot2_mean.inv_W_N <- ggplot(mean.xdf2_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = mako(10)[1], linetype = "dashed") +
+  geom_line(aes(y = log(2)/true_curve), color = mako(10)[1], linetype = "dashed") +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Mortlity Rate") +
+       y = "Lifetime") +
   theme_minimal()
 # Plot the median mortality rate response
 plot2_med.inv_W_N <- ggplot(mean.xdf2_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = mako(10)[1], linetype = "dashed") +
+  geom_line(aes(y = log(2)/true_curve), color = mako(10)[1], linetype = "dashed") +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Mortality Rate") +
+       y = "Lifetime") +
   theme_minimal()
 
 gridExtra::grid.arrange(plot2_mean_W_N, plot2_med_W_N, nrow = 1)
@@ -552,7 +545,7 @@ for (i in 1:4) {
     lines(x, dnorm(x, 0, sqrt(10)), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
+    lines(x, dnorm(x, 22, sqrt(10)), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 3){
     lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
@@ -566,7 +559,7 @@ Weibull_N_proportions_list_a2 <- lapply(Weibull_N_param_list2[[1]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.exp.a) > col3 & log(true.exp.a) < col4)
+  proportion <- mean(log(true.a) > col3 & log(true.a) < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -578,7 +571,7 @@ Weibull_N_proportions_list_b2 <- lapply(Weibull_N_param_list2[[2]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(true.exp.b > col3 & true.exp.b < col4)
+  proportion <- mean(Topt > col3 & Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -590,7 +583,7 @@ Weibull_N_proportions_list_c2 <- lapply(Weibull_N_param_list2[[3]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(true.exp.c > col3 & true.exp.c < col4)
+  proportion <- mean(true.c > col3 & true.c < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -600,7 +593,7 @@ Weibull_N_calculate_rmse_a_lambda_mean <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1] 
   # True values
-  predicted <- rep(log(true.exp.a), length(observed))  
+  predicted <- rep(log(true.a), length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -610,7 +603,7 @@ Weibull_N_calculate_rmse_b_lambda_mean <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(true.exp.b, length(observed))  
+  predicted <- rep(Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -620,7 +613,7 @@ Weibull_N_calculate_rmse_c_lambda_mean <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(true.exp.c, length(observed)) 
+  predicted <- rep(true.c, length(observed)) 
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -635,11 +628,11 @@ Weibull_N_rmse_values_c_lambda_mean <- sapply(Weibull_N_param_list2[[3]], Weibul
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
 Weibull_N_tab.lambda.mean <- matrix(0, nrow = 3, ncol = 6)
-row.names(Weibull_N_tab.lambda.mean) <- c("a", "b", "c")
+row.names(Weibull_N_tab.lambda.mean) <- c("a", "Topt", "c")
 colnames(Weibull_N_tab.lambda.mean) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
-Weibull_N_tab.lambda.mean[1, 1] <- true.exp.a
-Weibull_N_tab.lambda.mean[2, 1] <- true.exp.b
-Weibull_N_tab.lambda.mean[3, 1] <- true.exp.c
+Weibull_N_tab.lambda.mean[1, 1] <- true.a
+Weibull_N_tab.lambda.mean[2, 1] <- Topt
+Weibull_N_tab.lambda.mean[3, 1] <- true.c
 Weibull_N_tab.lambda.mean[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 1]))))
 Weibull_N_tab.lambda.mean[2, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 1]))))
 Weibull_N_tab.lambda.mean[3, 2] <- mean(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 1])))
@@ -698,27 +691,28 @@ for(i in 1:w){
   # Model
   sink("Weibull_n_inv_lambda.txt")
   cat("model{
-  # Priors
-  # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) 
-  b ~ dexp(0.5) # Has to be positive, because function has neg sign
+  #Priors
+  #If mu<0, make it small number
+  #And nonzero
+  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
+  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
-  sig ~ dexp(15000)
+  sig ~ dexp(0.5)
   sig2 <- sig^2
   tau <- 1/sig2
   # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- exp(exp(la) * temp[i]^2 - b * temp[i] + c)
-    trait[i] ~ dnorm(mu[i], tau) T(0, )
+    mu[i] <- exp(la) * (temp[i] - Topt)^2 + c
+    trait[i] ~ dnorm(mu[i], tau)
   }
 }", file = "Weibull_n_inv_lambda.txt")
   
   # Settings
-  parameters <- c("la", "b", "c", "sig")
+  parameters <- c("la", "Topt", "c", "sig")
   inits <- function(){list(
     # a in log space
-    la = log(0.001), 
-    b = 0.2, 
+    la = log(0.1), 
+    Topt = 20, 
     c = 0.6, 
     sig = 2
   )}
@@ -748,30 +742,30 @@ for(i in 1:w){
     # For each chain, store mean, median, and hdi bounds for a in log space
     # Statistics are all in a different column, each row is a chain
     # 100 matrices of 5x4 for each parameter
-    Weibull_N_param_list3[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    Weibull_N_param_list3[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    Weibull_N_param_list3[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    Weibull_N_param_list3[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b
-    Weibull_N_param_list3[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    Weibull_N_param_list3[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    Weibull_N_param_list3[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    Weibull_N_param_list3[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
+    Weibull_N_param_list3[[1]][[i]][j, 1] <- mean(samp[[j]][, 3])
+    Weibull_N_param_list3[[1]][[i]][j, 2] <- median(samp[[j]][, 3])
+    Weibull_N_param_list3[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
+    Weibull_N_param_list3[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    # For each chain, store mean, median, and hdi bounds for Topt
+    Weibull_N_param_list3[[2]][[i]][j, 1] <- mean(samp[[j]][, 5])
+    Weibull_N_param_list3[[2]][[i]][j, 2] <- median(samp[[j]][, 5])
+    Weibull_N_param_list3[[2]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
+    Weibull_N_param_list3[[2]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
     # For each chain, store mean, median, and hdi bounds for c
-    Weibull_N_param_list3[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    Weibull_N_param_list3[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    Weibull_N_param_list3[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    Weibull_N_param_list3[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    Weibull_N_param_list3[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
+    Weibull_N_param_list3[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
+    Weibull_N_param_list3[[3]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
+    Weibull_N_param_list3[[3]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
     # For each chain, store mean, median, and hdi bounds for deviance
-    Weibull_N_param_list3[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    Weibull_N_param_list3[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    Weibull_N_param_list3[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    Weibull_N_param_list3[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
-    # For each chain, store mean, median, and hdi bounds for tau
-    Weibull_N_param_list3[[5]][[i]][j, 1] <- mean(samp[[j]][, 5])
-    Weibull_N_param_list3[[5]][[i]][j, 2] <- median(samp[[j]][, 5])
-    Weibull_N_param_list3[[5]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
-    Weibull_N_param_list3[[5]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
+    Weibull_N_param_list3[[4]][[i]][j, 1] <- mean(samp[[j]][, 2])
+    Weibull_N_param_list3[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
+    Weibull_N_param_list3[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
+    Weibull_N_param_list3[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    # For each chain, store mean, median, and hdi bounds for sig
+    Weibull_N_param_list3[[5]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    Weibull_N_param_list3[[5]][[i]][j, 2] <- median(samp[[j]][, 4])
+    Weibull_N_param_list3[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    Weibull_N_param_list3[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
   
 }
@@ -789,65 +783,61 @@ xdf3_W_N <- expand.grid(point = xseq, iteration = 1:nrow(df.new3_W_N))
 xdf3_W_N$value <- apply(xdf3_W_N, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  exp(-(exp(df.new3_W_N[i, 4]) * location^2 - df.new3_W_N[i, 1] * location + df.new3_W_N[i, 2]))
+  exp(df.new3_W_N[i, 3]) * (location - df.new3_W_N[i, 5])^2 + df.new3_W_N[i, 1]
 })
 # To keep consistent with exponential data
-xdf3_W_N <- xdf3_W_N|> mutate(trunc.eval = ifelse(xdf3_W_N$value > epsilon, xdf3_W_N$value, epsilon), 
-                             trunc.inv = 1/trunc.eval)
+xdf3_W_N <- xdf3_W_N|> mutate(trunc.inv = 1/value)
 # At each temperature point, summarize to get the mean, median, and hdi bounds
 # of the evaluated function
 mean.xdf3_W_N <- xdf3_W_N |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                                        avg.value = mean(trunc.eval), 
+                                                        avg.value = mean(value), 
                                                         med.value.inv = median(trunc.inv), 
-                                                        med.value = median(trunc.eval), 
+                                                        med.value = median(value), 
                                                         lower.hdi.inv = hdi(trunc.inv)[1], 
                                                         upper.hdi.inv = hdi(trunc.inv)[2], 
-                                                        lower.hdi = hdi(trunc.eval)[1], 
-                                                        upper.hdi = hdi(trunc.eval)[2])
+                                                        lower.hdi = hdi(value)[1], 
+                                                        upper.hdi = hdi(value)[2])
 # Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) 1/exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
-true_curve <- function(x) exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
-mean.xdf3_W_N$true_curve <- true_curve(xseq)
-mean.xdf3_W_N$true_curve.inv <- true_curve.inv(xseq)
+mean.xdf3_W_N$true_curve <- f(xseq)
 # Plot mean lifetime response
 plot3_mean_W_N <- ggplot(mean.xdf3_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = mako(10)[1], linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
+  # geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Lifetime") +
+       y = "Mortality Rate") +
   theme_minimal()
 # Plot median lifetime response
 plot3_med_W_N <- ggplot(mean.xdf3_W_N, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = mako(10)[1], linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
+  # geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Lifetime") +
+       y = "Mortality Rate") +
   theme_minimal()
 # Plot mean mortality rate response
 plot3_mean.inv_W_N <- ggplot(mean.xdf3_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = mako(10)[1], linetype = "dashed") +
+  geom_line(aes(y = 1/true_curve), color = mako(10)[1], linetype = "dashed") +
   # geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Mortlity Rate") +
+       y = "Lifetime") +
   theme_minimal()
 # Plot median mortality rate response
 plot3_med.inv_W_N <- ggplot(mean.xdf3_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = mako(10)[1], linetype = "dashed") +
+  geom_line(aes(y = 1/true_curve), color = mako(10)[1], linetype = "dashed") +
   # geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Mortality Rate") +
+       y = "Lifetime") +
   theme_minimal()
 
 gridExtra::grid.arrange(plot3_mean_W_N, plot3_med_W_N, nrow = 1)
@@ -873,13 +863,13 @@ for (i in 1:5) {
     lines(x, dnorm(x, 0, sqrt(10)), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
+    lines(x, dnorm(x, 22, sqrt(10)), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 3){
     lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 25000), col = mako(12)[6], lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
   }
 }
 
@@ -890,7 +880,7 @@ Weibull_N_proportions_list_a3 <- lapply(Weibull_N_param_list3[[1]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.exp.a) > col3 & log(true.exp.a) < col4)
+  proportion <- mean(log(true.a) > col3 & log(true.a) < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -902,7 +892,7 @@ Weibull_N_proportions_list_b3 <- lapply(Weibull_N_param_list3[[2]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(true.exp.b > col3 & true.exp.b < col4)
+  proportion <- mean(Topt > col3 & Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -914,7 +904,7 @@ Weibull_N_proportions_list_c3 <- lapply(Weibull_N_param_list3[[3]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(true.exp.c > col3 & true.exp.c < col4)
+  proportion <- mean(true.c > col3 & true.c < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -924,7 +914,7 @@ Weibull_N_calculate_rmse_a_lambda_inv <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(log(true.exp.a), length(observed)) 
+  predicted <- rep(log(true.a), length(observed)) 
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -934,7 +924,7 @@ Weibull_N_calculate_rmse_b_lambda_inv <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1] 
   # True values
-  predicted <- rep(true.exp.b, length(observed))  
+  predicted <- rep(Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -944,7 +934,7 @@ Weibull_N_calculate_rmse_c_lambda_inv <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(true.exp.c, length(observed))  
+  predicted <- rep(true.c, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -959,19 +949,19 @@ Weibull_N_rmse_values_c_lambda_inv <- sapply(Weibull_N_param_list3[[3]], Weibull
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
 Weibull_N_tab.inv.lambda <- matrix(0, nrow = 3, ncol = 6)
-row.names(Weibull_N_tab.inv.lambda) <- c("a", "b", "c")
+row.names(Weibull_N_tab.inv.lambda) <- c("a", "Topt", "c")
 colnames(Weibull_N_tab.inv.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
-Weibull_N_tab.inv.lambda[1, 1] <- true.exp.a
-Weibull_N_tab.inv.lambda[2, 1] <- true.exp.b
-Weibull_N_tab.inv.lambda[3, 1] <- true.exp.c
+Weibull_N_tab.inv.lambda[1, 1] <- true.a
+Weibull_N_tab.inv.lambda[2, 1] <- Topt
+Weibull_N_tab.inv.lambda[3, 1] <- true.c
 Weibull_N_tab.inv.lambda[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 1]))))
-Weibull_N_tab.inv.lambda[2, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list3[[2]], function(matrix) matrix[, 1]))))
+Weibull_N_tab.inv.lambda[2, 2] <- mean(unlist(lapply(Weibull_N_param_list3[[2]], function(matrix) matrix[, 1])))
 Weibull_N_tab.inv.lambda[3, 2] <- mean(unlist(lapply(Weibull_N_param_list3[[3]], function(matrix) matrix[, 1])))
 Weibull_N_tab.inv.lambda[1, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 1])))[1])
-Weibull_N_tab.inv.lambda[2, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list3[[2]], function(matrix) matrix[, 1])))[1])
+Weibull_N_tab.inv.lambda[2, 3] <- hdi(unlist(lapply(Weibull_N_param_list3[[2]], function(matrix) matrix[, 1])))[1]
 Weibull_N_tab.inv.lambda[3, 3] <- hdi(unlist(lapply(Weibull_N_param_list3[[3]], function(matrix) matrix[, 1])))[1]
 Weibull_N_tab.inv.lambda[1, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 1])))[2])
-Weibull_N_tab.inv.lambda[2, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list3[[2]], function(matrix) matrix[, 1])))[2])
+Weibull_N_tab.inv.lambda[2, 4] <- hdi(unlist(lapply(Weibull_N_param_list3[[2]], function(matrix) matrix[, 1])))[2]
 Weibull_N_tab.inv.lambda[3, 4] <- hdi(unlist(lapply(Weibull_N_param_list3[[3]], function(matrix) matrix[, 1])))[2]
 Weibull_N_tab.inv.lambda[1, 5] <- mean(unlist(Weibull_N_proportions_list_a3))
 Weibull_N_tab.inv.lambda[2, 5] <- mean(unlist(Weibull_N_proportions_list_b3))
@@ -1040,25 +1030,25 @@ for(i in 1:w){
   cat("model{
   # Priors
   # If mu<0, make it small number
-  la ~ dnorm(0, 1/10)
-  b ~ dexp(0.5) # Has to be positive, because function has neg sign
+  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
+  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
   sig ~ dexp(0.5)
   sig2 <- sig^2
   tau <- 1/sig2
   # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- exp(exp(la) * temp[i]^2 - b * temp[i] + c)
-    trait[i] ~ dnorm(mu[i], tau) T(0, )
+    mu[i] <- exp(la) * (temp[i] - Topt)^2 + c
+    trait[i] ~ dnorm(mu[i], tau)
   }
 }", file = "weibull_n_mean_inv_lambda.txt")
   
   # Settings
-  parameters <- c("la", "b", "c", "sig")
+  parameters <- c("la", "Topt", "c", "sig")
   inits <- function(){list(
     # a in log space
-    la = log(0.001), 
-    b = 0.2, 
+    la = log(0.1), 
+    Topt = 20, 
     c = 0.6, 
     sig = 2
   )}
@@ -1084,30 +1074,30 @@ for(i in 1:w){
     # For each chain, store mean, median, and hdi bounds for a in log space
     # Statistics are all in a different column, each row is a chain
     # 100 matrices of 5x4 for each parameter
-    Weibull_N_param_list4[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    Weibull_N_param_list4[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    Weibull_N_param_list4[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    Weibull_N_param_list4[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b
-    Weibull_N_param_list4[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    Weibull_N_param_list4[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    Weibull_N_param_list4[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    Weibull_N_param_list4[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
+    Weibull_N_param_list4[[1]][[i]][j, 1] <- mean(samp[[j]][, 3])
+    Weibull_N_param_list4[[1]][[i]][j, 2] <- median(samp[[j]][, 3])
+    Weibull_N_param_list4[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
+    Weibull_N_param_list4[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    # For each chain, store mean, median, and hdi bounds for Topt
+    Weibull_N_param_list4[[2]][[i]][j, 1] <- mean(samp[[j]][, 5])
+    Weibull_N_param_list4[[2]][[i]][j, 2] <- median(samp[[j]][, 5])
+    Weibull_N_param_list4[[2]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
+    Weibull_N_param_list4[[2]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
     # For each chain, store mean, median, and hdi bounds for c
-    Weibull_N_param_list4[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    Weibull_N_param_list4[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    Weibull_N_param_list4[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    Weibull_N_param_list4[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    Weibull_N_param_list4[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
+    Weibull_N_param_list4[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
+    Weibull_N_param_list4[[3]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
+    Weibull_N_param_list4[[3]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
     # For each chain, store mean, median, and hdi bounds for deviance
-    Weibull_N_param_list4[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    Weibull_N_param_list4[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    Weibull_N_param_list4[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    Weibull_N_param_list4[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    Weibull_N_param_list4[[4]][[i]][j, 1] <- mean(samp[[j]][, 2])
+    Weibull_N_param_list4[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
+    Weibull_N_param_list4[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
+    Weibull_N_param_list4[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
     # For each chain, store mean, median, and hdi bounds for tau
-    Weibull_N_param_list4[[5]][[i]][j, 1] <- mean(samp[[j]][, 5])
-    Weibull_N_param_list4[[5]][[i]][j, 2] <- median(samp[[j]][, 5])
-    Weibull_N_param_list4[[5]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
-    Weibull_N_param_list4[[5]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
+    Weibull_N_param_list4[[5]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    Weibull_N_param_list4[[5]][[i]][j, 2] <- median(samp[[j]][, 4])
+    Weibull_N_param_list4[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    Weibull_N_param_list4[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
   
   
@@ -1126,65 +1116,61 @@ xdf4_W_N <- expand.grid(point = xseq, iteration = 1:nrow(df.new4_W_N))
 xdf4_W_N$value <- apply(xdf4_W_N, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  exp(-(exp(df.new4_W_N[i, 4]) * location^2 - df.new4_W_N[i, 1] * location + df.new4_W_N[i, 2]))
+  exp(df.new4_W_N[i, 3]) *  (location - df.new4_W_N[i, 5])^2 + df.new4_W_N[i, 1]
 })
 # To keep consistent with exponential data
-xdf4_W_N <- xdf4_W_N|> mutate(trunc.eval = ifelse(xdf4_W_N$value > epsilon, xdf4_W_N$value, epsilon), 
-                             trunc.inv = 1/trunc.eval)
+xdf4_W_N <- xdf4_W_N|> mutate(trunc.inv = 1/value)
 # At each temperature point, summarize to get the mean, median, and hdi bounds
 # of the evaluated function
 mean.xdf4_W_N <- xdf4_W_N |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                                        avg.value = mean(trunc.eval), 
+                                                        avg.value = mean(value), 
                                                         med.value.inv = median(trunc.inv), 
-                                                        med.value = median(trunc.eval), 
+                                                        med.value = median(value), 
                                                         lower.hdi.inv = hdi(trunc.inv)[1], 
                                                         upper.hdi.inv = hdi(trunc.inv)[2], 
-                                                        lower.hdi = hdi(trunc.eval)[1], 
-                                                        upper.hdi = hdi(trunc.eval)[2])
+                                                        lower.hdi = hdi(value)[1], 
+                                                        upper.hdi = hdi(value)[2])
 # Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) 1/exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
-true_curve <- function(x) exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
-mean.xdf4_W_N$true_curve <- true_curve(xseq)
-mean.xdf4_W_N$true_curve.inv <- true_curve.inv(xseq)
+mean.xdf4_W_N$true_curve <- f(xseq)
 # Plot mean lifetime response
 plot4_mean_W_N <- ggplot(mean.xdf4_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = mako(10)[1], linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
+  # geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Lifetime") +
+       y = "Mortality Rate") +
   theme_minimal()
 # Plot median lifetime response
 plot4_med_W_N <- ggplot(mean.xdf4_W_N, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = mako(10)[1], linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
+  # geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Lifetime") +
+       y = "Mortality Rate") +
   theme_minimal()
 # Plot mean mortality rate response
 plot4_mean.inv_W_N <- ggplot(mean.xdf4_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = mako(10)[1], linetype = "dashed") +
+  geom_line(aes(y = 1/true_curve), color = mako(10)[1], linetype = "dashed") +
   #geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Mortlity Rate") +
+       y = "Lifetime") +
   theme_minimal()
 # Plot median mortality rate response
 plot4_med.inv_W_N <- ggplot(mean.xdf4_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
   #geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
-  geom_line(aes(y = true_curve.inv), color = mako(10)[1], linetype = "dashed") +
+  geom_line(aes(y = 1/true_curve), color = mako(10)[1], linetype = "dashed") +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Mortality Rate") +
+       y = "Lifetime") +
   theme_minimal()
 
 gridExtra::grid.arrange(plot4_mean_W_N, plot4_med_W_N, nrow = 1)
@@ -1210,13 +1196,13 @@ for (i in 1:5) {
     lines(x, dnorm(x, 0, sqrt(10)), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
+    lines(x, dnorm(x, 22, sqrt(10)), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 3){
     lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 1000), col = mako(12)[6], lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
   }
 }
 
@@ -1227,7 +1213,7 @@ Weibull_N_proportions_list_a4 <- lapply(Weibull_N_param_list4[[1]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.exp.a) > col3 & log(true.exp.a) < col4)
+  proportion <- mean(log(true.a) > col3 & log(true.a) < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -1239,7 +1225,7 @@ Weibull_N_proportions_list_b4 <- lapply(Weibull_N_param_list4[[2]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(true.exp.b > col3 & true.exp.b < col4)
+  proportion <- mean(Topt > col3 & Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -1251,7 +1237,7 @@ Weibull_N_proportions_list_c4 <- lapply(Weibull_N_param_list4[[3]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(true.exp.c > col3 & true.exp.c < col4)
+  proportion <- mean(true.c > col3 & true.c < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -1261,7 +1247,7 @@ Weibull_N_calculate_rmse_a_lambda_mean_inv <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]
   # True values
-  predicted <- rep(log(true.exp.a), length(observed))  
+  predicted <- rep(log(true.a), length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1270,7 +1256,7 @@ Weibull_N_calculate_rmse_b_lambda_mean_inv <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(true.exp.b, length(observed))  
+  predicted <- rep(Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1279,7 +1265,7 @@ Weibull_N_calculate_rmse_c_lambda_mean_inv <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(true.exp.c, length(observed))  
+  predicted <- rep(true.c, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1294,19 +1280,19 @@ Weibull_N_rmse_values_c_lambda_mean_inv <- sapply(Weibull_N_param_list4[[3]], We
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
 Weibull_N_tab.mean.inv.lambda <- matrix(0, nrow = 3, ncol = 6)
-row.names(Weibull_N_tab.mean.inv.lambda) <- c("a", "b", "c")
+row.names(Weibull_N_tab.mean.inv.lambda) <- c("a", "Topt", "c")
 colnames(Weibull_N_tab.mean.inv.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
-Weibull_N_tab.mean.inv.lambda[1, 1] <- true.exp.a
-Weibull_N_tab.mean.inv.lambda[2, 1] <- true.exp.b
-Weibull_N_tab.mean.inv.lambda[3, 1] <- true.exp.c
+Weibull_N_tab.mean.inv.lambda[1, 1] <- true.a
+Weibull_N_tab.mean.inv.lambda[2, 1] <- Topt
+Weibull_N_tab.mean.inv.lambda[3, 1] <- true.c
 Weibull_N_tab.mean.inv.lambda[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 1]))))
-Weibull_N_tab.mean.inv.lambda[2, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list4[[2]], function(matrix) matrix[, 1]))))
+Weibull_N_tab.mean.inv.lambda[2, 2] <- mean(unlist(lapply(Weibull_N_param_list4[[2]], function(matrix) matrix[, 1])))
 Weibull_N_tab.mean.inv.lambda[3, 2] <- mean(unlist(lapply(Weibull_N_param_list4[[3]], function(matrix) matrix[, 1])))
 Weibull_N_tab.mean.inv.lambda[1, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 1])))[1])
-Weibull_N_tab.mean.inv.lambda[2, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list4[[2]], function(matrix) matrix[, 1])))[1])
+Weibull_N_tab.mean.inv.lambda[2, 3] <- hdi(unlist(lapply(Weibull_N_param_list4[[2]], function(matrix) matrix[, 1])))[1]
 Weibull_N_tab.mean.inv.lambda[3, 3] <- hdi(unlist(lapply(Weibull_N_param_list4[[3]], function(matrix) matrix[, 1])))[1]
 Weibull_N_tab.mean.inv.lambda[1, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 1])))[2])
-Weibull_N_tab.mean.inv.lambda[2, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list4[[2]], function(matrix) matrix[, 1])))[2])
+Weibull_N_tab.mean.inv.lambda[2, 4] <- hdi(unlist(lapply(Weibull_N_param_list4[[2]], function(matrix) matrix[, 1])))[2]
 Weibull_N_tab.mean.inv.lambda[3, 4] <- hdi(unlist(lapply(Weibull_N_param_list4[[3]], function(matrix) matrix[, 1])))[2]
 Weibull_N_tab.mean.inv.lambda[1, 5] <- mean(unlist(Weibull_N_proportions_list_a4))
 Weibull_N_tab.mean.inv.lambda[2, 5] <- mean(unlist(Weibull_N_proportions_list_b4))
@@ -1376,25 +1362,25 @@ for(i in 1:w){
   cat("model{
   # Priors
   # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) 
-  b ~ dexp(0.5) # Has to be positive, because function has neg sign
+  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
+  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
   sig ~ dexp(0.5)
   sig2 <- sig^2
   tau <- 1/sig2
   # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- exp((exp(la) * temp[i]^2 - b * temp[i] + c))
-    trait[i] ~ dnorm(mu[i], tau) T(0, )
+    mu[i] <- exp(la) * (temp[i] - Topt)^2 + c
+    trait[i] ~ dnorm(mu[i], tau)
   }
 }", file = "weibull_n_inv_mean_lambda.txt")
   
   # Settings
-  parameters <- c("la", "b", "c", "sig")
+  parameters <- c("la", "Topt", "c", "sig")
   inits <- function(){list(
-    # a in log spaace
-    la = log(0.001), 
-    b = 0.2, 
+    # a in log space
+    la = log(0.1), 
+    Topt = 20, 
     c = 0.6, 
     sig = 2
   )}
@@ -1420,30 +1406,30 @@ for(i in 1:w){
     # For each chain, store mean, median, and hdi bounds for a in log space
     # Statistics are all in a different column, each row is a chain
     # 100 matrices of 5x4 for each parameter
-    Weibull_N_param_list5[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    Weibull_N_param_list5[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    Weibull_N_param_list5[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    Weibull_N_param_list5[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b
-    Weibull_N_param_list5[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    Weibull_N_param_list5[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    Weibull_N_param_list5[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    Weibull_N_param_list5[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
+    Weibull_N_param_list5[[1]][[i]][j, 1] <- mean(samp[[j]][, 3])
+    Weibull_N_param_list5[[1]][[i]][j, 2] <- median(samp[[j]][, 3])
+    Weibull_N_param_list5[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
+    Weibull_N_param_list5[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    # For each chain, store mean, median, and hdi bounds for Topt
+    Weibull_N_param_list5[[2]][[i]][j, 1] <- mean(samp[[j]][, 5])
+    Weibull_N_param_list5[[2]][[i]][j, 2] <- median(samp[[j]][, 5])
+    Weibull_N_param_list5[[2]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
+    Weibull_N_param_list5[[2]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
     # For each chain, store mean, median, and hdi bounds for c
-    Weibull_N_param_list5[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    Weibull_N_param_list5[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    Weibull_N_param_list5[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    Weibull_N_param_list5[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    Weibull_N_param_list5[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
+    Weibull_N_param_list5[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
+    Weibull_N_param_list5[[3]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
+    Weibull_N_param_list5[[3]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
     # For each chain, store mean, median, and hdi bounds for deviance
-    Weibull_N_param_list5[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    Weibull_N_param_list5[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    Weibull_N_param_list5[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    Weibull_N_param_list5[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
-    # For each chain, store mean, median, and hdi bounds for tau
-    Weibull_N_param_list5[[5]][[i]][j, 1] <- mean(samp[[j]][, 5])
-    Weibull_N_param_list5[[5]][[i]][j, 2] <- median(samp[[j]][, 5])
-    Weibull_N_param_list5[[5]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
-    Weibull_N_param_list5[[5]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
+    Weibull_N_param_list5[[4]][[i]][j, 1] <- mean(samp[[j]][, 2])
+    Weibull_N_param_list5[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
+    Weibull_N_param_list5[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
+    Weibull_N_param_list5[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    # For each chain, store mean, median, and hdi bounds for sig
+    Weibull_N_param_list5[[5]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    Weibull_N_param_list5[[5]][[i]][j, 2] <- median(samp[[j]][, 4])
+    Weibull_N_param_list5[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    Weibull_N_param_list5[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
   
   
@@ -1462,65 +1448,61 @@ xdf5_W_N <- expand.grid(point = xseq, iteration = 1:nrow(df.new5_W_N))
 xdf5_W_N$value <- apply(xdf5_W_N, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  exp(-(exp(df.new5_W_N[i, 4]) * location^2 - df.new5_W_N[i, 1] * location + df.new5_W_N[i, 2]))
+  exp(df.new5_W_N[i, 3]) *  (location - df.new5_W_N[i, 5])^2 + df.new5_W_N[i, 1]
 })
 # To keep consistent with exponential data
-xdf5_W_N <- xdf5_W_N|> mutate(trunc.eval = ifelse(xdf5_W_N$value > epsilon, xdf5_W_N$value, epsilon), 
-                             trunc.inv = 1/trunc.eval)
+xdf5_W_N <- xdf5_W_N|> mutate(trunc.inv = 1/value)
 # At each temperature point, summarize to get the mean, median, and hdi bounds
 # of the evaluated function
 mean.xdf5_W_N <- xdf5_W_N |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                                        avg.value = mean(trunc.eval), 
+                                                        avg.value = mean(value), 
                                                         med.value.inv = median(trunc.inv), 
-                                                        med.value = median(trunc.eval), 
+                                                        med.value = median(value), 
                                                         lower.hdi.inv = hdi(trunc.inv)[1], 
                                                         upper.hdi.inv = hdi(trunc.inv)[2], 
-                                                        lower.hdi = hdi(trunc.eval)[1], 
-                                                        upper.hdi = hdi(trunc.eval)[2])
+                                                        lower.hdi = hdi(value)[1], 
+                                                        upper.hdi = hdi(value)[2])
 # Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) 1/exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
-true_curve <- function(x) exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
-mean.xdf5_W_N$true_curve <- true_curve(xseq)
-mean.xdf5_W_N$true_curve.inv <- true_curve.inv(xseq)
+mean.xdf5_W_N$true_curve <- f(xseq)
 # Plot mean lifetime response
 plot5_mean_W_N <- ggplot(mean.xdf5_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = mako(10)[1], linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
+  # geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Lifetime") +
+       y = "Mortality Rate") +
   theme_minimal()
 # Plot median lifetime response
 plot5_med_W_N <- ggplot(mean.xdf5_W_N, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = mako(10)[1], linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
+  # geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Lifetime") +
+       y = "Mortality Rate") +
   theme_minimal()
 # Plot mean mortality rate response
 plot5_mean.inv_W_N <- ggplot(mean.xdf5_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = mako(10)[1], linetype = "dashed") +
+  geom_line(aes(y = 1/true_curve), color = mako(10)[1], linetype = "dashed") +
   #geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Mortlity Rate") +
+       y = "Lifetime") +
   theme_minimal()
 # Plot median mortality rate response
 plot5_med.inv_W_N <- ggplot(mean.xdf5_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = mako(10)[1], linetype = "dashed") +
+  geom_line(aes(y = 1/true_curve), color = mako(10)[1], linetype = "dashed") +
   #geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Mortality Rate") +
+       y = "Lifetime") +
   theme_minimal()
 
 gridExtra::grid.arrange(plot5_mean_W_N, plot5_med_W_N, nrow = 1)
@@ -1546,13 +1528,13 @@ for (i in 1:5) {
     lines(x, dnorm(x, 0, sqrt(10)), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
+    lines(x, dnorm(x, 22, sqrt(10)), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 3){
     lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 1000), col = mako(12)[6], lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
   }
 }
 
@@ -1562,7 +1544,7 @@ Weibull_N_proportions_list_a5 <- lapply(Weibull_N_param_list5[[1]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.exp.a) > col3 & log(true.exp.a) < col4)
+  proportion <- mean(log(true.a) > col3 & log(true.a) < col4)
   return(proportion)
 })
 # Calculate average proportion of coverage for all 100 models
@@ -1574,7 +1556,7 @@ Weibull_N_proportions_list_b5 <- lapply(Weibull_N_param_list5[[2]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(true.exp.b > col3 & true.exp.b < col4)
+  proportion <- mean(Topt > col3 & Topt < col4)
   return(proportion)
 })
 # Calculate average proportion of coverage for all 100 models
@@ -1586,7 +1568,7 @@ Weibull_N_proportions_list_c5 <- lapply(Weibull_N_param_list5[[3]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(true.exp.c > col3 & true.exp.c < col4)
+  proportion <- mean(true.c > col3 & true.c < col4)
   return(proportion)
 })
 # Calculate average proportion of coverage for all 100 models
@@ -1596,7 +1578,7 @@ Weibull_N_calculate_rmse_a_lambda_inv_mean <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(log(true.exp.a), length(observed))  
+  predicted <- rep(log(true.a), length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1606,7 +1588,7 @@ Weibull_N_calculate_rmse_b_lambda_inv_mean <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1] 
   # True values
-  predicted <- rep(true.exp.b, length(observed))  
+  predicted <- rep(Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1616,7 +1598,7 @@ Weibull_N_calculate_rmse_c_lambda_inv_mean <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(true.exp.c, length(observed))  
+  predicted <- rep(true.c, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1631,19 +1613,19 @@ Weibull_N_rmse_values_c_lambda_inv_mean <- sapply(Weibull_N_param_list5[[3]], We
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
 Weibull_N_tab.inv.mean.lambda <- matrix(0, nrow = 3, ncol = 6)
-row.names(Weibull_N_tab.inv.mean.lambda) <- c("a", "b", "c")
+row.names(Weibull_N_tab.inv.mean.lambda) <- c("a", "Topt", "c")
 colnames(Weibull_N_tab.inv.mean.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
-Weibull_N_tab.inv.mean.lambda[1, 1] <- true.exp.a
-Weibull_N_tab.inv.mean.lambda[2, 1] <- true.exp.b
-Weibull_N_tab.inv.mean.lambda[3, 1] <- true.exp.c
+Weibull_N_tab.inv.mean.lambda[1, 1] <- true.a
+Weibull_N_tab.inv.mean.lambda[2, 1] <- Topt
+Weibull_N_tab.inv.mean.lambda[3, 1] <- true.c
 Weibull_N_tab.inv.mean.lambda[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 1]))))
-Weibull_N_tab.inv.mean.lambda[2, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list5[[2]], function(matrix) matrix[, 1]))))
+Weibull_N_tab.inv.mean.lambda[2, 2] <- mean(unlist(lapply(Weibull_N_param_list5[[2]], function(matrix) matrix[, 1])))
 Weibull_N_tab.inv.mean.lambda[3, 2] <- mean(unlist(lapply(Weibull_N_param_list5[[3]], function(matrix) matrix[, 1])))
 Weibull_N_tab.inv.mean.lambda[1, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 1])))[1])
-Weibull_N_tab.inv.mean.lambda[2, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list5[[2]], function(matrix) matrix[, 1])))[1])
+Weibull_N_tab.inv.mean.lambda[2, 3] <- hdi(unlist(lapply(Weibull_N_param_list5[[2]], function(matrix) matrix[, 1])))[1]
 Weibull_N_tab.inv.mean.lambda[3, 3] <- hdi(unlist(lapply(Weibull_N_param_list5[[3]], function(matrix) matrix[, 1])))[1]
 Weibull_N_tab.inv.mean.lambda[1, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 1])))[2])
-Weibull_N_tab.inv.mean.lambda[2, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list5[[2]], function(matrix) matrix[, 1])))[2])
+Weibull_N_tab.inv.mean.lambda[2, 4] <- hdi(unlist(lapply(Weibull_N_param_list5[[2]], function(matrix) matrix[, 1])))[2]
 Weibull_N_tab.inv.mean.lambda[3, 4] <- hdi(unlist(lapply(Weibull_N_param_list5[[3]], function(matrix) matrix[, 1])))[2]
 Weibull_N_tab.inv.mean.lambda[1, 5] <- mean(unlist(Weibull_N_proportions_list_a5))
 Weibull_N_tab.inv.mean.lambda[2, 5] <- mean(unlist(Weibull_N_proportions_list_b5))
@@ -1803,8 +1785,8 @@ mean.xdf6_W_N <- xdf6_W_N |> group_by(point) |> summarize(avg.value.inv = mean(t
                                                         lower.hdi = hdi(trunc.eval)[1], 
                                                         upper.hdi = hdi(trunc.eval)[2])
 # Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) log(2)/exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
-true_curve <- function(x) exp(-(true.exp.a * x^2 - true.exp.b * x + true.exp.c))
+true_curve.inv <- function(x) log(2)/exp(-(true.a * x^2 - Topt * x + true.c))
+true_curve <- function(x) exp(-(true.a * x^2 - Topt * x + true.c))
 mean.xdf6_W_N$true_curve <- true_curve(xseq)
 mean.xdf6_W_N$true_curve.inv <- true_curve.inv(xseq)
 # Plot mean lifetime response
@@ -1886,7 +1868,7 @@ Weibull_N_proportions_list_a6 <- lapply(Weibull_N_param_list6[[1]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.exp.a) > col3 & log(true.exp.a) < col4)
+  proportion <- mean(log(true.a) > col3 & log(true.a) < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -1898,7 +1880,7 @@ Weibull_N_proportions_list_b6 <- lapply(Weibull_N_param_list6[[2]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(true.exp.b > col3 & true.exp.b < col4)
+  proportion <- mean(Topt > col3 & Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -1910,7 +1892,7 @@ Weibull_N_proportions_list_c6 <- lapply(Weibull_N_param_list6[[3]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(true.exp.c > col3 & true.exp.c < col4)
+  proportion <- mean(true.c > col3 & true.c < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -1931,7 +1913,7 @@ Weibull_N_calculate_rmse_a_wb <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(log(true.exp.a), length(observed))  
+  predicted <- rep(log(true.a), length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1941,7 +1923,7 @@ Weibull_N_calculate_rmse_b_wb <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(true.exp.b, length(observed))  
+  predicted <- rep(Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1951,7 +1933,7 @@ Weibull_N_calculate_rmse_c_wb <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(true.exp.c, length(observed))  
+  predicted <- rep(true.c, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1980,9 +1962,9 @@ Weibull_N_rmse_values_shape_wb <- sapply(Weibull_N_param_list6[[5]], Weibull_N_c
 Weibull_N_tab.wb <- matrix(0, nrow = 4, ncol = 6)
 row.names(Weibull_N_tab.wb) <- c("a", "b", "c", "shape")
 colnames(Weibull_N_tab.wb) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
-Weibull_N_tab.wb[1, 1] <- true.exp.a
-Weibull_N_tab.wb[2, 1] <- true.exp.b
-Weibull_N_tab.wb[3, 1] <- true.exp.c
+Weibull_N_tab.wb[1, 1] <- true.a
+Weibull_N_tab.wb[2, 1] <- Topt
+Weibull_N_tab.wb[3, 1] <- true.c
 Weibull_N_tab.wb[4, 1] <- sh.est
 Weibull_N_tab.wb[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list6[[1]], function(matrix) matrix[, 1]))))
 Weibull_N_tab.wb[2, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list6[[2]], function(matrix) matrix[, 1]))))
