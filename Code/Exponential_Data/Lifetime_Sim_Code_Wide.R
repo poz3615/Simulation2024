@@ -6,12 +6,12 @@ library(dplyr)
 
 # Set the true parameters from the mortality curve
 true.a  <-  0.001094
-true.b <- 0.0488
-true.c <- 0.609
+Topt <- 22.3
+true.c <- 0.066
 
 # True quadratic
-f <- function(x, a = 0.001094, b = 0.0488, c = 0.609){
-  a * x^2 - b * x  +  c
+f <- function(x, a = 0.001094, mu = 22.3, c = 0.066){
+  a * (x - mu)^2 + c
 }
 
 # Generate 100 data sets and store them in a list
@@ -31,13 +31,9 @@ for(i in 1:100){
 
 b <- length(data.list)
 
-# Truncation value
-# Don't expect lifetime to exceed 100 days
-epsilon <- 0.01
-
 # True value vector with a and b in log space
 # Spot for sigma and deviance
-true_values <- c(log(true.a), log(true.b), true.c, NA, NA)
+true_values <- c(log(true.a), Topt, true.c, NA, NA)
 
 ##########################################Lambda #############################################
 
@@ -64,24 +60,21 @@ for(i in 1:b){
   cat("model{
   # Priors
   # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) 
-  b.l ~ dnorm(0, 1/10) 
+  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
+  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
-  # Set epsilon to avoid negative or small values
-  epsilon <- 0.01
   # Likelihood
   for (i in 1:N.obs){
-  mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) * ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) > epsilon) + 
-  ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)<= epsilon) * epsilon
-  trait[i] ~ dexp(mu[i])
+    mu[i] <- exp(la) * (temp[i] - Topt)^2 + c
+    trait[i] ~ dexp(mu[i])
   }
       }", file = "lambda.txt")
   # Settings
-  parameters <- c("la", "b.l", "c")
+  parameters <- c("la", "Topt", "c")
   inits <- function(){list(
     # a and b in log space
-    la = log(0.001), 
-    b.l = log(0.05), 
+    la = log(0.1), 
+    Topt = 20, 
     c = 0.6
     )}
   ni <- 60000 
@@ -108,25 +101,25 @@ for(i in 1:b){
     # For each chain, store mean, median, and hdi bounds for a in log space
     # Statistics are all in a different column, each row is a chain
     # 100 matrices of 5x4 for each parameter
-    param_list1[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    param_list1[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    param_list1[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    param_list1[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b in log space
-    param_list1[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    param_list1[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    param_list1[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    param_list1[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
+    param_list1[[1]][[i]][j, 1] <- mean(samp[[j]][, 3])
+    param_list1[[1]][[i]][j, 2] <- median(samp[[j]][, 3])
+    param_list1[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
+    param_list1[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    # For each chain, store mean, median, and hdi bounds for Topt
+    param_list1[[2]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    param_list1[[2]][[i]][j, 2] <- median(samp[[j]][, 4])
+    param_list1[[2]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    param_list1[[2]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
     # For each chain, store mean, median, and hdi bounds for c
-    param_list1[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    param_list1[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    param_list1[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    param_list1[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    param_list1[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
+    param_list1[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
+    param_list1[[3]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
+    param_list1[[3]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
     # For each chain, store mean, median, and hdi bounds for the deviance
-    param_list1[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    param_list1[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    param_list1[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    param_list1[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    param_list1[[4]][[i]][j, 1] <- mean(samp[[j]][, 2])
+    param_list1[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
+    param_list1[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
+    param_list1[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
   }
 }
 # Take samp, the mcmc list, chain 1 and save every fourth row
@@ -143,27 +136,23 @@ xdf1 <- expand.grid(point = xseq, iteration = 1:nrow(df.new1))
 xdf1$value <- apply(xdf1, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  exp(df.new1[i, 4]) * location^2 - exp(df.new1[i, 1]) * location + df.new1[i, 2]
+  (exp(df.new1[i, 3]) * (location - df.new1[i, 4])^2  + df.new1[i, 1])
 })
 # Apply truncation so that if the evaluated function gives a value smaller than epsilon,
 # it gets truncated to epsilon
-xdf1 <-  xdf1|> mutate(trunc.eval = ifelse(xdf1$value > epsilon, xdf1$value, epsilon), 
-                   trunc.inv = 1/trunc.eval)
+xdf1 <-  xdf1|> mutate(trunc.inv = 1/value)
 # At each temperature point, summarize to get the mean, median, and hdi bounds
 # of the evaluated function
 mean.xdf1 <- xdf1 |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                              avg.value = mean(trunc.eval), 
+                                              avg.value = mean(value), 
                                               med.value.inv = median(trunc.inv), 
-                                              med.value = median(trunc.eval), 
+                                              med.value = median(value), 
                                               lower.hdi.inv = hdi(trunc.inv)[1], 
                                               upper.hdi.inv = hdi(trunc.inv)[2], 
-                                              lower.hdi = hdi(trunc.eval)[1], 
-                                              upper.hdi = hdi(trunc.eval)[2])
+                                              lower.hdi = hdi(value)[1], 
+                                              upper.hdi = hdi(value)[2])
 # Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) 1/(true.a * x^2 - true.b * x + true.c)
-true_curve <- function(x) (true.a * x^2 - true.b * x + true.c)
-mean.xdf1$true_curve <- true_curve(xseq)
-mean.xdf1$true_curve.inv <- true_curve.inv(xseq)
+mean.xdf1$true_curve <- f(xseq)
 # Plot the mean mortality rate response
 plot1_mean <- ggplot(mean.xdf1, aes(x = point)) + 
 geom_line(aes(y = avg.value), color = "black") + 
@@ -186,7 +175,7 @@ theme_minimal()
 plot1_mean.inv <- ggplot(mean.xdf1, aes(x = point)) + 
 geom_line(aes(y = avg.value.inv), color = "black") + 
 geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
-geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
+geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
 geom_point(aes(x = T, y = trait), data = data.raw) + 
 labs(title = "Mean Curve with Interval Bands and True Curve", 
      x = "Temperature", 
@@ -196,7 +185,7 @@ theme_minimal()
 plot1_med.inv <- ggplot(mean.xdf1, aes(x = point)) + 
 geom_line(aes(y = med.value.inv), color = "black") + 
 geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
-geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
+geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
 geom_point(aes(x = T, y = trait), data = data.raw) + 
 labs(title = "Median Curve with Interval Bands and True Curve", 
      x = "Temperature", 
@@ -210,7 +199,7 @@ ggsave("lifetime_hdi.png", plot = plot1_mean.inv)
 
 # Assign true values 
 # Create a list to store histograms of the posterior distribution of each parameter
-true_values <- c(log(0.001094), log(0.0488), 0.609, NA)
+true_values <- c(log(true.a), Topt, true.c, NA)
 hist_list1 <- vector("list", length = 4)
 par(mfrow = c(2, 2))
 
@@ -231,7 +220,7 @@ for (i in 1:4) {
     lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
+    lines(x, dnorm(x, 22, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 3){
     lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
@@ -258,7 +247,7 @@ proportions_list_b1 <- lapply(param_list1[[2]], function(matrix) {
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.b) > col3 & log(true.b) < col4)
+  proportion <- mean(Topt > col3 & Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -291,7 +280,7 @@ calculate_rmse_b_lambda <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True value
-  predicted <- rep(log(true.b), length(observed))  
+  predicted <- rep(Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -316,19 +305,19 @@ rmse_values_c_lambda <- sapply(param_list1[[3]], calculate_rmse_c_lambda)
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
 tab.lambda <- matrix(0, nrow = 3, ncol = 6)
-row.names(tab.lambda) <- c("a", "b", "c")
+row.names(tab.lambda) <- c("a", "Topt", "c")
 colnames(tab.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 tab.lambda[1, 1] <- true.a
-tab.lambda[2, 1] <- true.b
+tab.lambda[2, 1] <- Topt
 tab.lambda[3, 1] <- true.c
 tab.lambda[1, 2] <- exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1]))))
-tab.lambda[2, 2] <- exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))))
+tab.lambda[2, 2] <- mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))
 tab.lambda[3, 2] <- mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))
 tab.lambda[1, 3] <- exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[1])
-tab.lambda[2, 3] <- exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[1])
+tab.lambda[2, 3] <- hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[1]
 tab.lambda[3, 3] <- hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[1]
 tab.lambda[1, 4] <- exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[2])
-tab.lambda[2, 4] <- exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[2])
+tab.lambda[2, 4] <- hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[2]
 tab.lambda[3, 4] <- hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[2]
 tab.lambda[1, 5] <- mean(unlist(proportions_list_a1))
 tab.lambda[2, 5] <- mean(unlist(proportions_list_b1))
@@ -390,24 +379,21 @@ for(i in 1:b){
   sink("mean_lambda.txt")
   cat("model{
   # Priors
-  # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) 
-  b.l ~ dnorm(0, 1/10) 
+  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
+  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
-  # Set epsilon to avoid negative or small values
-  epsilon <- 0.01
   # Likelihood
   for (i in 1:N.obs){
-  mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) * ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) > epsilon) + ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)<= epsilon) * epsilon
-  trait[i] ~ dexp(mu[i])
+    mu[i] <- exp(la) * (temp[i] - Topt)^2 + c
+    trait[i] ~ dexp(mu[i])
   }
       }", file = "mean_lambda.txt")
   # Settings
-  parameters <- c("la", "b.l", "c")
+  parameters <- c("la", "Topt", "c")
   inits <- function(){list(
     # a and b in log space
-    la = log(0.001), 
-    b.l = log(0.05), 
+    la = log(0.1), 
+    Topt = 20, 
     c = 0.6
     )}
   ni <- 60000 
@@ -433,25 +419,25 @@ for(i in 1:b){
     # For each chain, store mean, median, and hdi bounds for a in log space
     # Statistics are all in a different column, each row is a chain
     # 100 matrices of 5x4 for each parameter
-    param_list2[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    param_list2[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    param_list2[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    param_list2[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b in log space
-    param_list2[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    param_list2[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    param_list2[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    param_list2[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
+    param_list2[[1]][[i]][j, 1] <- mean(samp[[j]][, 3])
+    param_list2[[1]][[i]][j, 2] <- median(samp[[j]][, 3])
+    param_list2[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
+    param_list2[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    # For each chain, store mean, median, and hdi bounds for Topt 
+    param_list2[[2]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    param_list2[[2]][[i]][j, 2] <- median(samp[[j]][, 4])
+    param_list2[[2]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    param_list2[[2]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
     # For each chain, store mean, median, and hdi bounds for c
-    param_list2[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    param_list2[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    param_list2[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    param_list2[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    param_list2[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
+    param_list2[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
+    param_list2[[3]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
+    param_list2[[3]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
     # For each chain, store mean, median, and hdi bounds for deviance
-    param_list2[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    param_list2[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    param_list2[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    param_list2[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    param_list2[[4]][[i]][j, 1] <- mean(samp[[j]][, 2])
+    param_list2[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
+    param_list2[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
+    param_list2[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
   }
   }
 # Take samp, the mcmc list, chain 1 and save every fourth row
@@ -468,27 +454,23 @@ xdf2 <- expand.grid(point = xseq, iteration = 1:nrow(df.new2))
 xdf2$value <- apply(xdf2, 1, function(row) {
 i <- row["iteration"]
 location <- row["point"]
-exp(df.new2[i, 4]) * location^2 - exp(df.new2[i, 1]) * location + df.new2[i, 2]
+(exp(df.new2[i, 3]) * (location - df.new2[i, 4])^2  + df.new2[i, 1])
 })
 # Apply truncation so that if the evaluated function gives a value smaller than epsilon,
 # it gets truncated to epsilon
-xdf2 <- xdf2|> mutate(trunc.eval = ifelse(xdf2$value > epsilon, xdf2$value, epsilon), 
-                   trunc.inv = 1/trunc.eval)
+xdf2 <- xdf2|> mutate(trunc.inv = 1/value)
 # At each temperature point, summarize to get the mean, median, and hdi bounds
 # of the evaluated function
 mean.xdf2 <- xdf2 |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                              avg.value = mean(trunc.eval), 
+                                              avg.value = mean(value), 
                                               med.value.inv = median(trunc.inv), 
-                                              med.value = median(trunc.eval), 
+                                              med.value = median(value), 
                                               lower.hdi.inv = hdi(trunc.inv)[1], 
                                               upper.hdi.inv = hdi(trunc.inv)[2], 
-                                              lower.hdi = hdi(trunc.eval)[1], 
-                                              upper.hdi = hdi(trunc.eval)[2])
+                                              lower.hdi = hdi(value)[1], 
+                                              upper.hdi = hdi(value)[2])
 # Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) 1/(true.a * x^2 - true.b * x + true.c)
-true_curve <- function(x) (true.a * x^2 - true.b * x + true.c)
-mean.xdf2$true_curve <- true_curve(xseq)
-mean.xdf2$true_curve.inv <- true_curve.inv(xseq)
+mean.xdf2$true_curve <- f(xseq)
 # Plot mean mortality rate response
 plot2_mean <- ggplot(mean.xdf2, aes(x = point)) + 
 geom_line(aes(y = avg.value), color = "black") + 
@@ -510,7 +492,7 @@ theme_minimal()
 plot2_mean.inv <- ggplot(mean.xdf2, aes(x = point)) + 
 geom_line(aes(y = avg.value.inv), color = "black") + 
 geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
-geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
+geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
 geom_point(aes(x = T, y = trait), data = data.raw) + 
 labs(title = "Mean Curve with Interval Bands and True Curve", 
      x = "Temperature", 
@@ -520,7 +502,7 @@ theme_minimal()
 plot2_med.inv <- ggplot(mean.xdf2, aes(x = point)) + 
 geom_line(aes(y = med.value.inv), color = "black") + 
 geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
-geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
+geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
 geom_point(aes(x = T, y = trait), data = data.raw) + 
 labs(title = "Median Curve with Interval Bands and True Curve", 
      x = "Temperature", 
@@ -532,7 +514,7 @@ gridExtra::grid.arrange(plot2_mean.inv, plot2_med.inv, nrow = 1)
 
 # Assign true values 
 # Create a list to store histograms of the posterior distribution of each parameter
-true_values <- c(log(true.a), log(true.b), true.c, NA)
+true_values <- c(log(true.a), Topt, true.c, NA)
 hist_list2 <- vector("list", length = 4)
 par(mfrow = c(2, 2))
 for (i in 1:4) {
@@ -552,7 +534,7 @@ for (i in 1:4) {
     lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
     }
   if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
+    lines(x, dnorm(x, 22, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
     }
   if(i == 3){
     lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
@@ -579,7 +561,7 @@ proportions_list_b2 <- lapply(param_list2[[2]], function(matrix) {
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.b) > col3 & log(true.b) < col4)
+  proportion <- mean(Topt > col3 & Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -611,7 +593,7 @@ calculate_rmse_b_lambda_mean <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1] 
   # True values
-  predicted <- rep(log(true.b), length(observed))  
+  predicted <- rep(Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -636,19 +618,19 @@ rmse_values_c_lambda_mean <- sapply(param_list2[[3]], calculate_rmse_c_lambda_me
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
 tab.lambda.mean <- matrix(0, nrow = 3, ncol = 6)
-row.names(tab.lambda.mean) <- c("a", "b", "c")
+row.names(tab.lambda.mean) <- c("a", "Topt", "c")
 colnames(tab.lambda.mean) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 tab.lambda.mean[1, 1] <- true.a
-tab.lambda.mean[2, 1] <- true.b
+tab.lambda.mean[2, 1] <- Topt
 tab.lambda.mean[3, 1] <- true.c
 tab.lambda.mean[1, 2] <- exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1]))))
-tab.lambda.mean[2, 2] <- exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))))
+tab.lambda.mean[2, 2] <- mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))
 tab.lambda.mean[3, 2] <- mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))
 tab.lambda.mean[1, 3] <- exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[1])
-tab.lambda.mean[2, 3] <- exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[1])
+tab.lambda.mean[2, 3] <- hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[1]
 tab.lambda.mean[3, 3] <- hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[1]
 tab.lambda.mean[1, 4] <- exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[2])
-tab.lambda.mean[2, 4] <- exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[2])
+tab.lambda.mean[2, 4] <- hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[2]
 tab.lambda.mean[3, 4] <- hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[2]
 tab.lambda.mean[1, 5] <- mean(unlist(proportions_list_a2))
 tab.lambda.mean[2, 5] <- mean(unlist(proportions_list_b2))
@@ -701,27 +683,25 @@ for(i in 1:b){
   # Priors
   # If mu<0, make it small number
   # And nonzero
-  la ~ dnorm(0, 1/10) 
-  b.l ~ dnorm(0, 1/10) 
+  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
+  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
-  sig ~ dexp(4000)
+  sig ~ dexp(0.5)
   sig2 <- sig^2
   tau <- 1/sig2
-  # Set epsilon to avoid negative or small values
-  epsilon <- 0.01
   # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) * ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) > epsilon) + ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)<= epsilon) * epsilon
-    trait[i] ~ dnorm(mu[i], tau) T(0, )
+    mu[i] <-  exp(la) * (temp[i] - Topt)^2 + c
+    trait[i] ~ dnorm(mu[i], tau) T(0,)
   }
 }", file = "inv_lambda.txt")
   
   # Settings
-  parameters <- c("la", "b.l", "c", "sig")
+  parameters <- c("la", "Topt", "c", "sig")
   inits <- function(){list(
     # a and b in log space
-    la = log(0.001), 
-    b.l = log(0.05), 
+    la = log(0.1), 
+    Topt = 20, 
     c = 0.6, 
     sig = 2
   )}
@@ -750,30 +730,30 @@ for(i in 1:b){
     # For each chain, store mean, median, and hdi bounds for a in log space
     # Statistics are all in a different column, each row is a chain
     # 100 matrices of 5x4 for each parameter
-    param_list3[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    param_list3[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    param_list3[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    param_list3[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b in log space
-    param_list3[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    param_list3[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    param_list3[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    param_list3[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
+    param_list3[[1]][[i]][j, 1] <- mean(samp[[j]][, 3])
+    param_list3[[1]][[i]][j, 2] <- median(samp[[j]][, 3])
+    param_list3[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
+    param_list3[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    # For each chain, store mean, median, and hdi bounds for Topt
+    param_list3[[2]][[i]][j, 1] <- mean(samp[[j]][, 5])
+    param_list3[[2]][[i]][j, 2] <- median(samp[[j]][, 5])
+    param_list3[[2]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
+    param_list3[[2]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
     # For each chain, store mean, median, and hdi bounds for c
-    param_list3[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    param_list3[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    param_list3[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    param_list3[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    param_list3[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
+    param_list3[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
+    param_list3[[3]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
+    param_list3[[3]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
     # For each chain, store mean, median, and hdi bounds for deviance
-    param_list3[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    param_list3[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    param_list3[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    param_list3[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
-    # For each chain, store mean, median, and hdi bounds for tau
-    param_list3[[5]][[i]][j, 1] <- mean(samp[[j]][, 5])
-    param_list3[[5]][[i]][j, 2] <- median(samp[[j]][, 5])
-    param_list3[[5]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
-    param_list3[[5]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
+    param_list3[[4]][[i]][j, 1] <- mean(samp[[j]][, 2])
+    param_list3[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
+    param_list3[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
+    param_list3[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    # For each chain, store mean, median, and hdi bounds for sig
+    param_list3[[5]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    param_list3[[5]][[i]][j, 2] <- median(samp[[j]][, 4])
+    param_list3[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    param_list3[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
   
   
@@ -792,27 +772,23 @@ xdf3 <- expand.grid(point = xseq, iteration = 1:nrow(df.new3))
 xdf3$value <- apply(xdf3, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  exp(df.new3[i, 4]) * location^2 - exp(df.new3[i, 1]) * location + df.new3[i, 2]
+  (exp(df.new3[i, 3]) * (location - df.new3[i, 5])^2  + df.new3[i, 1])
 })
 # Apply truncation so that if the evaluated function gives a value smaller than epsilon,
 # it gets truncated to epsilon
-xdf3 <- xdf3|> mutate(trunc.eval = ifelse(xdf3$value > epsilon, xdf3$value, epsilon), 
-                     trunc.inv = 1/trunc.eval)
+xdf3 <- xdf3|> mutate(trunc.inv = 1/value)
 # At each temperature point, summarize to get the mean, median, and hdi bounds
 # of the evaluated function
 mean.xdf3 <- xdf3 |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                                avg.value = mean(trunc.eval), 
+                                                avg.value = mean(value), 
                                                 med.value.inv = median(trunc.inv), 
-                                                med.value = median(trunc.eval), 
+                                                med.value = median(value), 
                                                 lower.hdi.inv = hdi(trunc.inv)[1], 
                                                 upper.hdi.inv = hdi(trunc.inv)[2], 
-                                                lower.hdi = hdi(trunc.eval)[1], 
-                                                upper.hdi = hdi(trunc.eval)[2]) 
+                                                lower.hdi = hdi(value)[1], 
+                                                upper.hdi = hdi(value)[2]) 
 # Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) 1/(true.a * x^2 - true.b * x + true.c)
-true_curve <- function(x) (true.a * x^2 - true.b * x + true.c)
-mean.xdf3$true_curve <- true_curve(xseq)
-mean.xdf3$true_curve.inv <- true_curve.inv(xseq)
+mean.xdf3$true_curve <- f(xseq)
 # Plot mean mortality rate response
 plot3_mean <- ggplot(mean.xdf3, aes(x = point)) + 
   geom_line(aes(y = avg.value), color = "black") + 
@@ -835,9 +811,9 @@ plot3_med <- ggplot(mean.xdf3, aes(x = point)) +
   theme_minimal()
 # Plot mean lifetime response
 plot3_mean.inv <- ggplot(mean.xdf3, aes(x = point)) + 
-  geom_line(aes(y = avg.value.inv), color = "black") + 
+  geom_line(aes(y = avg.value), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
+  geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -847,7 +823,7 @@ plot3_mean.inv <- ggplot(mean.xdf3, aes(x = point)) +
 plot3_med.inv <- ggplot(mean.xdf3, aes(x = point)) + 
   geom_line(aes(y = med.value.inv), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
+  geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -861,7 +837,7 @@ ggsave("inv_lifetime_hdi.png", plot = plot3_mean.inv)
 
 # Assign true values 
 # Create a list to store histograms of the posterior distribution of each parameter
-true_values <- c(log(true.a), log(true.b), true.c, NA, NA)
+true_values <- c(log(true.a), Topt, true.c, NA, NA)
 hist_list3 <- vector("list", length = 5)
 par(mfrow = c(2, 3))
 for (i in 1:5) {
@@ -881,13 +857,13 @@ for (i in 1:5) {
     lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
+    lines(x, dnorm(x, 22, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 3){
     lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 4000), col = rocket(12)[5], lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
 }
 
@@ -910,7 +886,7 @@ proportions_list_b3 <- lapply(param_list3[[2]], function(matrix) {
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.b) > col3 & log(true.b) < col4)
+  proportion <- mean(Topt > col3 & Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -942,7 +918,7 @@ calculate_rmse_b_lambda_inv <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(log(true.b), length(observed))  
+  predicted <- rep(Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -967,19 +943,19 @@ rmse_values_c_lambda_inv <- sapply(param_list3[[3]], calculate_rmse_c_lambda_inv
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
 tab.inv.lambda <- matrix(0, nrow = 3, ncol = 6)
-row.names(tab.inv.lambda) <- c("a", "b", "c")
+row.names(tab.inv.lambda) <- c("a", "Topt", "c")
 colnames(tab.inv.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 tab.inv.lambda[1, 1] <- true.a
-tab.inv.lambda[2, 1] <- true.b
+tab.inv.lambda[2, 1] <- Topt
 tab.inv.lambda[3, 1] <- true.c
 tab.inv.lambda[1, 2] <- exp(mean(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1]))))
-tab.inv.lambda[2, 2] <- exp(mean(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1]))))
+tab.inv.lambda[2, 2] <- mean(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))
 tab.inv.lambda[3, 2] <- mean(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))
 tab.inv.lambda[1, 3] <- exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[1])
-tab.inv.lambda[2, 3] <- exp(hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[1])
+tab.inv.lambda[2, 3] <- hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[1]
 tab.inv.lambda[3, 3] <- hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[1]
 tab.inv.lambda[1, 4] <- exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[2])
-tab.inv.lambda[2, 4] <- exp(hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[2])
+tab.inv.lambda[2, 4] <- hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[2]
 tab.inv.lambda[3, 4] <- hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[2]
 tab.inv.lambda[1, 5] <- mean(unlist(proportions_list_a3))
 tab.inv.lambda[2, 5] <- mean(unlist(proportions_list_b3))
@@ -1046,27 +1022,25 @@ for(i in 1:b){
   cat("model{
   # Priors
   # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) 
-  b.l ~ dnorm(0, 1/10) 
+  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
+  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
-  sig ~ dexp(400)
+  sig ~ dexp(0.5)
   sig2 <- sig^2
   tau <- 1/sig2
-  # Set epsilon to avoid negative or small values
-  epsilon <- 0.01
   # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) * ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) > epsilon) + ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)<= epsilon) * epsilon
-    trait[i] ~ dnorm(mu[i], tau) T(0, )
+    mu[i] <-  exp(la) * (temp[i] - Topt)^2 + c
+    trait[i] ~ dnorm(mu[i], tau) T(0,)
   }
 }", file = "mean_inv_lambda.txt")
   
   # Settings
-  parameters <- c("la", "b.l", "c", "sig")
+  parameters <- c("la", "Topt", "c", "sig")
   inits <- function(){list(
     # a and b in log space
-    la = log(0.001), 
-    b.l = log(0.05), 
+    la = log(0.1), 
+    Topt = 20, 
     c = 0.6, 
     sig = 2
   )}
@@ -1092,30 +1066,30 @@ for(i in 1:b){
     # For each chain, store mean, median, and hdi bounds for a in log space
     # Statistics are all in a different column, each row is a chain
     # 100 matrices of 5x4 for each parameter
-    param_list4[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    param_list4[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    param_list4[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    param_list4[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b in log space
-    param_list4[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    param_list4[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    param_list4[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    param_list4[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
+    param_list4[[1]][[i]][j, 1] <- mean(samp[[j]][, 3])
+    param_list4[[1]][[i]][j, 2] <- median(samp[[j]][, 3])
+    param_list4[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
+    param_list4[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    # For each chain, store mean, median, and hdi bounds for Topt 
+    param_list4[[2]][[i]][j, 1] <- mean(samp[[j]][, 5])
+    param_list4[[2]][[i]][j, 2] <- median(samp[[j]][, 5])
+    param_list4[[2]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
+    param_list4[[2]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
     # For each chain, store mean, median, and hdi bounds for c
-    param_list4[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    param_list4[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    param_list4[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    param_list4[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    param_list4[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
+    param_list4[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
+    param_list4[[3]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
+    param_list4[[3]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
     # For each chain, store mean, median, and hdi bounds for deviance
-    param_list4[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    param_list4[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    param_list4[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    param_list4[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
-    # For each chain, store mean, median, and hdi bounds for tau
-    param_list4[[5]][[i]][j, 1] <- mean(samp[[j]][, 5])
-    param_list4[[5]][[i]][j, 2] <- median(samp[[j]][, 5])
-    param_list4[[5]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
-    param_list4[[5]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
+    param_list4[[4]][[i]][j, 1] <- mean(samp[[j]][, 2])
+    param_list4[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
+    param_list4[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
+    param_list4[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    # For each chain, store mean, median, and hdi bounds for sig
+    param_list4[[5]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    param_list4[[5]][[i]][j, 2] <- median(samp[[j]][, 4])
+    param_list4[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    param_list4[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
   
   
@@ -1134,27 +1108,23 @@ xdf4 <- expand.grid(point = xseq, iteration = 1:nrow(df.new4))
 xdf4$value <- apply(xdf4, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  exp(df.new4[i, 4]) * location^2 - exp(df.new4[i, 1]) * location + df.new4[i, 2]
+  (exp(df.new4[i, 3]) * (location - df.new4[i, 5])^2  + df.new4[i, 1])
 })
 # Apply truncation so that if the evaluated function gives a value smaller than epsilon,
 # it gets truncated to epsilon
-xdf4 <- xdf4|> mutate(trunc.eval = ifelse(xdf4$value > epsilon, xdf4$value, epsilon), 
-                          trunc.inv = 1/trunc.eval)
+xdf4 <- xdf4|> mutate(trunc.inv = 1/value)
 # At each temperature point, summarize to get the mean, median, and hdi bounds
 # of the evaluated function
 mean.xdf4 <- xdf4 |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                                  avg.value = mean(trunc.eval), 
+                                                  avg.value = mean(value), 
                                                   med.value.inv = median(trunc.inv), 
-                                                  med.value = median(trunc.eval), 
+                                                  med.value = median(value), 
                                                   lower.hdi.inv = hdi(trunc.inv)[1], 
                                                   upper.hdi.inv = hdi(trunc.inv)[2], 
-                                                  lower.hdi = hdi(trunc.eval)[1], 
-                                                  upper.hdi = hdi(trunc.eval)[2])
+                                                  lower.hdi = hdi(value)[1], 
+                                                  upper.hdi = hdi(value)[2])
 # Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) 1/(true.a * x^2 - true.b * x + true.c)
-true_curve <- function(x) (true.a * x^2 - true.b * x + true.c)
-mean.xdf4$true_curve <- true_curve(xseq)
-mean.xdf4$true_curve.inv <- true_curve.inv(xseq)
+mean.xdf4$true_curve <- f(xseq)
 # Plot mean mortality rate response
 plot4_mean <- ggplot(mean.xdf4, aes(x = point)) + 
   geom_line(aes(y = avg.value), color = "black") + 
@@ -1179,7 +1149,7 @@ plot4_med <- ggplot(mean.xdf4, aes(x = point)) +
 plot4_mean.inv <- ggplot(mean.xdf4, aes(x = point)) + 
   geom_line(aes(y = avg.value.inv), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
+  geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1189,7 +1159,7 @@ plot4_mean.inv <- ggplot(mean.xdf4, aes(x = point)) +
 plot4_med.inv <- ggplot(mean.xdf4, aes(x = point)) + 
   geom_line(aes(y = med.value.inv), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
-  geom_line(aes(y = true_curve.inv), color = rocket(10)[1], linetype = "dashed") + 
+  geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1219,13 +1189,13 @@ for (i in 1:5) {
     lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
+    lines(x, dnorm(x, 22, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 3){
     lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 400), col = rocket(12)[5], lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
 }
 
@@ -1248,7 +1218,7 @@ proportions_list_b4 <- lapply(param_list4[[2]], function(matrix) {
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.b) > col3 & log(true.b) < col4)
+  proportion <- mean(Topt > col3 & Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -1280,7 +1250,7 @@ calculate_rmse_b_lambda_mean_inv <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(log(true.b), length(observed))  
+  predicted <- rep(Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1305,19 +1275,19 @@ rmse_values_c_lambda_mean_inv <- sapply(param_list4[[3]], calculate_rmse_c_lambd
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
 tab.mean.inv.lambda <- matrix(0, nrow = 3, ncol = 6)
-row.names(tab.mean.inv.lambda) <- c("a", "b", "c")
+row.names(tab.mean.inv.lambda) <- c("a", "Topt", "c")
 colnames(tab.mean.inv.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 tab.mean.inv.lambda[1, 1] <- true.a
-tab.mean.inv.lambda[2, 1] <- true.b
+tab.mean.inv.lambda[2, 1] <- Topt
 tab.mean.inv.lambda[3, 1] <- true.c
 tab.mean.inv.lambda[1, 2] <- exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1]))))
-tab.mean.inv.lambda[2, 2] <- exp(mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1]))))
+tab.mean.inv.lambda[2, 2] <- mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))
 tab.mean.inv.lambda[3, 2] <- mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))
 tab.mean.inv.lambda[1, 3] <- exp(hdi(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))[1])
-tab.mean.inv.lambda[2, 3] <- exp(hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[1])
+tab.mean.inv.lambda[2, 3] <- hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[1]
 tab.mean.inv.lambda[3, 3] <- hdi(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))[1]
 tab.mean.inv.lambda[1, 4] <- exp(hdi(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))[2])
-tab.mean.inv.lambda[2, 4] <- exp(hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[2])
+tab.mean.inv.lambda[2, 4] <- hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[2]
 tab.mean.inv.lambda[3, 4] <- hdi(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))[2]
 tab.mean.inv.lambda[1, 5] <- mean(unlist(proportions_list_a4))
 tab.mean.inv.lambda[2, 5] <- mean(unlist(proportions_list_b4))
@@ -1387,26 +1357,24 @@ for(i in 1:b){
   cat("model{
   # Priors
   # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) 
-  b.l ~ dnorm(0, 1/10) 
+   la ~ dnorm(0, 1/10) # has to be positive exp(1)?
+  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
   c ~ dexp(0.5) # Has to be positive
-  sig ~ dexp(400)
+  sig ~ dexp(0.5)
   sig2 <- sig^2
   tau <- 1/sig2
-  # Set epsilon to avoid negative or small values
-  epsilon <- 0.01
   # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- (exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) * ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c) > epsilon) + ((exp(la) * temp[i]^2 - exp(b.l) * temp[i] + c)<= epsilon) * epsilon
-    trait[i] ~ dnorm(mu[i], tau) T(0, )
+    mu[i] <-  exp(la) * (temp[i] - Topt)^2 + c
+    trait[i] ~ dnorm(mu[i], tau) T(0,)
   }
 }", file = "inv_mean_lambda.txt")
   # Settings
-  parameters <- c("la", "b.l", "c", "sig")
+  parameters <- c("la", "Topt", "c", "sig")
   inits <- function(){list(
     # a and b in log space
-    la = log(0.001), 
-    b.l = log(0.05), 
+    la = log(0.1), 
+    Topt = 20, 
     c = 0.6, 
     sig = 2
   )}
@@ -1432,30 +1400,30 @@ for(i in 1:b){
     # For each chain, store mean, median, and hdi bounds for a in log space
     # Statistics are all in a different column, each row is a chain
     # 100 matrices of 5x4 for each parameter
-    param_list5[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    param_list5[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    param_list5[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    param_list5[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b in log space
-    param_list5[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    param_list5[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    param_list5[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    param_list5[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
+    param_list5[[1]][[i]][j, 1] <- mean(samp[[j]][, 3])
+    param_list5[[1]][[i]][j, 2] <- median(samp[[j]][, 3])
+    param_list5[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
+    param_list5[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    # For each chain, store mean, median, and hdi bounds for Topt
+    param_list5[[2]][[i]][j, 1] <- mean(samp[[j]][, 5])
+    param_list5[[2]][[i]][j, 2] <- median(samp[[j]][, 5])
+    param_list5[[2]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
+    param_list5[[2]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
     # For each chain, store mean, median, and hdi bounds for c
-    param_list5[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    param_list5[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    param_list5[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    param_list5[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    param_list5[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
+    param_list5[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
+    param_list5[[3]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
+    param_list5[[3]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
     # For each chain, store mean, median, and hdi bounds for deviance
-    param_list5[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    param_list5[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    param_list5[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    param_list5[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
-    # For each chain, store mean, median, and hdi bounds for tau
-    param_list5[[5]][[i]][j, 1] <- mean(samp[[j]][, 5])
-    param_list5[[5]][[i]][j, 2] <- median(samp[[j]][, 5])
-    param_list5[[5]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
-    param_list5[[5]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
+    param_list5[[4]][[i]][j, 1] <- mean(samp[[j]][, 2])
+    param_list5[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
+    param_list5[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
+    param_list5[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    # For each chain, store mean, median, and hdi bounds for sig
+    param_list5[[5]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    param_list5[[5]][[i]][j, 2] <- median(samp[[j]][, 4])
+    param_list5[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    param_list5[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
   
   
@@ -1474,27 +1442,23 @@ xdf5 <- expand.grid(point = xseq, iteration = 1:nrow(df.new5))
 xdf5$value <- apply(xdf5, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  exp(df.new5[i, 4]) * location^2 - exp(df.new5[i, 1]) * location + df.new5[i, 2]
+  (exp(df.new5[i, 3]) * (location - df.new5[i, 5])^2  + df.new5[i, 1])
 })
 # Apply truncation so that if the evaluated function gives a value smaller than epsilon,
 # it gets truncated to epsilon
-xdf5 <- xdf5|> mutate(trunc.eval = ifelse(xdf5$value > epsilon, xdf5$value, epsilon), 
-                      trunc.inv = 1/trunc.eval)
+xdf5 <- xdf5|> mutate(trunc.inv = 1/value)
 # At each temperature point, summarize to get the mean, median, and hdi bounds
 # of the evaluated function
 mean.xdf5 <- xdf5 |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                                avg.value = mean(trunc.eval), 
+                                                avg.value = mean(value), 
                                                 med.value.inv = median(trunc.inv), 
-                                                med.value = median(trunc.eval), 
+                                                med.value = median(value), 
                                                 lower.hdi.inv = hdi(trunc.inv)[1], 
                                                 upper.hdi.inv = hdi(trunc.inv)[2], 
-                                                lower.hdi = hdi(trunc.eval)[1], 
-                                                upper.hdi = hdi(trunc.eval)[2])
+                                                lower.hdi = hdi(value)[1], 
+                                                upper.hdi = hdi(value)[2])
 # Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) 1/(true.a * x^2 - true.b * x + true.c)
-true_curve <- function(x) (true.a * x^2 - true.b * x + true.c)
 mean.xdf5$true_curve <- true_curve(xseq)
-mean.xdf5$true_curve.inv <- true_curve.inv(xseq)
 # Plot mean mortality rate response
 plot5_mean <- ggplot(mean.xdf5, aes(x = point)) + 
   geom_line(aes(y = avg.value), color = "black") + 
@@ -1559,13 +1523,13 @@ for (i in 1:5) {
     lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
+    lines(x, dnorm(x, 22, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 3){
     lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 5){
-    lines(x, dexp(x, 400), col = rocket(12)[5], lty = 2, lwd = 2)
+    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
 }
 
@@ -1587,7 +1551,7 @@ proportions_list_b5 <-  lapply(param_list5[[2]], function(matrix) {
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(log(true.b) > col3 & log(true.b) < col4)
+  proportion <- mean(Topt > col3 & Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -1619,7 +1583,7 @@ calculate_rmse_b_lambda_inv_mean <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(log(true.b), length(observed))  
+  predicted <- rep(Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1644,19 +1608,19 @@ rmse_values_c_lambda_inv_mean <- sapply(param_list5[[3]], calculate_rmse_c_lambd
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
 tab.inv.mean.lambda <- matrix(0, nrow = 3, ncol = 6)
-row.names(tab.inv.mean.lambda) <- c("a", "b", "c")
+row.names(tab.inv.mean.lambda) <- c("a", "Topt", "c")
 colnames(tab.inv.mean.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 tab.inv.mean.lambda[1, 1] <- true.a
-tab.inv.mean.lambda[2, 1] <- true.b
+tab.inv.mean.lambda[2, 1] <- Topt
 tab.inv.mean.lambda[3, 1] <- true.c
 tab.inv.mean.lambda[1, 2] <- exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))
-tab.inv.mean.lambda[2, 2] <- exp(mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1]))))
+tab.inv.mean.lambda[2, 2] <- mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))
 tab.inv.mean.lambda[3, 2] <- mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))
 tab.inv.mean.lambda[1, 3] <- exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[1])
-tab.inv.mean.lambda[2, 3] <- exp(hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[1])
+tab.inv.mean.lambda[2, 3] <- hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[1]
 tab.inv.mean.lambda[3, 3] <- hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[1]
 tab.inv.mean.lambda[1, 4] <- exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[2])
-tab.inv.mean.lambda[2, 4] <- exp(hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[2])
+tab.inv.mean.lambda[2, 4] <- hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[2]
 tab.inv.mean.lambda[3, 4] <- hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[2]
 tab.inv.mean.lambda[1, 5] <- mean(unlist(proportions_list_a5))
 tab.inv.mean.lambda[2, 5] <- mean(unlist(proportions_list_b5))
