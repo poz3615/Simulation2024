@@ -7,7 +7,7 @@ library(HDInterval)
 # Set true mortality curve parameters
 # Parameters chosen to resemble curve with exponential data
 true.a  <-  0.001094
-Topt <- 22.3
+true.Topt <- 22.3
 true.c <- 0.066
 
 # Making median lifetime function (concave down)
@@ -44,7 +44,7 @@ for(i in 1:100){
 w <- length(Weibull_N_data.list)
 
 # True value vector with a in log space
-Weibull_true_values <- c(log(true.a), Topt, true.c, NA, sh.est)
+Weibull_true_values <- c(log(true.a), true.Topt, true.c, NA, sh.est)
 
 ########################################## Lambda #############################################
 
@@ -70,10 +70,8 @@ for(i in 1:w){
   sink("Weibull_n_lambda.txt")
   cat("model{
   # Priors
-  # If mu<0, make it small number
-  # And nonzero
-  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
-  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
+  la ~ dnorm(0, 1/10) 
+  Topt ~ dnorm(22, 1/10) 
   c ~ dexp(0.5) # Has to be positive
   # Likelihood
   for (i in 1:N.obs){
@@ -256,7 +254,7 @@ Weibull_N_proportions_list_b1 <- lapply(Weibull_N_param_list1[[2]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(Topt > col3 & Topt < col4)
+  proportion <- mean(true.Topt > col3 & true.Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -288,7 +286,7 @@ Weibull_N_calculate_rmse_b_lambda <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(Topt, length(observed))  
+  predicted <- rep(true.Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -316,7 +314,7 @@ Weibull_N_tab.lambda <- matrix(0, nrow = 3, ncol = 6)
 row.names(Weibull_N_tab.lambda) <- c("a", "Topt", "c")
 colnames(Weibull_N_tab.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 Weibull_N_tab.lambda[1, 1] <- true.a
-Weibull_N_tab.lambda[2, 1] <- Topt
+Weibull_N_tab.lambda[2, 1] <- true.Topt
 Weibull_N_tab.lambda[3, 1] <- true.c
 Weibull_N_tab.lambda[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 1]))))
 Weibull_N_tab.lambda[2, 2] <- mean(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 1])))
@@ -387,9 +385,8 @@ for(i in 1:w){
   sink("Weibull_n_mean_lambda.txt")
   cat("model{
   # Priors
-  # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
-  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
+  la ~ dnorm(0, 1/10) 
+  Topt ~ dnorm(22, 1/10) 
   c ~ dexp(0.5) # Has to be positive
   # Likelihood
   for (i in 1:N.obs){
@@ -571,7 +568,7 @@ Weibull_N_proportions_list_b2 <- lapply(Weibull_N_param_list2[[2]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(Topt > col3 & Topt < col4)
+  proportion <- mean(true.Topt > col3 & true.Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -603,7 +600,7 @@ Weibull_N_calculate_rmse_b_lambda_mean <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(Topt, length(observed))  
+  predicted <- rep(true.Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -631,7 +628,7 @@ Weibull_N_tab.lambda.mean <- matrix(0, nrow = 3, ncol = 6)
 row.names(Weibull_N_tab.lambda.mean) <- c("a", "Topt", "c")
 colnames(Weibull_N_tab.lambda.mean) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 Weibull_N_tab.lambda.mean[1, 1] <- true.a
-Weibull_N_tab.lambda.mean[2, 1] <- Topt
+Weibull_N_tab.lambda.mean[2, 1] <- true.Topt
 Weibull_N_tab.lambda.mean[3, 1] <- true.c
 Weibull_N_tab.lambda.mean[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 1]))))
 Weibull_N_tab.lambda.mean[2, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 1]))))
@@ -692,10 +689,8 @@ for(i in 1:w){
   sink("Weibull_n_inv_lambda.txt")
   cat("model{
   #Priors
-  #If mu<0, make it small number
-  #And nonzero
-  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
-  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
+  la ~ dnorm(0, 1/10) 
+  Topt ~ dnorm(22, 1/10)
   c ~ dexp(0.5) # Has to be positive
   sig ~ dexp(0.5)
   sig2 <- sig^2
@@ -892,7 +887,7 @@ Weibull_N_proportions_list_b3 <- lapply(Weibull_N_param_list3[[2]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(Topt > col3 & Topt < col4)
+  proportion <- mean(true.Topt > col3 & true.Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -924,7 +919,7 @@ Weibull_N_calculate_rmse_b_lambda_inv <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1] 
   # True values
-  predicted <- rep(Topt, length(observed))  
+  predicted <- rep(true.Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -952,7 +947,7 @@ Weibull_N_tab.inv.lambda <- matrix(0, nrow = 3, ncol = 6)
 row.names(Weibull_N_tab.inv.lambda) <- c("a", "Topt", "c")
 colnames(Weibull_N_tab.inv.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 Weibull_N_tab.inv.lambda[1, 1] <- true.a
-Weibull_N_tab.inv.lambda[2, 1] <- Topt
+Weibull_N_tab.inv.lambda[2, 1] <- true.Topt
 Weibull_N_tab.inv.lambda[3, 1] <- true.c
 Weibull_N_tab.inv.lambda[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 1]))))
 Weibull_N_tab.inv.lambda[2, 2] <- mean(unlist(lapply(Weibull_N_param_list3[[2]], function(matrix) matrix[, 1])))
@@ -1029,9 +1024,8 @@ for(i in 1:w){
   sink("weibull_n_mean_inv_lambda.txt")
   cat("model{
   # Priors
-  # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
-  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
+  la ~ dnorm(0, 1/10) 
+  Topt ~ dnorm(22, 1/10) 
   c ~ dexp(0.5) # Has to be positive
   sig ~ dexp(0.5)
   sig2 <- sig^2
@@ -1225,7 +1219,7 @@ Weibull_N_proportions_list_b4 <- lapply(Weibull_N_param_list4[[2]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(Topt > col3 & Topt < col4)
+  proportion <- mean(true.Topt > col3 & true.Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -1256,7 +1250,7 @@ Weibull_N_calculate_rmse_b_lambda_mean_inv <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(Topt, length(observed))  
+  predicted <- rep(true.Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1283,7 +1277,7 @@ Weibull_N_tab.mean.inv.lambda <- matrix(0, nrow = 3, ncol = 6)
 row.names(Weibull_N_tab.mean.inv.lambda) <- c("a", "Topt", "c")
 colnames(Weibull_N_tab.mean.inv.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 Weibull_N_tab.mean.inv.lambda[1, 1] <- true.a
-Weibull_N_tab.mean.inv.lambda[2, 1] <- Topt
+Weibull_N_tab.mean.inv.lambda[2, 1] <- true.Topt
 Weibull_N_tab.mean.inv.lambda[3, 1] <- true.c
 Weibull_N_tab.mean.inv.lambda[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 1]))))
 Weibull_N_tab.mean.inv.lambda[2, 2] <- mean(unlist(lapply(Weibull_N_param_list4[[2]], function(matrix) matrix[, 1])))
@@ -1361,9 +1355,8 @@ for(i in 1:w){
   sink("weibull_n_inv_mean_lambda.txt")
   cat("model{
   # Priors
-  # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
-  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
+  la ~ dnorm(0, 1/10) 
+  Topt ~ dnorm(22, 1/10) 
   c ~ dexp(0.5) # Has to be positive
   sig ~ dexp(0.5)
   sig2 <- sig^2
@@ -1556,7 +1549,7 @@ Weibull_N_proportions_list_b5 <- lapply(Weibull_N_param_list5[[2]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(Topt > col3 & Topt < col4)
+  proportion <- mean(true.Topt > col3 & true.Topt < col4)
   return(proportion)
 })
 # Calculate average proportion of coverage for all 100 models
@@ -1588,7 +1581,7 @@ Weibull_N_calculate_rmse_b_lambda_inv_mean <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1] 
   # True values
-  predicted <- rep(Topt, length(observed))  
+  predicted <- rep(true.Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1616,7 +1609,7 @@ Weibull_N_tab.inv.mean.lambda <- matrix(0, nrow = 3, ncol = 6)
 row.names(Weibull_N_tab.inv.mean.lambda) <- c("a", "Topt", "c")
 colnames(Weibull_N_tab.inv.mean.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 Weibull_N_tab.inv.mean.lambda[1, 1] <- true.a
-Weibull_N_tab.inv.mean.lambda[2, 1] <- Topt
+Weibull_N_tab.inv.mean.lambda[2, 1] <- true.Topt
 Weibull_N_tab.inv.mean.lambda[3, 1] <- true.c
 Weibull_N_tab.inv.mean.lambda[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 1]))))
 Weibull_N_tab.inv.mean.lambda[2, 2] <- mean(unlist(lapply(Weibull_N_param_list5[[2]], function(matrix) matrix[, 1])))
@@ -1678,27 +1671,25 @@ for(i in 1:w){
   # Model
   sink("Weibull_n_weibull.txt")
   cat("model{
-  # Priors
-  # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) 
-  b ~ dexp(0.5) # Has to be positive, because function has neg sign
-  c ~ dexp(0.5) # Has to be positive
-  shape ~ dexp(0.001)
-  # Likelihood
-  # Need to use inverse of lambda parameter for JAGS parameterization
+  #Priors
+  la~dnorm(0, 1/10) 
+  Topt~dnorm(22, 1/10) 
+  c~dexp(0.5) #Has to be positive
+  shape~dexp(0.001)
+  #Likelihood
   for (i in 1:N.obs){
     trait[i] ~ dgen.gamma(1, 1/lambda[i], shape) #
     lambda[i] <- (med[i])/(log(2))^(1/shape)
-    med[i] <- exp(-(exp(la) * temp[i]^2 - b * temp[i] + c))
+    med[i] <- 1/(exp(la) * (temp[i] - Topt)^2 + c)
   }
   }", file = "Weibull_n_weibull.txt")
   
   # Settings
-  parameters <- c("la", "b", "c", "shape")
+  parameters <- c("la", "Topt", "c", "shape")
   inits <- function(){list(
     # a in log space
-    la = log(0.001), 
-    b = 0.2, 
+    la = log(0.1), 
+    Topt = 20, 
     c = 0.6, 
     shape = 3
   )}
@@ -1728,30 +1719,30 @@ for(i in 1:w){
     # For each chain, store mean, median, and hdi bounds for a in log space
     # Statistics are all in a different column, each row is a chain
     # 100 matrices of 5x4 for each parameter
-    Weibull_N_param_list6[[1]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    Weibull_N_param_list6[[1]][[i]][j, 2] <- median(samp[[j]][, 4])
-    Weibull_N_param_list6[[1]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    Weibull_N_param_list6[[1]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
-    # For each chain, store mean, median, and hdi bounds for b
-    Weibull_N_param_list6[[2]][[i]][j, 1] <- mean(samp[[j]][, 1])
-    Weibull_N_param_list6[[2]][[i]][j, 2] <- median(samp[[j]][, 1])
-    Weibull_N_param_list6[[2]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
-    Weibull_N_param_list6[[2]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
+    Weibull_N_param_list6[[1]][[i]][j, 1] <- mean(samp[[j]][, 3])
+    Weibull_N_param_list6[[1]][[i]][j, 2] <- median(samp[[j]][, 3])
+    Weibull_N_param_list6[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
+    Weibull_N_param_list6[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    # For each chain, store mean, median, and hdi bounds for Topt
+    Weibull_N_param_list6[[2]][[i]][j, 1] <- mean(samp[[j]][, 5])
+    Weibull_N_param_list6[[2]][[i]][j, 2] <- median(samp[[j]][, 5])
+    Weibull_N_param_list6[[2]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
+    Weibull_N_param_list6[[2]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
     # For each chain, store mean, median, and hdi bounds for c
-    Weibull_N_param_list6[[3]][[i]][j, 1] <- mean(samp[[j]][, 2])
-    Weibull_N_param_list6[[3]][[i]][j, 2] <- median(samp[[j]][, 2])
-    Weibull_N_param_list6[[3]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
-    Weibull_N_param_list6[[3]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    Weibull_N_param_list6[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
+    Weibull_N_param_list6[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
+    Weibull_N_param_list6[[3]][[i]][j, 3] <- hdi(samp[[j]][, 1])[1]
+    Weibull_N_param_list6[[3]][[i]][j, 4] <- hdi(samp[[j]][, 1])[2]
     # For each chain, store mean, median, and hdi bounds for deviance
-    Weibull_N_param_list6[[4]][[i]][j, 1] <- mean(samp[[j]][, 3])
-    Weibull_N_param_list6[[4]][[i]][j, 2] <- median(samp[[j]][, 3])
-    Weibull_N_param_list6[[4]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
-    Weibull_N_param_list6[[4]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
+    Weibull_N_param_list6[[4]][[i]][j, 1] <- mean(samp[[j]][, 2])
+    Weibull_N_param_list6[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
+    Weibull_N_param_list6[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
+    Weibull_N_param_list6[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
     # For each chain, store mean, median, and hdi bounds for shape
-    Weibull_N_param_list6[[5]][[i]][j, 1] <- mean(samp[[j]][, 5])
-    Weibull_N_param_list6[[5]][[i]][j, 2] <- median(samp[[j]][, 5])
-    Weibull_N_param_list6[[5]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
-    Weibull_N_param_list6[[5]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
+    Weibull_N_param_list6[[5]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    Weibull_N_param_list6[[5]][[i]][j, 2] <- median(samp[[j]][, 4])
+    Weibull_N_param_list6[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    Weibull_N_param_list6[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
   
   
@@ -1769,63 +1760,59 @@ xdf6_W_N <- expand.grid(point = xseq, iteration = 1:nrow(df.new6_W_N))
 xdf6_W_N$value <- apply(xdf1_W_N, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  exp(-(exp(df.new6_W_N[i, 4]) * location^2 - df.new6_W_N[i, 1] * location + df.new6_W_N[i, 2]))
+  exp(df.new6_W_N[i, 3]) * (location - df.new6_W_N[i, 5])^2  + df.new6_W_N[i, 1]
 })
 # To keep consistent with exponential data
-xdf6_W_N <- xdf6_W_N|> mutate(trunc.eval = ifelse(xdf6_W_N$value > epsilon, xdf6_W_N$value, epsilon), 
-                             trunc.inv = log(2)/trunc.eval)
+xdf6_W_N <- xdf6_W_N|> mutate(trunc.inv = log(2)/value)
 # At each temperature point, summarize to get the mean, median, and hdi bounds
 # of the evaluated function
 mean.xdf6_W_N <- xdf6_W_N |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv), 
-                                                        avg.value = mean(trunc.eval), 
+                                                        avg.value = mean(value), 
                                                         med.value.inv = median(trunc.inv), 
-                                                        med.value = median(trunc.eval), 
+                                                        med.value = median(value), 
                                                         lower.hdi.inv = hdi(trunc.inv)[1], 
                                                         upper.hdi.inv = hdi(trunc.inv)[2], 
-                                                        lower.hdi = hdi(trunc.eval)[1], 
-                                                        upper.hdi = hdi(trunc.eval)[2])
+                                                        lower.hdi = hdi(value)[1], 
+                                                        upper.hdi = hdi(value)[2])
 # Creating columns of the true curve values and the true inverted curve values
-true_curve.inv <- function(x) log(2)/exp(-(true.a * x^2 - Topt * x + true.c))
-true_curve <- function(x) exp(-(true.a * x^2 - Topt * x + true.c))
-mean.xdf6_W_N$true_curve <- true_curve(xseq)
-mean.xdf6_W_N$true_curve.inv <- true_curve.inv(xseq)
+mean.xdf6_W_N$true_curve <- f(xseq)
 # Plot mean lifetime response
 plot6_mean_W_N <- ggplot(mean.xdf6_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = mako(10)[1], linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
+  #geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Lifetime") +
+       y = "Mortality Rate") +
   theme_minimal()
 # Plot median lifetime response
 plot6_med_W_N <- ggplot(mean.xdf6_W_N, aes(x = point)) +
   geom_line(aes(y = med.value), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = true_curve), color = mako(10)[1], linetype = "dashed") +
-  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
+ # geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Lifetime") +
+       y = "Mortality Rate") +
   theme_minimal()
 # Plot mean mortality rate response
 plot6_mean.inv_W_N <- ggplot(mean.xdf6_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = mako(10)[1], linetype = "dashed") +
+  geom_line(aes(y = log(2)/true_curve), color = mako(10)[1], linetype = "dashed") +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Mortlity Rate") +
+       y = "Lifetime") +
   theme_minimal()
 # Plot median mortality rate response
 plot6_med.inv_W_N <- ggplot(mean.xdf6_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  geom_line(aes(y = true_curve.inv), color = mako(10)[1], linetype = "dashed") +
+  geom_line(aes(y = log(2)/true_curve), color = mako(10)[1], linetype = "dashed") +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
-       y = "Mortality Rate") +
+       y = "Lifetime") +
   theme_minimal()
 
 gridExtra::grid.arrange(plot6_mean_W_N, plot6_med_W_N, nrow = 1)
@@ -1851,7 +1838,7 @@ for (i in 1:5) {
     lines(x, dnorm(x, 0, sqrt(10)), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 2){
-    lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
+    lines(x, dnorm(x, 22, sqrt(10)), col = mako(12)[6], lty = 2, lwd = 2)
   }
   if(i == 3){
     lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
@@ -1880,7 +1867,7 @@ Weibull_N_proportions_list_b6 <- lapply(Weibull_N_param_list6[[2]], function(mat
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(Topt > col3 & Topt < col4)
+  proportion <- mean(true.Topt > col3 & true.Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -1923,7 +1910,7 @@ Weibull_N_calculate_rmse_b_wb <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(Topt, length(observed))  
+  predicted <- rep(true.Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1960,22 +1947,22 @@ Weibull_N_rmse_values_shape_wb <- sapply(Weibull_N_param_list6[[5]], Weibull_N_c
 # Create a table with true value, posterior mean,
 # lower and upper hdi of posterior mean, coverage, and RMSE
 Weibull_N_tab.wb <- matrix(0, nrow = 4, ncol = 6)
-row.names(Weibull_N_tab.wb) <- c("a", "b", "c", "shape")
+row.names(Weibull_N_tab.wb) <- c("a", "Topt", "c", "shape")
 colnames(Weibull_N_tab.wb) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 Weibull_N_tab.wb[1, 1] <- true.a
-Weibull_N_tab.wb[2, 1] <- Topt
+Weibull_N_tab.wb[2, 1] <- true.Topt
 Weibull_N_tab.wb[3, 1] <- true.c
 Weibull_N_tab.wb[4, 1] <- sh.est
 Weibull_N_tab.wb[1, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list6[[1]], function(matrix) matrix[, 1]))))
-Weibull_N_tab.wb[2, 2] <- exp(mean(unlist(lapply(Weibull_N_param_list6[[2]], function(matrix) matrix[, 1]))))
+Weibull_N_tab.wb[2, 2] <- mean(unlist(lapply(Weibull_N_param_list6[[2]], function(matrix) matrix[, 1])))
 Weibull_N_tab.wb[3, 2] <- mean(unlist(lapply(Weibull_N_param_list6[[3]], function(matrix) matrix[, 1])))
 Weibull_N_tab.wb[4, 2] <- mean(unlist(lapply(Weibull_N_param_list6[[5]], function(matrix) matrix[, 1])))
 Weibull_N_tab.wb[1, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list6[[1]], function(matrix) matrix[, 1])))[1])
-Weibull_N_tab.wb[2, 3] <- exp(hdi(unlist(lapply(Weibull_N_param_list6[[2]], function(matrix) matrix[, 1])))[1])
+Weibull_N_tab.wb[2, 3] <- hdi(unlist(lapply(Weibull_N_param_list6[[2]], function(matrix) matrix[, 1])))[1]
 Weibull_N_tab.wb[3, 3] <- hdi(unlist(lapply(Weibull_N_param_list6[[3]], function(matrix) matrix[, 1])))[1]
 Weibull_N_tab.wb[4, 3] <- hdi(unlist(lapply(Weibull_N_param_list6[[5]], function(matrix) matrix[, 1])))[1]
 Weibull_N_tab.wb[1, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list6[[1]], function(matrix) matrix[, 1])))[2])
-Weibull_N_tab.wb[2, 4] <- exp(hdi(unlist(lapply(Weibull_N_param_list6[[2]], function(matrix) matrix[, 1])))[2])
+Weibull_N_tab.wb[2, 4] <- hdi(unlist(lapply(Weibull_N_param_list6[[2]], function(matrix) matrix[, 1])))[2]
 Weibull_N_tab.wb[3, 4] <- hdi(unlist(lapply(Weibull_N_param_list6[[3]], function(matrix) matrix[, 1])))[2]
 Weibull_N_tab.wb[4, 4] <- hdi(unlist(lapply(Weibull_N_param_list6[[5]], function(matrix) matrix[, 1])))[2]
 Weibull_N_tab.wb[1, 5] <- mean(unlist(Weibull_N_proportions_list_a6))
