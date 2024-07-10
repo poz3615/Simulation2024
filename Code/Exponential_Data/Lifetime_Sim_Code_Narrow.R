@@ -6,7 +6,7 @@ library(dplyr)
 
 # Set the true parameters from the mortality curve
 true.a  <-  0.001094
-Topt <- 22.3
+true.Topt <- 22.3
 true.c <- 0.066
 
 # True quadratic
@@ -35,7 +35,7 @@ b <- length(N_data.list)
 
 # True value vector with a and b in log space
 # Spot for sigma and deviance
-true_values <- c(log(true.a), Topt, true.c, NA, NA)
+true_values <- c(log(true.a), true.Topt, true.c, NA, NA)
 
 ########################################## Lambda #############################################
 
@@ -61,9 +61,8 @@ for(i in 1:b){
   sink("n_lambda.txt")
   cat("model{
   # Priors
-  # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
-  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
+  la ~ dnorm(0, 1/10) 
+  Topt ~ dnorm(22, 1/10) 
   c ~ dexp(0.5) # Has to be positive
   # Likelihood
   for (i in 1:N.obs){
@@ -205,7 +204,7 @@ gridExtra::grid.arrange(N_plot1_mean.inv, N_plot1_med.inv, nrow = 1)
 
 # Assign true values 
 # Create a list to store histograms of the posterior distribution of each parameter
-true_values <- c(log(true.a), Topt, true.c, NA)
+true_values <- c(log(true.a), true.Topt, true.c, NA)
 N_hist_list1 <- vector("list", length = 4)
 par(mfrow = c(2, 2))
 for (i in 1:4) {
@@ -252,7 +251,7 @@ N_proportions_list_b1 <- lapply(N_param_list1[[2]], function(matrix) {
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(Topt > col3 & Topt < col4)
+  proportion <- mean(true.Topt > col3 & true.Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -285,7 +284,7 @@ N_calculate_rmse_b_lambda <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(Topt, length(observed))  
+  predicted <- rep(true.Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -313,7 +312,7 @@ N_tab.lambda <- matrix(0, nrow = 3, ncol = 6)
 row.names(N_tab.lambda) <- c("a", "Topt", "c")
 colnames(N_tab.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 N_tab.lambda[1, 1] <- true.a
-N_tab.lambda[2, 1] <- Topt
+N_tab.lambda[2, 1] <- true.Topt
 N_tab.lambda[3, 1] <- true.c
 N_tab.lambda[1, 2] <- exp(mean(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 1]))))
 N_tab.lambda[2, 2] <- mean(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 1])))
@@ -385,9 +384,8 @@ for(i in 1:b){
   sink("n_mean_lambda.txt")
   cat("model{
   # Priors
-  # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
-  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
+  la ~ dnorm(0, 1/10) 
+  Topt ~ dnorm(22, 1/10) 
   c ~ dexp(0.5) # Has to be positive
   # Likelihood
   for (i in 1:N.obs){
@@ -571,7 +569,7 @@ N_proportions_list_b2 <- lapply(N_param_list2[[2]], function(matrix) {
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(Topt > col3 & Topt < col4)
+  proportion <- mean(true.Topt > col3 & true.Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -603,7 +601,7 @@ N_calculate_rmse_b_lambda_mean <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(Topt, length(observed))  
+  predicted <- rep(true.Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -631,7 +629,7 @@ N_tab.lambda.mean <- matrix(0, nrow = 3, ncol = 6)
 row.names(N_tab.lambda.mean) <- c("a", "Topt", "c")
 colnames(N_tab.lambda.mean) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 N_tab.lambda.mean[1, 1] <- true.a
-N_tab.lambda.mean[2, 1] <- Topt
+N_tab.lambda.mean[2, 1] <- true.Topt
 N_tab.lambda.mean[3, 1] <- true.c
 N_tab.lambda.mean[1, 2] <- exp(mean(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 1]))))
 N_tab.lambda.mean[2, 2] <- mean(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 1])))
@@ -691,10 +689,8 @@ for(i in 1:b){
   sink("n_inv_lambda.txt")
   cat("model{
   # Priors
-  # If mu<0, make it small number
-  # And nonzero
-  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
-  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
+  la ~ dnorm(0, 1/10) 
+  Topt ~ dnorm(22, 1/10)
   c ~ dexp(0.5) # Has to be positive
   sig ~ dexp(0.5)
   sig2 <- sig^2
@@ -892,7 +888,7 @@ N_proportions_list_b3 <- lapply(N_param_list3[[2]], function(matrix) {
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(Topt > col3 & Topt < col4)
+  proportion <- mean(true.Topt > col3 & true.Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -924,7 +920,7 @@ N_calculate_rmse_b_lambda_inv <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(Topt, length(observed))  
+  predicted <- rep(true.Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -952,7 +948,7 @@ N_tab.inv.lambda <- matrix(0, nrow = 3, ncol = 6)
 row.names(N_tab.inv.lambda) <- c("a", "Topt", "c")
 colnames(N_tab.inv.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 N_tab.inv.lambda[1, 1] <- true.a
-N_tab.inv.lambda[2, 1] <- Topt
+N_tab.inv.lambda[2, 1] <- true.Topt
 N_tab.inv.lambda[3, 1] <- true.c
 N_tab.inv.lambda[1, 2] <- exp(mean(unlist(lapply(N_param_list3[[1]], function(matrix) matrix[, 1]))))
 N_tab.inv.lambda[2, 2] <- mean(unlist(lapply(N_param_list3[[2]], function(matrix) matrix[, 1])))
@@ -1028,9 +1024,8 @@ for(i in 1:b){
   sink("n_mean_inv_lambda.txt")
   cat("model{
   # Priors
-  # If mu<0, make it small number
-  la ~ dnorm(0, 1/10) # has to be positive exp(1)?
-  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
+  la ~ dnorm(0, 1/10) 
+  Topt ~ dnorm(22, 1/10)
   c ~ dexp(0.5) # Has to be positive
   sig ~ dexp(0.5)
   sig2 <- sig^2
@@ -1226,7 +1221,7 @@ N_proportions_list_b4 <- lapply(N_param_list4[[2]], function(matrix) {
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(Topt > col3 & Topt < col4)
+  proportion <- mean(true.Topt > col3 & true.Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -1258,7 +1253,7 @@ N_calculate_rmse_b_lambda_mean_inv <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(Topt, length(observed))  
+  predicted <- rep(true.Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1286,7 +1281,7 @@ N_tab.mean.inv.lambda <- matrix(0, nrow = 3, ncol = 6)
 row.names(N_tab.mean.inv.lambda) <- c("a", "Topt", "c")
 colnames(N_tab.mean.inv.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 N_tab.mean.inv.lambda[1, 1] <- true.a
-N_tab.mean.inv.lambda[2, 1] <- Topt
+N_tab.mean.inv.lambda[2, 1] <- true.Topt
 N_tab.mean.inv.lambda[3, 1] <- true.c
 N_tab.mean.inv.lambda[1, 2] <- exp(mean(unlist(lapply(N_param_list4[[1]], function(matrix) matrix[, 1]))))
 N_tab.mean.inv.lambda[2, 2] <- mean(unlist(lapply(N_param_list4[[2]], function(matrix) matrix[, 1])))
@@ -1364,9 +1359,8 @@ for(i in 1:b){
   sink("n_inv_mean_lambda.txt")
   cat("model{
   # Priors
-  # If mu<0, make it small number
-   la ~ dnorm(0, 1/10) # has to be positive exp(1)?
-  Topt ~ dnorm(22, 1/10) # Has to be positive, because function has neg sign
+   la ~ dnorm(0, 1/10) 
+  Topt ~ dnorm(22, 1/10) 
   c ~ dexp(0.5) # Has to be positive
   sig ~ dexp(0.5)
   sig2 <- sig^2
@@ -1561,7 +1555,7 @@ N_proportions_list_b5 <- lapply(N_param_list5[[2]], function(matrix) {
   col3 <- matrix[, 3]
   col4 <- matrix[, 4]
   # Calculate average proportion of coverage for each model
-  proportion <- mean(Topt > col3 & Topt < col4)
+  proportion <- mean(true.Topt > col3 & true.Topt < col4)
   return(proportion)
   })
 # Calculate average proportion of coverage for all 100 models
@@ -1593,7 +1587,7 @@ N_calculate_rmse_b_lambda_inv_mean <- function(mat) {
   # Get the first column, which is posterior mean of the chain
   observed <- mat[, 1]  
   # True values
-  predicted <- rep(Topt, length(observed))  
+  predicted <- rep(true.Topt, length(observed))  
   # Calculate RMSE
   rmse <- sqrt(mean((observed - predicted)^2))
   return(rmse)
@@ -1621,7 +1615,7 @@ N_tab.inv.mean.lambda <- matrix(0, nrow = 3, ncol = 6)
 row.names(N_tab.inv.mean.lambda) <- c("a", "Topt", "c")
 colnames(N_tab.inv.mean.lambda) <- c("True Value", "Mean", "Lower HDI of Mean", "Upper HDI of Mean", "Coverage", "RMSE")
 N_tab.inv.mean.lambda[1, 1] <- true.a
-N_tab.inv.mean.lambda[2, 1] <- Topt
+N_tab.inv.mean.lambda[2, 1] <- true.Topt
 N_tab.inv.mean.lambda[3, 1] <- true.c
 N_tab.inv.mean.lambda[1, 2] <- exp(mean(unlist(lapply(N_param_list5[[1]], function(matrix) matrix[, 1]))))
 N_tab.inv.mean.lambda[2, 2] <- mean(unlist(lapply(N_param_list5[[2]], function(matrix) matrix[, 1])))
