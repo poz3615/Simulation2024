@@ -64,7 +64,7 @@ a.plot <- ggplot(df.a, aes(x, Mean))+
 a.plot
 ```
 
-```{r plot.b.wide}
+```{r plot.Topt.wide}
 desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
                       "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
 
@@ -90,7 +90,7 @@ df.b <- data.frame(
 df.b$x <- factor(df.b$x, levels = desired_order)
 b.plot <- ggplot(df.b, aes(x, Mean))+
   geom_point(col=cividis(3)[1])+ geom_linerange(aes(ymin = lower, ymax = upper), col = cividis(3)[2])+labs(title="B",x="Method")+
-  geom_hline(yintercept = Topt, linetype = "dashed", color = cividis(3)[3])+
+  geom_hline(yintercept = true.Topt, linetype = "dashed", color = cividis(3)[3])+
   theme_classic()+
   coord_flip()
 b.plot
@@ -162,7 +162,7 @@ log_a.plot
 ggsave("a_exp_compare.png", plot = log_a.plot, width = 10, height = 7)
 ```
 
-```{r plot.b.wide.log}
+```{r plot.Topt.wide.log}
 desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, Exp Model",
                       "Individual Inverse Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
 
@@ -188,7 +188,7 @@ log_df.b <- data.frame(
 log_df.b$x <- factor(log_df.b$x, levels = desired_order)
 log_b.plot <- ggplot(log_df.b, aes(x, log(Mean)))+
   geom_point(col=cividis(3)[1])+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)), col = cividis(3)[2])+labs(title="B",x="Method")+
-  geom_hline(yintercept = log(Topt), linetype = "dashed", color = cividis(3)[3])+
+  geom_hline(yintercept = log(true.Topt), linetype = "dashed", color = cividis(3)[3])+
   theme_classic()+
   coord_flip()
 log_b.plot
@@ -239,31 +239,31 @@ df.a.wb <- data.frame(
            exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))),
            exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))),
            exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))),
-           #exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))),
            exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))),
   upper = c(exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[2]),
             exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[2]),
             exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[2]),
             exp(hdi(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))[2]),
-            #exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[2]),
             exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[2])),
   lower = c(exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[1]),
             exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[1]),
             exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[1]),
             exp(hdi(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))[1]),
-            #exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[1]),
             exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[1]))
 )
 df.a.wb$x <- factor(df.a.wb$x, levels = desired_order.wb)
 a.wb.plot <- ggplot(df.a.wb, aes(x, Mean))+
   geom_point(col=plasma(3)[1]) + geom_linerange(aes(ymin = lower, ymax = upper), col = plasma(3)[2])+labs(title="A",x="Method")+
-  geom_hline(yintercept = true.exp.a, linetype = "dashed", color = plasma(3)[3])+
+  geom_hline(yintercept = true.a, linetype = "dashed", color = plasma(3)[3])+
   theme_classic()+
   coord_flip()
 a.wb.plot
 ```
 
-```{r plot.b.wide.wb}
+```{r plot.Topt.wide.wb}
 desired_order.wb <- c("WB Data, WB Model", "Inverse Mean WB Data, Exp Model", "Mean Inverse WB Data, Exp Model",
                       "Individual Inverse WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual WB Data, Exp Model")
 
@@ -292,7 +292,7 @@ df.b.wb <- data.frame(
 df.b.wb$x <- factor(df.b.wb$x, levels = desired_order.wb)
 b.wb.plot <- ggplot(df.b.wb, aes(x, Mean))+
   geom_point(col=plasma(3)[1])+ geom_linerange(aes(ymin = lower, ymax = upper), col = plasma(3)[2])+labs(title="B",x="Method")+
-  geom_hline(yintercept = true.exp.b, linetype = "dashed", color = plasma(3)[3])+
+  geom_hline(yintercept = true.Topt, linetype = "dashed", color = plasma(3)[3])+
   theme_classic()+
   coord_flip()
 b.wb.plot
@@ -326,10 +326,11 @@ df.c.wb <- data.frame(
 df.c.wb$x <- factor(df.c.wb$x, levels = desired_order.wb)
 c.wb.plot <- ggplot(df.c.wb, aes(x, Mean))+
   geom_point(col=plasma(3)[1])+ geom_linerange(aes(ymin = lower, ymax = upper), col = plasma(3)[2])+labs(title="C",x="Method")+
-  geom_hline(yintercept = true.exp.c, linetype = "dashed", color = plasma(3)[3])+
+  geom_hline(yintercept = true.c, linetype = "dashed", color = "black")+
   theme_classic()+
   coord_flip()
 c.wb.plot
+ggsave("c_wb_compare.png", plot = c.wb.plot, width = 10)
 ```
 
 ```{r plot.a.wide.wb.log}
@@ -366,7 +367,7 @@ a.wb.log.plot <- ggplot(df.a.wb.log, aes(x, log(Mean)))+
 a.wb.log.plot
 ```
 
-```{r plot.b.wide.wb.log}
+```{r plot.Topt.wide.wb.log}
 desired_order.wb <- c("WB Data, WB Model", "Inverse Mean WB Data, Exp Model", "Mean Inverse WB Data, Exp Model",
                       "Individual Inverse WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual WB Data, Exp Model")
 df.b.wb.log <- data.frame(
@@ -394,7 +395,7 @@ df.b.wb.log <- data.frame(
 df.b.wb.log$x <- factor(df.b.wb.log$x, levels = desired_order.wb)
 b.wb.log.plot <- ggplot(df.b.wb.log, aes(x, log(Mean)))+
   geom_point(col=plasma(3)[1])+ geom_linerange(aes(ymin = log(lower), ymax = log(upper)), col = plasma(3)[2])+labs(title="B",x="Method")+
-  geom_hline(yintercept = log(true.exp.b), linetype = "dashed", color = plasma(3)[3])+
+  geom_hline(yintercept = log(true.Topt), linetype = "dashed", color = plasma(3)[3])+
   theme_classic()+
   coord_flip()
 b.wb.log.plot
@@ -439,62 +440,60 @@ ggsave("c_wb_compare.png", plot = c.wb.log.plot, width = 10)
 
 
 ```{r plot.a.wide.compare}
-desired_order.compare<-c("WB Data, WB Model",
+desired_order.compare<-c("WB Data, WB Model", "Inverse Mean WB Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model",
                          "Mean Inverse WB Data, Trunc Norm Model","Mean Inverse Exp Data, Trunc Norm Model",
                          "Individual Inverse WB Data, Trunc Norm Model","Individual Inverse Exp Data, Trunc Norm Model",
                          "Mean WB Data, Exp Model","Mean Exp Data, Exp Model","Individual WB Data, Exp Model","Individual Exp Data, Exp Model")
 df.a.compare <- data.frame(
   x = factor(c("Individual Exp Data, Exp Model","Individual WB Data, Exp Model","Mean Exp Data, Exp Model","Mean WB Data, Exp Model",
                "Individual Inverse Exp Data, Trunc Norm Model",  "Individual Inverse WB Data, Trunc Norm Model",
-               "Mean Inverse Exp Data, Trunc Norm Model", "Mean Inverse WB Data, Trunc Norm Model","WB Data, WB Model")),
-  Mean = c(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1]))))-true.a,
-           exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))-true.exp.a,
-           exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1]))))-true.a,
-           exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1]))))-true.exp.a,
-           exp(mean(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1]))))-true.a,
-           exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1]))))-true.exp.a,
-           exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1]))))-true.a,
-           exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1]))))-true.exp.a,
-           #exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))-true.a,
-           #exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1]))))-true.exp.a,
-           exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))-true.exp.a),
+               "Mean Inverse Exp Data, Trunc Norm Model", "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", "WB Data, WB Model")),
+  Mean = c(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))),
+           exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))),
   
-  upper = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[2])-true.a,
-            exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[2])-true.exp.a,
-            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[2])-true.a,
-            exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[2])-true.exp.a,
-            exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[2])-true.a,
-            exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[2])-true.exp.a,
-            exp(hdi(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))[2])-true.a,
-            exp(hdi(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))[2])-true.exp.a,
-            #exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[2])-true.a,
-            #exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[2])-true.exp.a,
-            exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[2])-true.exp.a),
+  upper = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[2]),
+            exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[2])),
   
-  lower = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[1])-true.a,
-            exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[1])-true.exp.a,
-            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[1])-true.a,
-            exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[1])-true.exp.a,
-            exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[1])-true.a,
-            exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[1])-true.exp.a,
-            exp(hdi(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))[1])-true.a,
-            exp(hdi(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))[1])-true.exp.a,
-            #exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[1])-true.a,
-            #exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[1])-true.exp.a,
-            exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[1])-true.exp.a)
+  lower = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))[1]),
+            exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[1]))
 )
 df.a.compare$x <- factor(df.a.compare$x, levels = desired_order.compare)
-df.a.compare$upper<-ifelse(df.a.compare$upper>0.01,0.01,df.a.compare$upper)
 a.compare.plot <- ggplot(df.a.compare, aes(x, Mean))+
   geom_point(col=viridis(3)[1]) + geom_linerange(aes(ymin = lower, ymax = upper), col = viridis(3)[2])+labs(title="A",x="Method")+
-  geom_hline(yintercept = 0, linetype = "dashed", color = viridis(3)[3])+
+  geom_hline(yintercept = true.a, linetype = "dashed", color = viridis(3)[3])+
   theme_classic()+
-  ylim(-0.01,0.01)+
   coord_flip()
 a.compare.plot
 ```
 
-```{r plot.b.wide.compare}
+```{r plot.Topt.wide.compare}
 desired_order.compare<-c("WB Data, WB Model","Inverse Mean WB Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model",
                          "Mean Inverse WB Data, Trunc Norm Model","Mean Inverse Exp Data, Trunc Norm Model",
                          "Individual Inverse WB Data, Trunc Norm Model","Individual Inverse Exp Data, Trunc Norm Model",
@@ -504,49 +503,47 @@ df.b.compare <- data.frame(
                "Individual Inverse Exp Data, Trunc Norm Model",  "Individual Inverse WB Data, Trunc Norm Model",
                "Mean Inverse Exp Data, Trunc Norm Model", "Mean Inverse WB Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model",
                "Inverse Mean WB Data, Trunc Norm Model","WB Data, WB Model")),
-  Mean = c(exp(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))))-true.b,
-           (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))-true.exp.b,
-           exp(mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))))-true.b,
-           (mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))))-true.exp.b,
-           exp(mean(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1]))))-true.b,
-           (mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))))-true.exp.b,
-           exp(mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1]))))-true.b,
-           (mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))))-true.exp.b,
-           exp(mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1]))))-true.b,
-           (mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))))-true.exp.b,
-           (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))-true.exp.b),
+  Mean = c(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))),
+           (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))),
+           mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))),
+           (mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))),
+           mean(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1]))),
+           (mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))),
+           mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1]))),
+           (mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))),
+           mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1]))),
+           (mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))),
   
-  upper = c(exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[2])-true.b,
-            (hdi(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))[2])-true.exp.b,
-            exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[2])-true.b,
-            (hdi(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))[2])-true.exp.b,
-            exp(hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[2])-true.b,
-            (hdi(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))[2])-true.exp.b,
-            exp(hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[2])-true.b,
-            (hdi(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))[2])-true.exp.b,
-            exp(hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[2])-true.b,
-            (hdi(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))[2])-true.exp.b,
-            (hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[2])-true.exp.b),
+  upper = c(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[2],
+            (hdi(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))[2]),
+            hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[2],
+            (hdi(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))[2]),
+            hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[2],
+            (hdi(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))[2]),
+            hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[2],
+            (hdi(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))[2]),
+            hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[2],
+            (hdi(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[2])),
   
-  lower = c(exp(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[1])-true.b,
-            (hdi(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))[1])-true.exp.b,
-            exp(hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[1])-true.b,
-            (hdi(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))[1])-true.exp.b,
-            exp(hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[1])-true.b,
-            (hdi(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))[1])-true.exp.b,
-            exp(hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[1])-true.b,
-            (hdi(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))[1])-true.exp.b,
-            exp(hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[1])-true.b,
-            (hdi(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))[1])-true.exp.b,
-            (hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[1])-true.exp.b)
+  lower = c(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[1],
+            (hdi(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))[1]),
+            hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[1],
+            (hdi(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))[1]),
+            hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[1],
+            (hdi(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))[1]),
+            hdi(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1])))[1],
+            (hdi(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))[1]),
+            hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[1],
+            (hdi(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[1]))
 )
 df.b.compare$x <- factor(df.b.compare$x, levels = desired_order.compare)
-df.b.compare$upper<-ifelse(df.b.compare$upper>0.16 & df.b.compare$lower<0.16,0.16,df.b.compare$upper)
 b.compare.plot <- ggplot(df.b.compare, aes(x, Mean))+
   geom_point(col= viridis(3)[1]) + geom_linerange(aes(ymin = lower, ymax = upper), col = viridis(3)[2])+labs(title="B",x="Method")+
-  geom_hline(yintercept = 0, linetype = "dashed", color = viridis(3)[3])+
+  geom_hline(yintercept = true.Topt, linetype = "dashed", color = viridis(3)[3])+
   theme_classic()+
-  ylim(-0.16,0.16)+
   coord_flip()
 b.compare.plot
 ```
@@ -561,49 +558,47 @@ df.c.compare <- data.frame(
                "Individual Inverse Exp Data, Trunc Norm Model",  "Individual Inverse WB Data, Trunc Norm Model",
                "Mean Inverse Exp Data, Trunc Norm Model", "Mean Inverse WB Data, Trunc Norm Model","Inverse Mean Exp Data, Trunc Norm Model",
                "Inverse Mean WB Data, Trunc Norm Model","WB Data, WB Model")),
-  Mean = c((mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))-true.c,
-           (mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))-true.exp.c,
-           (mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1]))))-true.c,
-           (mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1]))))-true.exp.c,
-           (mean(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1]))))-true.c,
-           (mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1]))))-true.exp.c,
-           (mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1]))))-true.c,
-           (mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1]))))-true.exp.c,
-           (mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1]))))-true.c,
-           (mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1]))))-true.exp.c,
-           (mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))-true.exp.c),
+  Mean = c((mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))),
+           (mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))),
   
-  upper = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[2])-true.c,
-            (hdi(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))[2])-true.exp.c,
-            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[2])-true.c,
-            (hdi(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))[2])-true.exp.c,
-            (hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[2])-true.c,
-            (hdi(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))[2])-true.exp.c,
-            (hdi(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))[2])-true.c,
-            (hdi(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))[2])-true.exp.c,
-            (hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[2])-true.c,
-            (hdi(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))[2])-true.exp.c,
-            (hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[2])-true.exp.c),
+  upper = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))[2]),
+            (hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[2])),
   
-  lower = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[1])-true.c,
-            (hdi(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c,
-            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[1])-true.c,
-            (hdi(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c,
-            (hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[1])-true.c,
-            (hdi(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c,
-            (hdi(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))[1])-true.c,
-            (hdi(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c,
-            (hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[1])-true.c,
-            (hdi(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c,
-            (hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[1])-true.exp.c)
+  lower = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))[1]),
+            (hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[1]))
 )
 df.c.compare$x <- factor(df.c.compare$x, levels = desired_order.compare)
-#df.c.compare$upper<-ifelse(df.c.compare$upper>0.55,0.55,df.c.compare$upper)
 c.compare.plot <- ggplot(df.c.compare, aes(x, Mean))+
   geom_point(col = viridis(3)[1]) + geom_linerange(aes(ymin = lower, ymax = upper), col = viridis(3)[2])+labs(title="C",x="Method")+
-  geom_hline(yintercept = 0, linetype = "dashed", col = viridis(3)[3])+
+  geom_hline(yintercept = true.c, linetype = "dashed", col = viridis(3)[3])+
   theme_classic()+
-  #ylim(-0.55,0.55)+
   coord_flip()
 c.compare.plot
 ```
@@ -799,62 +794,64 @@ ggplot(data=dub[1:5,], aes(fill = Method, color = Method)) +
   #geom_point(data = df.outliers, aes(x = x.outliers, y = y.middle), size = 1, shape = 1) + # x-direction
   #geom_point(data = df.outliers, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
   theme_classic()+
-  #facet_wrap(dub$Method[1:5],nrow=2, scales = "free_y")+
+  facet_wrap(dub$Method[1:5],nrow=2)+
   geom_point(aes(x=medianTopt.True, y= medianLife.True),color="black")+
   theme(legend.position="none")+
   labs(title= "Boxplot of Topt and Lifetime",
        x="Topt",
        y="Lifetime")
-#ggsave("Topt_Life_Exp.png", width = 10)
+ggsave("Topt_Life_Exp.png", width = 10)
 ```
 
 ```{r WB.topt.maxlife.mean}
 # TRUE
-true_curve.inv.wb <- function(x) exp(true.exp.a * x^2 - true.exp.b * x + true.exp.c)
+f <- function(x, a = 0.001094, mu = 22.3, c = 0.066){
+  a * (x - mu)^2 + c
+}
 
 # IND WB DATA EXP MODEL
 ind.wb<-function(x){
-  exp((exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*x^2-
-         mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))*x+
-         mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))))
+  exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1]))))*(x -
+         mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))^2 +
+         mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))
 }
 
 # MEAN WB DATA EXP MODEL
 mean.wb<-function(x){
-  exp((exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1]))))*x^2-
-         mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))*x+
-         mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))))
+  exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1]))))*(x -
+         mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))))^2 +
+         mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))
 }
 
 # INV WB DATA EXP MODEL
 inv.wb<-function(x){
-  exp((exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1]))))*x^2-
-         mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))*x+
-         mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))))
+  exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1]))))*(x -
+         mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))))^2 +
+         mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))
 }
 
 
 # MEAN INV WB DATA EXP MODEL
 mean.inv.wb<-function(x){
-  exp((exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1]))))*x^2-
-         mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))*x+
-         mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))))
+  exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1]))))*(x -
+         mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))))^2 +
+         mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))
 }
 
 
 # INV MEAN WB DATA EXP MODEL
 inv.mean.wb<-function(x){
-  exp((exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1]))))*x^2-
-         mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))*x+
-         mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))))
+  exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1]))))*(x -
+         mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))))^2 +
+         mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))
 }
 
 
 # IND WB DATA WB MODEL
 ind.wb.wb<-function(x){
-  exp((exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*x^2-
-         mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))*x+
-         mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))
+  exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*(x -
+         mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))^2 +
+         mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))
 }
 
 topt.mean.wb<-data.frame(
@@ -864,14 +861,14 @@ topt.mean.wb<-data.frame(
          optimize(mean.inv.wb, interval = c(min(xseq), max(xseq)))$minimum,
          optimize(inv.mean.wb, interval = c(min(xseq), max(xseq)))$minimum,
          optimize(ind.wb.wb, interval = c(min(xseq), max(xseq)))$minimum,
-         optimize(true_curve.inv.wb,interval = c(min(xseq), max(xseq)))$minimum),
+         optimize(f,interval = c(min(xseq), max(xseq)))$minimum),
   Lifetime=c(1/optimize(ind.wb, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(mean.wb, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(inv.wb, interval = c(-100, 200))$objective,
             1/optimize(mean.inv.wb, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(inv.mean.wb, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(ind.wb.wb, interval = c(min(xseq), max(xseq)))$objective,
-            1/optimize(true_curve.inv.wb,interval = c(min(xseq), max(xseq)))$objective
+            1/optimize(f,interval = c(min(xseq), max(xseq)))$objective
             ),
   Method=factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Trunc Norm Model",
                "Mean Inverse WB Data, Trunc Norm Model","Inverse Mean WB Data, Trunc Norm Model","WB Data, WB Model", "True Curve"), levels= c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Trunc Norm Model",
@@ -892,27 +889,39 @@ ggplot(topt.mean.wb, aes(x = Topt, y = Lifetime,color=Method)) +
        y = "Lifetime") +
   theme_minimal()+
   scale_color_manual(values = plasma(7))+
-  coord_cartesian(xlim = c(center_x.wb - 1, center_x.wb + 1), ylim = c(center_y.wb - 2.5, center_y.wb + 2.5))
+  coord_cartesian(xlim = c(center_x.wb - 1, center_x.wb + 1), ylim = c(center_y.wb - 3, center_y.wb + 3))
 ```
 
 ```{r WB.topt.maxlife.boxplot}
-evaluate_expression.wb <- function(x, a, b, c) {
-  result <- exp((a * x^2 - b * x + c))
+evaluate_expression <- function(x, a, Topt, c) {
+  result <- a * (x - Topt)^2 + c
   return(result)
 }
+
 
 df_list.wb <- list(df.new1_W, df.new2_W, df.new3_W, df.new4_W, df.new5_W, df.new6_W)
 min_x_values_list.wb <- list()
 min_values_list.wb <- list()
 
-for (df.wb in df_list.wb) {
+for (df_index.wb in 1:length(df_list.wb)) {
+  df.wb <- df_list.wb[[df_index.wb]]
   min_x_values.wb <- numeric()
   min_values.wb <- numeric()
+  
+  if (df_index.wb == 1 || df_index.wb == 2) {
+    a_col <- 3
+    Topt_col <- 4
+    c_col <- 1
+  } else {
+    a_col <- 3
+    Topt_col <- 5
+    c_col <- 1
+  }
   for (i in 1:nrow(df.wb)) {
-    a <- exp(df.wb[i,4])
-    b <- df.wb[i,1]
-    c <- df.wb[i,2]
-    responses.wb <- evaluate_expression.wb(xseq, a, b, c)
+    a <- exp(df.wb[i, a_col])
+    Topt <- df.wb[i, Topt_col]
+    c <- df.wb[i, c_col]
+    responses.wb <- evaluate_expression(xseq, a, Topt, c)
     min_x.wb <- xseq[which.min(responses.wb)]
     min_value.wb <- min(responses.wb)
     min_x_values.wb <- c(min_x_values.wb, min_x.wb)
@@ -931,14 +940,14 @@ double.box.df.wb<-data.frame(
            min_x_values_list.wb[[4]],
            min_x_values_list.wb[[5]],
            min_x_values_list.wb[[6]],
-           22.39709),
+           22.3),
   Lifetime = c(1/min_values_list.wb[[1]],
                1/min_values_list.wb[[2]],
                1/min_values_list.wb[[3]],
                1/min_values_list.wb[[4]],
                1/min_values_list.wb[[5]],
                1/min_values_list.wb[[6]],
-               15.44774),
+               15.433231),
   Method=factor(c(rep("Individual WB Data, Exp Model",938), rep("Mean WB Data, Exp Model", 938), rep("Individual Inverse WB Data, Trunc Norm Model", 938),
                rep("Mean Inverse WB Data, Trunc Norm Model", 938), rep("Inverse Mean WB Data, Trunc Norm Model", 938), rep("Individual WB Data, WB Model", 938),"True Curve"), levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model",
                "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", "Individual WB Data, WB Model",
@@ -947,11 +956,11 @@ double.box.df.wb<-data.frame(
 )
 plot.x.wb <- ggplot(double.box.df.wb, aes(x= Method,y= Topt))+
   geom_boxplot()
-plot.x.wb <- layer_data(plot.x.wb)[,1:18]
+plot.x.wb <- layer_data(plot.x.wb)[,1:6]
 
 plot.y.wb <- ggplot(double.box.df.wb, aes(x= Method,y= Lifetime))+
   geom_boxplot() 
-plot.y.wb <- layer_data(plot.y.wb)[,1:18]
+plot.y.wb <- layer_data(plot.y.wb)[,1:6]
 
 colnames(plot.x.wb) <- paste0("x.", gsub("y", "", colnames(plot.x.wb)))
 colnames(plot.y.wb) <- paste0("y.", gsub("y", "", colnames(plot.y.wb)))
@@ -1002,7 +1011,7 @@ ggplot(data=dub.wb[1:6,], aes(fill = Method, color = Method)) +
   #geom_point(data = df.outliers.wb, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
   theme_classic()+
   geom_point(aes(x=medianTopt.True.wb, y= medianLife.True.wb),color="black")+
-  facet_wrap(dub.wb$Method[1:6],nrow=2)+
+  #facet_wrap(dub.wb$Method[1:6],nrow=2, scales = "free_y")+
   theme(legend.position="none")+
   labs(title= "Boxplot of Topt and Lifetime",
        x="Topt",
@@ -1091,48 +1100,50 @@ ggplot(topt.mean.exp.med, aes(x = Topt, y = Lifetime,color=Method)) +
 
 ```{r WB.topt.maxlife.med}
 # TRUE
-true_curve.inv.wb <- function(x) exp(true.exp.a * x^2 - true.exp.b * x + true.exp.c)
+f <- function(x, a = 0.001094, mu = 22.3, c = 0.066){
+  a * (x - mu)^2 + c
+}
 
 # IND WB DATA EXP MODEL
 ind.wb.med<-function(x){
-  exp((exp(median(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 2]))))*x^2-
-         median(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 2])))*x+
-         median(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 2])))))
+  exp(median(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 2]))))* (x -
+         median(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 2]))))^2 +
+         median(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 2])))
 }
 
 # MEAN WB DATA EXP MODEL
 mean.wb.med<-function(x){
-  exp((exp(median(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 2]))))*x^2-
-         median(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 2])))*x+
-         median(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 2])))))
+  exp(median(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 2]))))* (x -
+         median(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 2]))))^2 +
+         median(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 2])))
 }
 
 # INV WB DATA EXP MODEL
 inv.wb.med<-function(x){
-  exp((exp(median(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 2]))))*x^2-
-         median(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 2])))*x+
-         median(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 2])))))
+  exp(median(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 2]))))* (x -
+         median(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 2]))))^2 +
+         median(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 2])))
 }
 
 # MEAN INV WB DATA EXP MODEL
 mean.inv.wb.med<-function(x){
-  exp((exp(median(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 2]))))*x^2-
-         median(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 2])))*x+
-         median(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 2])))))
+  exp(median(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 2]))))* (x -
+         median(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 2]))))^2 +
+         median(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 2])))
 }
 
 # INV MEAN WB DATA EXP MODEL
 inv.mean.wb.med<-function(x){
-  exp((exp(median(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 2]))))*x^2-
-         median(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 2])))*x+
-         median(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 2])))))
+  exp(median(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 2]))))* (x -
+         median(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 2]))))^2 +
+         median(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 2])))
 }
 
 # IND WB DATA WB MODEL
 ind.wb.wb.med<-function(x){
-  exp((exp(median(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 2]))))*x^2-
-         median(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 2])))*x+
-         median(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 2])))))
+  exp(median(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 2]))))* (x -
+         median(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 2]))))^2 +
+         median(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 2])))
 }
 
 topt.mean.wb.med<-data.frame(
@@ -1142,14 +1153,14 @@ topt.mean.wb.med<-data.frame(
          optimize(mean.inv.wb.med, interval = c(min(xseq), max(xseq)))$minimum,
          optimize(inv.mean.wb.med, interval = c(min(xseq), max(xseq)))$minimum,
          optimize(ind.wb.wb.med, interval = c(min(xseq), max(xseq)))$minimum,
-         optimize(true_curve.inv.wb,interval = c(min(xseq), max(xseq)))$minimum),
+         optimize(f,interval = c(min(xseq), max(xseq)))$minimum),
   Lifetime=c(1/optimize(ind.wb.med, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(mean.wb.med, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(inv.wb.med, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(mean.inv.wb.med, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(inv.mean.wb.med, interval = c(min(xseq), max(xseq)))$objective,
             1/optimize(ind.wb.wb.med, interval = c(min(xseq), max(xseq)))$objective,
-            1/optimize(true_curve.inv.wb,interval = c(min(xseq), max(xseq)))$objective
+            1/optimize(f,interval = c(min(xseq), max(xseq)))$objective
             ),
   Method=factor(c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Trunc Norm Model",
                "Mean Inverse WB Data, Trunc Norm Model","Inverse Mean WB Data, Trunc Norm Model","WB Data, WB Model","True Curve"), levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model","Individual Inverse WB Data, Trunc Norm Model",
@@ -1366,9 +1377,13 @@ ggsave("Ex_Temp_Exp.png", width = 10)
 solve_quadratic.mean.wb <- function(f) {
   # Calculate discriminant
   a <- exp(mean(unlist(lapply(f[[1]], function(matrix) matrix[, 1]))))
-  b <- -(mean(unlist(lapply(f[[2]], function(matrix) matrix[, 1]))))
-  c <- mean(unlist(lapply(f[[3]], function(matrix) matrix[, 1])))
-  discriminant <- b^2 - 4 * a * (c - log(1))
+  b <- -2 *
+    mean(unlist(lapply(f[[2]], function(matrix) matrix[, 1])))*
+    exp(mean(unlist(lapply(f[[1]], function(matrix) matrix[, 1]))))
+  c <- mean(unlist(lapply(f[[3]], function(matrix) matrix[, 1]))) +
+    exp(mean(unlist(lapply(f[[1]], function(matrix) matrix[, 1])))) *
+    mean(unlist(lapply(f[[2]], function(matrix) matrix[, 1])))^2
+  discriminant <- b^2 - 4 * a * (c - 1)
   
   # Solve quadratic equation
   if (discriminant >= 0) {
@@ -1392,7 +1407,7 @@ ext.df.mean.wb <- data.frame(
         solve_quadratic.mean.wb(Weibull_param_list4)[2],
         solve_quadratic.mean.wb(Weibull_param_list5)[2],
         solve_quadratic.mean.wb(Weibull_param_list6)[2],
-        4.192
+        -6.935
         ),
   High=c(solve_quadratic.mean.wb(Weibull_param_list1)[1],
          solve_quadratic.mean.wb(Weibull_param_list2)[1],
@@ -1400,7 +1415,7 @@ ext.df.mean.wb <- data.frame(
          solve_quadratic.mean.wb(Weibull_param_list4)[1],
          solve_quadratic.mean.wb(Weibull_param_list5)[1],
          solve_quadratic.mean.wb(Weibull_param_list6)[1],
-         40.602)
+         51.542)
 )
 
 center_x.wb.extreme <- ext.df.mean.wb$Low[7]
@@ -1416,7 +1431,7 @@ ggplot(ext.df.mean.wb, aes(x = Low, y = High,color=Method)) +
        x = "Low",
        y = "High") +
   theme_minimal()+
-  coord_cartesian(xlim = c(center_x.wb.extreme - 2, center_x.wb.extreme + 2), ylim = c(center_y.wb.extreme - 26, center_y.wb.extreme + 26))
+  coord_cartesian(xlim = c(center_x.wb.extreme - 3, center_x.wb.extreme + 3), ylim = c(center_y.wb.extreme - 3, center_y.wb.extreme + 3))
 
 ```
 
@@ -1426,17 +1441,29 @@ df_list.wb <- list(df.new1_W, df.new2_W, df.new3_W, df.new4_W, df.new5_W, df.new
 
 # Lists to store results
 x_values_list.wb <- list()
-
+    
 # Loop through dataframes
-for (df in df_list.wb) {
-  x_values.wb <- numeric()  
+for (df_index.wb in 1:length(df_list.wb)) {
+  df <- df_list.wb[[df_index.wb]]
+  x_values.wb <- numeric()
+  
+  if (df_index.wb == 1 || df_index.wb == 2) {
+    a_col <- 3
+    b_col <- 4
+    c_col <- 1
+  } else {
+    a_col <- 3
+    b_col <- 5
+    c_col <- 1
+  }
+  
   for (i in 1:nrow(df)) {
-    a <- exp(df[i, 4])  
-    b <- -df[i, 1]  
-    c <- df[i, 2] 
+    a <- exp(df[i, a_col])
+    b <- -2 * (df[i, b_col]) * exp(df[i, a_col])
+    c <- df[i, c_col] + exp(df[i, a_col]) * (df[i, b_col])^2
     
     # Solve quadratic equation for x when y = 1
-    discriminant.wb <- b^2 - 4 * a * (c - log(1))
+    discriminant.wb <- b^2 - 4 * a * (c - 1)
     if (discriminant.wb >= 0) {
       x1.wb <- (-b + sqrt(discriminant.wb)) / (2 * a)
       x2.wb <- (-b - sqrt(discriminant.wb)) / (2 * a)
@@ -1462,7 +1489,7 @@ for (i in seq_along(x_values_list.wb)) {
   # Bind the dataframe to the result dataframe
   double.box.df.ex.wb <- rbind(double.box.df.ex.wb, temp_df.wb)
 }
-double.box.df.ex.wb <- rbind(double.box.df.ex.wb, data.frame(Low = 4.192,	 High = 40.602))
+double.box.df.ex.wb <- rbind(double.box.df.ex.wb, data.frame(Low = -6.935,	 High = 51.542))
 
 double.box.df.ex.wb$Method <- factor(c(rep("Individual WB Data, Exp Model",938), rep("Mean WB Data, Exp Model", 938), rep("Individual Inverse WB Data, Trunc Norm Model", 938),
                rep("Mean Inverse WB Data, Trunc Norm Model", 938), rep("Inverse Mean WB Data, Trunc Norm Model", 938), rep("WB Data, WB Model", 938), "True Curve" 
@@ -1498,8 +1525,8 @@ dub.ex.wb<- double.box.df.ex.wb |> group_by(Method) |> summarise(medianLow=media
 dub.ex.wb$Method <-factor(dub.ex.wb$Method, levels = c("Individual WB Data, Exp Model","Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model",
                "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", "WB Data, WB Model", "True Curve"))
 
-medianLow.True.ex.wb<- as.numeric(rep(dub.ex.wb[7,2],5))
-medianHigh.True.ex.wb<- as.numeric(rep(dub.ex.wb[7,3],5))
+medianLow.True.ex.wb<- as.numeric(rep(dub.ex.wb[7,2],6))
+medianHigh.True.ex.wb<- as.numeric(rep(dub.ex.wb[7,3],6))
 
 colnames(plot.x.ex.wb) <- paste0("x.", gsub("y", "", colnames(plot.x.ex.wb)))
 colnames(plot.y.ex.wb) <- paste0("y.", gsub("y", "", colnames(plot.y.ex.wb)))
@@ -1513,22 +1540,22 @@ df.outliers.ex.wb <- df.ex.wb |>
 df.outliers.ex.wb <- df.outliers.ex.wb[, list(x.outliers = c(unlist(df.outliers.ex.wb$x.outliers), rep(NA,37)), y.outliers = c(unlist(df.outliers.ex.wb$y.outliers))),
                            by = list(Method, x.middle, y.middle)]
 
-ggplot(data=dub.ex.wb[c(1,2,3,4,6),], aes(fill = Method, color = Method)) +
-  scale_fill_manual(values = plasma(5))+
-  scale_color_manual(values = plasma(5))+
+ggplot(data=dub.ex.wb[1:6,], aes(fill = Method, color = Method)) +
+  scale_fill_manual(values = plasma(6))+
+  scale_color_manual(values = plasma(6))+
   geom_rect(aes(xmin = q1Low, xmax = q3Low, ymin = q1High, ymax = q3High), alpha = 0.3) +
   geom_rect(aes(xmin = q1Low, xmax = q3Low, ymin = q1High, ymax = q3High), 
             color = "black", fill = NA) +
-  geom_segment(aes(x = minLow, y = plot.y.ex.wb$y.middle[c(1,2,3,4,6)], xend = maxLow, yend = plot.y.ex.wb$y.middle[c(1,2,3,4,6)])) + #whiskers
+  geom_segment(aes(x = minLow, y = plot.y.ex.wb$y.middle[1:6], xend = maxLow, yend = plot.y.ex.wb$y.middle[1:6])) + #whiskers
   geom_segment(aes(x = minLow, y = q1High, xend = minLow, yend = q3High)) + #lower end
   geom_segment(aes(x = maxLow, y = q1High, xend = maxLow, yend = q3High)) + #upper end
-  geom_segment(aes(x = plot.x.ex.wb$x.middle[c(1,2,3,4,6)], y = minHigh, xend = plot.x.ex.wb$x.middle[c(1,2,3,4,6)], yend = maxHigh)) + #whiskers
+  geom_segment(aes(x = plot.x.ex.wb$x.middle[1:6], y = minHigh, xend = plot.x.ex.wb$x.middle[1:6], yend = maxHigh)) + #whiskers
   geom_segment(aes(x = q1Low, y = minHigh, xend = q3Low, yend = minHigh)) + #lower end
   geom_segment(aes(x = q1Low, y = maxHigh, xend = q3Low, yend = maxHigh)) + #upper end
   #geom_point(data = df.outliers.ex.wb, aes(x = x.outliers, y = y.middle), size = 1, shape = 1) + # x-direction
   #geom_point(data = df.outliers.ex.wb, aes(x = x.middle, y = y.outliers), size = 1, shape = 1) + # y-direction
   theme_classic()+
-  facet_wrap(dub.ex.wb$Method[c(1,2,3,4,6)],nrow=2)+
+  facet_wrap(dub.ex.wb$Method[1:6],nrow=2)+
   geom_point(aes(x=medianLow.True.ex.wb, y= medianHigh.True.ex.wb),color="black")+
   theme(legend.position="none")+
   labs(title= "Boxplot of Extreme Temperatures",
@@ -1600,9 +1627,13 @@ ggplot(ext.df.med, aes(x = Low, y = High,color=Method)) +
 solve_quadratic.med.wb <- function(f) {
   # Calculate discriminant
   a <- exp(median(unlist(lapply(f[[1]], function(matrix) matrix[, 1]))))
-  b <- -(median(unlist(lapply(f[[2]], function(matrix) matrix[, 1]))))
-  c <- median(unlist(lapply(f[[3]], function(matrix) matrix[, 1])))
-  discriminant <- b^2 - 4 * a * (c - log(1))
+  b <- -2 *
+    median(unlist(lapply(f[[2]], function(matrix) matrix[, 1])))*
+    exp(median(unlist(lapply(f[[1]], function(matrix) matrix[, 1]))))
+  c <- median(unlist(lapply(f[[3]], function(matrix) matrix[, 1]))) +
+    exp(median(unlist(lapply(f[[1]], function(matrix) matrix[, 1])))) *
+    median(unlist(lapply(f[[2]], function(matrix) matrix[, 1])))^2
+  discriminant <- b^2 - 4 * a * (c - 1)
   
   # Solve quadratic equation
   if (discriminant >= 0) {
@@ -1626,7 +1657,7 @@ ext.df.med.wb <- data.frame(
         solve_quadratic.med.wb(Weibull_param_list4)[2],
         solve_quadratic.med.wb(Weibull_param_list5)[2],
         solve_quadratic.med.wb(Weibull_param_list6)[2],
-        4.192
+        -6.935
         ),
   High=c(solve_quadratic.med.wb(Weibull_param_list1)[1],
          solve_quadratic.med.wb(Weibull_param_list2)[1],
@@ -1634,7 +1665,7 @@ ext.df.med.wb <- data.frame(
          solve_quadratic.med.wb(Weibull_param_list4)[1],
          solve_quadratic.med.wb(Weibull_param_list5)[1],
          solve_quadratic.med.wb(Weibull_param_list6)[1],
-         40.602)
+         51.542)
 )
 
 center_x.wb.extreme.med <- ext.df.med.wb$Low[7]
@@ -1650,7 +1681,7 @@ ggplot(ext.df.med.wb, aes(x = Low, y = High,color=Method)) +
        y = "High") +
   scale_color_manual(values = plasma(7))+
   theme_minimal()+
-  coord_cartesian(xlim = c(center_x.wb.extreme.med - 1, center_x.wb.extreme.med + 1), ylim = c(center_y.wb.extreme.med - 3, center_y.wb.extreme.med + 3))
+  coord_cartesian(xlim = c(center_x.wb.extreme.med - 3, center_x.wb.extreme.med + 3), ylim = c(center_y.wb.extreme.med - 3, center_y.wb.extreme.med + 3))
 
 ```
 
@@ -2244,31 +2275,35 @@ abline(a=0,b=1,lwd=2,col="black")
 ```{r QQPlot.WB.Data.WB.Model}
 wb.wb.10<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==10],
        distribution="weibull",
-       param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*10^2-
-                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*10+
-                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+       param.list=list(scale=1/(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*(10 -
+                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))))^2 +
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+
 wb.wb.17<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==17],
        distribution="weibull",
-       param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*17^2-
-                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*17+
-                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+       param.list=list(scale=1/(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*(17 -
+                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))))^2 +
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+
 wb.wb.21<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==21],
        distribution="weibull",
-       param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*21^2-
-                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*21+
-                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+       param.list=list(scale=1/(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*(21 -
+                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))))^2 +
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+
 wb.wb.25<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==25],
        distribution="weibull",
-       param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*25^2-
-                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*25+
-                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+       param.list=list(scale=1/(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*(25 -
+                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))))^2 +
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+
 wb.wb.32<-qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T==32],
        distribution="weibull",
-       param.list=list(scale=exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*32^2-
-                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))*32+
-                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
+       param.list=list(scale=1/(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))*(32 -
+                               (mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))))^2 +
+                               mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),shape=mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))),plot.it=FALSE)
 
-plot(wb.wb.10,xlim=c(0,35),ylim=c(0,35),pch=20, col = viridis(5)[1],
+plot(wb.wb.10,xlim=c(0,40),ylim=c(0,35),pch=20, col = viridis(5)[1],
        main="QQ-Plot for WB Data and WB Distribution",
        xlab="Quantiles of Weibull with Posterior Mean Parameters",
        ylab="Quantiles of Generated Data with True Parameters")
@@ -2333,12 +2368,12 @@ xdf5_W$true.value<-rep(my.med(seq(from = 5, to = 37, length.out = 250)),938)
 xdf6_W$true.value<-rep(my.med(seq(from = 5, to = 37, length.out = 250)),938)
 
 
-rmse1.wb<-xdf1_W |> group_by(point) |> summarize(rmse1.wb=sqrt(mean((trunc.eval-true.value)^2))) |> select(rmse1.wb)
-rmse2.wb<-xdf2_W |> group_by(point) |> summarize(rmse2.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse2.wb)
-rmse3.wb<-xdf3_W |> group_by(point) |> summarize(rmse3.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse3.wb)
-rmse4.wb<-xdf4_W |> group_by(point) |> summarize(rmse4.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse4.wb)
-rmse5.wb<-xdf5_W |> group_by(point) |> summarize(rmse5.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse5.wb)
-rmse6.wb<-xdf6_W |> group_by(point) |> summarize(rmse6.wb=sqrt(mean((trunc.eval-true.value)^2)))|> select(rmse6.wb)
+rmse1.wb<-xdf1_W |> group_by(point) |> summarize(rmse1.wb=sqrt(mean((trunc.inv-true.value)^2))) |> select(rmse1.wb)
+rmse2.wb<-xdf2_W |> group_by(point) |> summarize(rmse2.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse2.wb)
+rmse3.wb<-xdf3_W |> group_by(point) |> summarize(rmse3.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse3.wb)
+rmse4.wb<-xdf4_W |> group_by(point) |> summarize(rmse4.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse4.wb)
+rmse5.wb<-xdf5_W |> group_by(point) |> summarize(rmse5.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse5.wb)
+rmse6.wb<-xdf6_W |> group_by(point) |> summarize(rmse6.wb=sqrt(mean((trunc.inv-true.value)^2)))|> select(rmse6.wb)
 
 
 boxplot.df.wb<-data.frame(
@@ -2359,7 +2394,6 @@ ggplot(boxplot.df.wb,aes(y=Method,x=RMSE,fill=Method))+
   scale_fill_manual(values = viridis(6)) +
   theme_classic()+
   theme(legend.position="none")+
-  xlim(0,0.2)+
   labs(title="Boxplot of RMSE Comparisons",
        subtitle="Data Generated from Weibull Distribution")
 ggplot(boxplot.df.wb,aes(y=RMSE,x=Temperature,col=Method))+
@@ -2430,12 +2464,12 @@ RMSE.tab.exp |> ggplot(aes(x=Method, y=RMSE))+
 
 ```{r RMSE.Table.WB}
 summary_list.wb <- list(
-  xdf1_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf2_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf3_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf4_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf5_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf6_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2)))
+  xdf1_W |> summarize(RMSE = sqrt(mean((value - 1/true.value)^2))),
+  xdf2_W |> summarize(RMSE = sqrt(mean((value - 1/true.value)^2))),
+  xdf3_W |> summarize(RMSE = sqrt(mean((value - 1/true.value)^2))),
+  xdf4_W |> summarize(RMSE = sqrt(mean((value - 1/true.value)^2))),
+  xdf5_W |> summarize(RMSE = sqrt(mean((value - 1/true.value)^2))),
+  xdf6_W |> summarize(RMSE = sqrt(mean((value - 1/true.value)^2)))
 )
 
 # Convert the list into a matrix
@@ -2472,17 +2506,17 @@ RMSE.tab.wb |> ggplot(aes(x=Method, y=RMSE))+
 
 ```{r RMSE.Table.Compare}
 summary_list.compare <- list(
-  xdf1 |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
-  xdf1_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf6_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf2 |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
-  xdf2_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf3 |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
-  xdf3_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf4 |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
-  xdf4_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2))),
-  xdf5 |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
-  xdf5_W |> summarize(RMSE = sqrt(mean((trunc.eval - true.value)^2)))
+  xdf1 |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf1_W |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf6_W |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf2 |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf2_W |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf3 |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf3_W |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf4 |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf4_W |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2))),
+  xdf5 |> summarize(RMSE = sqrt(mean((trunc.inv - 1/true.value)^2))),
+  xdf5_W |> summarize(RMSE = sqrt(mean((trunc.inv - true.value)^2)))
 )
 
 # Convert the list into a matrix
@@ -2637,92 +2671,92 @@ data.rmse.exp |> ggplot(aes(x = Method, y = RMSE))+
 ```
 
 ```{r RMSE.data.wb}
-data.rmse.ind.wb <- function(temp, values, a, b, c) {
-  curve_value <- exp(-(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))) * temp^2 - 
-    mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))* temp + 
-    mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))))
+data.rmse.ind.wb <- function(temp, values, a, Topt, c) {
+  curve_value <- 1/(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))) * (temp - 
+    mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))))^2 + 
+    mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))
   sqrt(mean((values - curve_value)^2))
 }
 # Group data by temperature and calculate RMSE for each group
 rmse.ind.wb <- bind_rows(Weibull_data.list) %>%
   group_by(T) %>%
   summarise(
-    rmse = data.rmse.ind.wb(unique(T), trait, a, b, c)) |> 
+    rmse = data.rmse.ind.wb(unique(T), trait, a, Topt, c)) |> 
     summarise(
     RMSE = sqrt(mean(rmse^2))
   )
 
-data.rmse.mean.wb <- function(temp, values, a, b, c) {
-  curve_value <- exp(-(exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))) * temp^2 - 
-    mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))* temp + 
-    mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))))
+data.rmse.mean.wb <- function(temp, values, a, Topt, c) {
+  curve_value <- 1/(exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))) * (temp - 
+    mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))))^2 + 
+    mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1]))))
   sqrt(mean((values - curve_value)^2))
 }
 # Group data by temperature and calculate RMSE for each group
 rmse.mean.wb <- bind_rows(Weibull_data.list) %>%
   group_by(T) %>%
   summarise(
-    rmse = data.rmse.mean.wb(unique(T), trait, a, b, c)) |> 
+    rmse = data.rmse.mean.wb(unique(T), trait, a, Topt, c)) |> 
     summarise(
     RMSE = sqrt(mean(rmse^2))
   )
 
-data.rmse.inv.wb <- function(temp, values, a, b, c) {
-  curve_value <- exp(-(exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))) * temp^2 - 
-    mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))* temp + 
-    mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))))
+data.rmse.inv.wb <- function(temp, values, a, Topt, c) {
+  curve_value <- 1/(exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))) * (temp - 
+    mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))))^2 + 
+    mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1]))))
   sqrt(mean((values - curve_value)^2))
 }
 # Group data by temperature and calculate RMSE for each group
 rmse.inv.wb <- bind_rows(Weibull_data.list) %>%
   group_by(T) %>%
   summarise(
-    rmse = data.rmse.inv.wb(unique(T), trait, a, b, c)) |> 
+    rmse = data.rmse.inv.wb(unique(T), trait, a, Topt, c)) |> 
     summarise(
     RMSE = sqrt(mean(rmse^2))
   )
 
-data.rmse.mean.inv.wb <- function(temp, values, a, b, c) {
-  curve_value <- exp(-(exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))) * temp^2 - 
-    mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1])))* temp + 
-    mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))))
+data.rmse.mean.inv.wb <- function(temp, values, a, Topt, c) {
+  curve_value <- 1/(exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))) * (temp - 
+    mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))))^2 + 
+    mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1]))))
   sqrt(mean((values - curve_value)^2))
 }
 # Group data by temperature and calculate RMSE for each group
 rmse.mean.inv.wb <- bind_rows(Weibull_data.list) %>%
   group_by(T) %>%
   summarise(
-    rmse = data.rmse.mean.inv.wb(unique(T), trait, a, b, c)) |> 
+    rmse = data.rmse.mean.inv.wb(unique(T), trait, a, Topt, c)) |> 
     summarise(
     RMSE = sqrt(mean(rmse^2))
   )
 
-data.rmse.inv.mean.wb <- function(temp, values, a, b, c) {
-  curve_value <- exp(-(exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))) * temp^2 - 
-    mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1])))* temp + 
-    mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))))
+data.rmse.inv.mean.wb <- function(temp, values, a, Topt, c) {
+  curve_value <- 1/(exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))) * (temp - 
+    mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))))^2 + 
+    mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1]))))
   sqrt(mean((values - curve_value)^2))
 }
 # Group data by temperature and calculate RMSE for each group
 rmse.inv.mean.wb <- bind_rows(Weibull_data.list) %>%
   group_by(T) %>%
   summarise(
-    rmse = data.rmse.inv.mean.wb(unique(T), trait, a, b, c)) |> 
+    rmse = data.rmse.inv.mean.wb(unique(T), trait, a, Topt, c)) |> 
     summarise(
     RMSE = sqrt(mean(rmse^2))
   )
 
-data.rmse.wb.wb <- function(temp, values, a, b, c) {
-  curve_value <- exp(-(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))) * temp^2 - 
-    mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))* temp + 
-    mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))))
+data.rmse.wb.wb <- function(temp, values, a, Topt, c) {
+  curve_value <- 1/(exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))) * (temp - 
+    mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1]))))^2 + 
+    mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))
   sqrt(mean((values - curve_value)^2))
 }
 # Group data by temperature and calculate RMSE for each group
 rmse.wb.wb <- bind_rows(Weibull_data.list) %>%
   group_by(T) %>%
   summarise(
-    rmse = data.rmse.wb.wb(unique(T), trait, a, b, c)) |> 
+    rmse = data.rmse.wb.wb(unique(T), trait, a, Topt, c)) |> 
     summarise(
     RMSE = sqrt(mean(rmse^2))
   )
@@ -2953,18 +2987,14 @@ comp.plot.2 <- ggplot() +
        y = "Mortality Rate") +
   theme_minimal()
 comp.plot.3 <- ggplot() +
-  geom_line(data= mean.xdf3_W_N, aes(x = point,y = med.value, color = "Narrow"),lwd=1) +
-  geom_ribbon(data = mean.xdf3_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi, fill = "Narrow"), alpha = 0.3) +
-  geom_line(data= mean.xdf3_W, aes(x = point,y = med.value, color = "Wide"), lwd=1) +
-  geom_ribbon(data = mean.xdf3_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi, fill = "Wide"), alpha = 0.3) +
+  geom_line(data= mean.xdf3_W_N, aes(x = point,y = med.value), color = mako(10)[8],lwd=1) +
+  geom_ribbon(data = mean.xdf3_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3) +
+  geom_line(data= mean.xdf3_W, aes(x = point,y = med.value), color = plasma(10)[8], lwd=1) +
+  geom_ribbon(data = mean.xdf3_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3) +
   geom_line(data = mean.xdf3_W, aes(y = true_curve, x=point), color = "black", linetype = "dashed")+
     labs(title = "Individual Inverse Weibull Data", 
        x = "Temperature", 
-       y = "Mortality Rate",
-       fill = "95% HDI Bands",
-       color = "Posterior Curve") +
-  scale_color_manual(values = c("Narrow" = mako(10)[8], "Wide" = plasma(10)[8], "True Curve" = "black")) +
-  scale_fill_manual(values = c("Narrow" = mako(10)[8], "Wide" = plasma(10)[8])) +
+       y = "Mortality Rate") +
   theme_minimal()
 comp.plot.4 <- ggplot() +
   geom_line(data= mean.xdf4_W_N, aes(x = point,y = med.value), color = mako(10)[8],lwd=1) +
@@ -2995,6 +3025,7 @@ ggsave("comp.plot.1.png", plot = comp.plot.1)
 ggsave("comp.plot.2.png", plot = comp.plot.2)
 ggsave("comp.plot.3.png", plot = comp.plot.3, width = 10)
 ggsave("comp.plot.4.png", plot = comp.plot.4)
+ggsave("comp.plot.5.png", plot = comp.plot.5, width = 10)
 ```
 
 
@@ -3097,7 +3128,7 @@ wb.exp.plot.mr <- ggplot() +
   geom_ribbon(data=mean.xdf1_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv, fill = "Exponential Model"), alpha = 0.3) +
   geom_line(data=mean.xdf6_W, aes(x = point, y = avg.value.inv, color = "Weibull Model"), lwd = 1) +
   geom_ribbon(data=mean.xdf6_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv, fill = "Weibull Model"), alpha = 0.3) +
-  geom_line(data=mean.xdf1_W, aes(x = point, y = true_curve.inv, color = "True Curve"), linetype = "dashed") +
+  geom_line(data=mean.xdf1_W, aes(x = point, y = log(2)/true_curve, color = "True Curve"), linetype = "dashed") +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate",
