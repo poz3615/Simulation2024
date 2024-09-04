@@ -39,11 +39,11 @@ desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, E
 df.a <- data.frame(
   x = factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp Model", 
                "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model")), 
-  Mean = c(exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))), 
-           exp(mean(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))), 
-           exp(mean(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))), 
-           exp(mean(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))), 
-           exp(mean(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))), 
+  Median = c(exp(median(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))), 
+           exp(median(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))), 
+           exp(median(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))), 
+           exp(median(unlist(lapply(param_list4[[1]], function(matrix) matrix[, 1])))), 
+           exp(median(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1]))))), 
   upper = c(exp(hdi(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))[2]), 
             exp(hdi(unlist(lapply(param_list2[[1]], function(matrix) matrix[, 1])))[2]), 
             exp(hdi(unlist(lapply(param_list3[[1]], function(matrix) matrix[, 1])))[2]), 
@@ -56,14 +56,15 @@ df.a <- data.frame(
             exp(hdi(unlist(lapply(param_list5[[1]], function(matrix) matrix[, 1])))[1]))
 )
 df.a$x <- factor(df.a$x, levels = desired_order)
-a.plot <- ggplot(df.a, aes(x, Mean)) + 
+a.plot <- ggplot(df.a, aes(x, Median)) + 
   geom_point(col = cividis(3)[1]) + 
   geom_linerange(aes(ymin = lower, ymax = upper), col = cividis(3)[2]) + 
-  labs(title = "A", x = "Method") + 
+  labs(title = "Parameter a", x = "Method") + 
   geom_hline(yintercept = true.a, linetype = "dashed", color = cividis(3)[3]) + 
   theme_classic() + 
   coord_flip()
 a.plot
+ggsave("a.comp.exp.png", plot = a.plot, width = 8, height = 5)
 ```
 
 ```{r plot.Topt.wide}
@@ -73,11 +74,11 @@ desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, E
 df.b <- data.frame(
   x = factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp Model", 
                "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model")), 
-  Mean = c(mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))), 
-           mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))), 
-           mean(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1]))), 
-           mean(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1]))), 
-           mean(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))), 
+  Median = c(median(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))), 
+           median(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))), 
+           median(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1]))), 
+           median(unlist(lapply(param_list4[[2]], function(matrix) matrix[, 1]))), 
+           median(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))), 
   upper = c(hdi(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1])))[2], 
             hdi(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1])))[2], 
             hdi(unlist(lapply(param_list3[[2]], function(matrix) matrix[, 1])))[2], 
@@ -90,14 +91,15 @@ df.b <- data.frame(
             hdi(unlist(lapply(param_list5[[2]], function(matrix) matrix[, 1])))[1])
 )
 df.b$x <- factor(df.b$x, levels = desired_order)
-b.plot <- ggplot(df.b, aes(x, Mean)) + 
+b.plot <- ggplot(df.b, aes(x, Median)) + 
   geom_point(col = cividis(3)[1]) + 
   geom_linerange(aes(ymin = lower, ymax = upper), col = cividis(3)[2]) + 
-  labs(title = "Topt", x = "Method") + 
+  labs(title = "Parameter Topt", x = "Method") + 
   geom_hline(yintercept = true.Topt, linetype = "dashed", color = cividis(3)[3]) + 
   theme_classic() + 
   coord_flip()
 b.plot
+ggsave("Topt.comp.exp.png", plot = b.plot, width = 8, height = 5)
 ```
 
 ```{r plot.c.wide}
@@ -107,11 +109,11 @@ desired_order <- c("Inverse Mean Exp Data, Exp Model", "Mean Inverse Exp Data, E
 df.c <- data.frame(
   x = factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Exp Model", 
                "Mean Inverse Exp Data, Exp Model", "Inverse Mean Exp Data, Exp Model")), 
-  Mean = c((mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))), 
-           (mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))), 
-           (mean(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))), 
-           (mean(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))), 
-           (mean(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1]))))), 
+  Median = c((median(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))), 
+           (median(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))), 
+           (median(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))), 
+           (median(unlist(lapply(param_list4[[3]], function(matrix) matrix[, 1])))), 
+           (median(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1]))))), 
   upper = c((hdi(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1])))[2]), 
             (hdi(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1])))[2]), 
             (hdi(unlist(lapply(param_list3[[3]], function(matrix) matrix[, 1])))[2]), 
@@ -124,14 +126,15 @@ df.c <- data.frame(
             (hdi(unlist(lapply(param_list5[[3]], function(matrix) matrix[, 1])))[1]))
 )
 df.c$x <- factor(df.c$x, levels = desired_order)
-c.plot <- ggplot(df.c, aes(x, Mean)) + 
+c.plot <- ggplot(df.c, aes(x, Median)) + 
   geom_point(col = cividis(3)[1]) + 
   geom_linerange(aes(ymin = lower, ymax = upper), col = cividis(3)[2]) + 
-  labs(title = "C", x = "Method") + 
+  labs(title = "Parameter c", x = "Method") + 
   geom_hline(yintercept = true.c, linetype = "dashed", color = cividis(3)[3]) + 
   theme_classic() + 
   coord_flip()
 c.plot
+ggsave("c.comp.exp.png", plot = c.plot, width = 8, height = 5)
 ```
 
 ```{r plot.a.wide.log}
@@ -247,12 +250,12 @@ desired_order.wb <- c("WB Data, WB Model", "Inverse Mean WB Data, Exp Model", "M
 df.a.wb <- data.frame(
   x = factor(c("Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Exp Model", 
                "Mean Inverse WB Data, Exp Model", "Inverse Mean WB Data, Exp Model", "WB Data, WB Model")), 
-  Mean = c(exp(mean(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))), 
-           exp(mean(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))), 
-           exp(mean(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))), 
-           exp(mean(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))), 
-           exp(mean(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))), 
-           exp(mean(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))), 
+  Median = c(exp(median(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))), 
+           exp(median(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))), 
+           exp(median(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))), 
+           exp(median(unlist(lapply(Weibull_param_list4[[1]], function(matrix) matrix[, 1])))), 
+           exp(median(unlist(lapply(Weibull_param_list5[[1]], function(matrix) matrix[, 1])))), 
+           exp(median(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1]))))), 
   upper = c(exp(hdi(unlist(lapply(Weibull_param_list1[[1]], function(matrix) matrix[, 1])))[2]), 
             exp(hdi(unlist(lapply(Weibull_param_list2[[1]], function(matrix) matrix[, 1])))[2]), 
             exp(hdi(unlist(lapply(Weibull_param_list3[[1]], function(matrix) matrix[, 1])))[2]), 
@@ -267,14 +270,15 @@ df.a.wb <- data.frame(
             exp(hdi(unlist(lapply(Weibull_param_list6[[1]], function(matrix) matrix[, 1])))[1]))
 )
 df.a.wb$x <- factor(df.a.wb$x, levels = desired_order.wb)
-a.wb.plot <- ggplot(df.a.wb, aes(x, Mean)) + 
+a.wb.plot <- ggplot(df.a.wb, aes(x, Median)) + 
   geom_point(col = plasma(3)[1]) + 
   geom_linerange(aes(ymin = lower, ymax = upper), col = plasma(3)[2]) + 
-  labs(title = "A", x = "Method") + 
+  labs(title = "Parameter a", x = "Method") + 
   geom_hline(yintercept = true.a, linetype = "dashed", color = plasma(3)[3]) + 
   theme_classic() + 
   coord_flip()
 a.wb.plot
+ggsave("a.comp.wb.png", plot = a.wb.plot, width = 8, height = 5)
 ```
 
 ```{r plot.Topt.wide.wb}
@@ -284,12 +288,12 @@ desired_order.wb <- c("WB Data, WB Model", "Inverse Mean WB Data, Exp Model", "M
 df.b.wb <- data.frame(
   x = factor(c("Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Exp Model", 
                "Mean Inverse WB Data, Exp Model", "Inverse Mean WB Data, Exp Model", "WB Data, WB Model")), 
-  Mean = c(mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))), 
-           mean(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))), 
-           mean(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))), 
-           mean(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))), 
-           mean(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))), 
-           mean(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))), 
+  Median = c(median(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1]))), 
+           median(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1]))), 
+           median(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1]))), 
+           median(unlist(lapply(Weibull_param_list4[[2]], function(matrix) matrix[, 1]))), 
+           median(unlist(lapply(Weibull_param_list5[[2]], function(matrix) matrix[, 1]))), 
+           median(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))), 
   upper = c(hdi(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))[2], 
             hdi(unlist(lapply(Weibull_param_list2[[2]], function(matrix) matrix[, 1])))[2], 
             hdi(unlist(lapply(Weibull_param_list3[[2]], function(matrix) matrix[, 1])))[2], 
@@ -304,14 +308,15 @@ df.b.wb <- data.frame(
             hdi(unlist(lapply(Weibull_param_list6[[2]], function(matrix) matrix[, 1])))[1])
 )
 df.b.wb$x <- factor(df.b.wb$x, levels = desired_order.wb)
-b.wb.plot <- ggplot(df.b.wb, aes(x, Mean)) + 
+b.wb.plot <- ggplot(df.b.wb, aes(x, Median)) + 
   geom_point(col = plasma(3)[1]) + 
   geom_linerange(aes(ymin = lower, ymax = upper), col = plasma(3)[2]) + 
-  labs(title = "Topt", x = "Method") + 
+  labs(title = "Parameter Topt", x = "Method") + 
   geom_hline(yintercept = true.Topt, linetype = "dashed", color = plasma(3)[3]) + 
   theme_classic() + 
   coord_flip()
 b.wb.plot
+ggsave("Topt.comp.wb.png", plot = b.wb.plot, width = 8, height = 5)
 ```
 
 ```{r plot.c.wide.wb}
@@ -320,12 +325,12 @@ desired_order.wb <- c("WB Data, WB Model", "Inverse Mean WB Data, Exp Model", "M
 df.c.wb <- data.frame(
   x = factor(c("Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Exp Model", 
                "Mean Inverse WB Data, Exp Model", "Inverse Mean WB Data, Exp Model", "WB Data, WB Model")), 
-  Mean = c((mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))), 
-           (mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))), 
-           (mean(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))), 
-           (mean(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))), 
-           (mean(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))), 
-           (mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))), 
+  Median = c((median(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))), 
+           (median(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))), 
+           (median(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))), 
+           (median(unlist(lapply(Weibull_param_list4[[3]], function(matrix) matrix[, 1])))), 
+           (median(unlist(lapply(Weibull_param_list5[[3]], function(matrix) matrix[, 1])))), 
+           (median(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))), 
   upper = c((hdi(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1])))[2]), 
             (hdi(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1])))[2]), 
             (hdi(unlist(lapply(Weibull_param_list3[[3]], function(matrix) matrix[, 1])))[2]), 
@@ -340,15 +345,15 @@ df.c.wb <- data.frame(
             (hdi(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1])))[1]))
 )
 df.c.wb$x <- factor(df.c.wb$x, levels = desired_order.wb)
-c.wb.plot <- ggplot(df.c.wb, aes(x, Mean)) + 
+c.wb.plot <- ggplot(df.c.wb, aes(x, Median)) + 
   geom_point(col = plasma(3)[1]) + 
   geom_linerange(aes(ymin = lower, ymax = upper), col = plasma(3)[2]) + 
-  labs(title = "C", x = "Method") + 
+  labs(title = "Parameter c", x = "Method") + 
   geom_hline(yintercept = true.c, linetype = "dashed", color = "black") + 
   theme_classic() + 
   coord_flip()
 c.wb.plot
-ggsave("c_wb_compare.png", plot = c.wb.plot, width = 10)
+ggsave("c.comp.wb.png", plot = c.wb.plot, width = 8, height = 5)
 ```
 
 ```{r plot.a.wide.wb.log}
@@ -807,9 +812,9 @@ df$Method <- factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp Mode
 ggplot(data = dub[1:5, ], aes(fill = Method, color = Method))  + 
   scale_color_manual(values = viridis(5)) + 
   scale_fill_manual(values = viridis(5)) + 
-  geom_rect(aes(xmin = q1Topt, xmax = q3Topt, ymin = q1Life, ymax = q3Life), alpha = 0.3)  + 
   geom_rect(aes(xmin = q1Topt, xmax = q3Topt, ymin = q1Life, ymax = q3Life), 
             color = "black", fill = NA)  + 
+  geom_rect(aes(xmin = q1Topt, xmax = q3Topt, ymin = q1Life, ymax = q3Life), alpha = 0.3)  + 
   geom_segment(aes(x = minTopt, y = plot.y$y.middle[1:5], xend = maxTopt, yend = plot.y$y.middle[1:5])) + #whiskers
   geom_segment(aes(x = minTopt, y = q1Life, xend = minTopt, yend = q3Life)) + #lower end
   geom_segment(aes(x = maxTopt, y = q1Life, xend = maxTopt, yend = q3Life)) + #upper end
@@ -817,13 +822,13 @@ ggplot(data = dub[1:5, ], aes(fill = Method, color = Method))  +
   geom_segment(aes(x = q1Topt, y = minLife, xend = q3Topt, yend = minLife)) + #lower end
   geom_segment(aes(x = q1Topt, y = maxLife, xend = q3Topt, yend = maxLife)) + #upper end
   theme_classic() + 
-  facet_wrap(dub$Method[1:5], nrow = 2) + 
-  geom_point(aes(x = medianTopt.True, y =  medianLife.True), color = "black") + 
-  theme(legend.position = "none") + 
+  #facet_wrap(dub$Method[1:5], nrow = 2) + 
+  geom_point(aes(x = medianTopt.True, y =  medianLife.True), color = "black", show.legend = FALSE) + 
+  #theme(legend.position = "none") + 
   labs(title =  "Boxplot of Topt and Lifetime", 
        x = "Topt", 
        y = "Lifetime")
-ggsave("Topt_Life_Exp.png", width = 10)
+ggsave("Topt_Life_Exp.png", width = 8, height = 5)
 ```
 
 ```{r WB.topt.maxlife.mean}
@@ -1013,13 +1018,13 @@ dub.wb$Method <- factor(dub.wb$Method, levels = c("Individual WB Data, Exp Model
 medianTopt.True.wb <- as.numeric(rep(dub.wb[7, 2], 6))
 medianLife.True.wb <- as.numeric(rep(dub.wb[7, 3], 6))
 
-
+plot.x.wb[6,3] <- (plot.x.wb[6,2] + plot.x.wb[6,4])/2
 ggplot(data = dub.wb[1:6, ], aes(fill = Method, color = Method))  + 
   scale_color_manual(values = plasma(6)) + 
   scale_fill_manual(values = plasma(6)) + 
-  geom_rect(aes(xmin = q1Topt, xmax = q3Topt, ymin = q1Life, ymax = q3Life), alpha = 0.3)  + 
   geom_rect(aes(xmin = q1Topt, xmax = q3Topt, ymin = q1Life, ymax = q3Life), 
             color = "black", fill = NA)  + 
+  geom_rect(aes(xmin = q1Topt, xmax = q3Topt, ymin = q1Life, ymax = q3Life), alpha = 0.3)  + 
   geom_segment(aes(x = minTopt, y = plot.y.wb$y.middle[1:6], xend = maxTopt, yend = plot.y.wb$y.middle[1:6])) + #whiskers
   geom_segment(aes(x = minTopt, y = q1Life, xend = minTopt, yend = q3Life)) + #lower end
   geom_segment(aes(x = maxTopt, y = q1Life, xend = maxTopt, yend = q3Life)) + #upper end
@@ -1027,13 +1032,13 @@ ggplot(data = dub.wb[1:6, ], aes(fill = Method, color = Method))  +
   geom_segment(aes(x = q1Topt, y = minLife, xend = q3Topt, yend = minLife)) + #lower end
   geom_segment(aes(x = q1Topt, y = maxLife, xend = q3Topt, yend = maxLife)) + #upper end
   theme_classic() + 
-  geom_point(aes(x = medianTopt.True.wb, y =  medianLife.True.wb), color = "black") + 
-  #facet_wrap(dub.wb$Method[1:6], nrow = 2, scales = "free_y") + 
-  theme(legend.position = "none") + 
+  geom_point(aes(x = medianTopt.True.wb, y =  medianLife.True.wb), color = "black", show.legend = FALSE) + 
+  #facet_wrap(dub.wb$Method[1:6], nrow = 2, scales = "free") + 
+  #theme(legend.position = "none") + 
   labs(title =  "Boxplot of Topt and Lifetime", 
        x = "Topt", 
        y = "Lifetime")
-#ggsave("Topt_Life_WB.png", width = 10)
+ggsave("Topt_Life_WB.png", width = 8, height = 5)
 
 ```
 
@@ -1362,9 +1367,9 @@ df.ex$Method <- factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp M
 ggplot(data = dub.ex[1:5, ], aes(fill = Method, color = Method))  + 
   scale_fill_manual(values = viridis(5)) + 
   scale_color_manual(values = viridis(5)) + 
-  geom_rect(aes(xmin = q1Low, xmax = q3Low, ymin = q1High, ymax = q3High), alpha = 0.3)  + 
   geom_rect(aes(xmin = q1Low, xmax = q3Low, ymin = q1High, ymax = q3High), 
-            color = "black", fill = NA)  + 
+            color = "black", fill = NA)  +
+  geom_rect(aes(xmin = q1Low, xmax = q3Low, ymin = q1High, ymax = q3High), alpha = 0.3)  + 
   geom_segment(aes(x = minLow, y = plot.y.ex$y.middle[1:5], xend = maxLow, yend = plot.y.ex$y.middle[1:5])) + #whiskers
   geom_segment(aes(x = minLow, y = q1High, xend = minLow, yend = q3High)) + #lower end
   geom_segment(aes(x = maxLow, y = q1High, xend = maxLow, yend = q3High)) + #upper end
@@ -1373,12 +1378,12 @@ ggplot(data = dub.ex[1:5, ], aes(fill = Method, color = Method))  +
   geom_segment(aes(x = q1Low, y = maxHigh, xend = q3Low, yend = maxHigh)) + #upper end
   theme_classic() + 
   #facet_wrap(dub.ex$Method[1:5], nrow = 2, scales = "free") + 
-  geom_point(aes(x = medianLow.True.ex, y =  medianHigh.True.ex), color = "black") + 
-  theme(legend.position = "none") + 
+  geom_point(aes(x = medianLow.True.ex, y =  medianHigh.True.ex), color = "black", show.legend = FALSE) + 
+  #theme(legend.position = "none") + 
   labs(title =  "Boxplot of Extreme Temperatures", 
        x = "Low", 
        y = "High")
-ggsave("Ex_Temp_Exp.png", width = 10)
+ggsave("Ex_Temp_Exp.png", width = 8, height = 5)
 ```
 
 ```{r WB.extreme.mean}
@@ -1547,9 +1552,9 @@ df.ex.wb$Method <- factor(c("Individual WB Data, Exp Model", "Mean WB Data, Exp 
 ggplot(data = dub.ex.wb[1:6, ], aes(fill = Method, color = Method))  + 
   scale_fill_manual(values = plasma(6)) + 
   scale_color_manual(values = plasma(6)) + 
-  geom_rect(aes(xmin = q1Low, xmax = q3Low, ymin = q1High, ymax = q3High), alpha = 0.3)  + 
   geom_rect(aes(xmin = q1Low, xmax = q3Low, ymin = q1High, ymax = q3High), 
             color = "black", fill = NA)  + 
+  geom_rect(aes(xmin = q1Low, xmax = q3Low, ymin = q1High, ymax = q3High), alpha = 0.3)  + 
   geom_segment(aes(x = minLow, y = plot.y.ex.wb$y.middle[1:6], xend = maxLow, yend = plot.y.ex.wb$y.middle[1:6])) + #whiskers
   geom_segment(aes(x = minLow, y = q1High, xend = minLow, yend = q3High)) + #lower end
   geom_segment(aes(x = maxLow, y = q1High, xend = maxLow, yend = q3High)) + #upper end
@@ -1557,13 +1562,13 @@ ggplot(data = dub.ex.wb[1:6, ], aes(fill = Method, color = Method))  +
   geom_segment(aes(x = q1Low, y = minHigh, xend = q3Low, yend = minHigh)) + #lower end
   geom_segment(aes(x = q1Low, y = maxHigh, xend = q3Low, yend = maxHigh)) + #upper end
   theme_classic() + 
-  facet_wrap(dub.ex.wb$Method[1:6], nrow = 2) + 
-  geom_point(aes(x = medianLow.True.ex.wb, y =  medianHigh.True.ex.wb), color = "black") + 
-  theme(legend.position = "none") + 
+  #facet_wrap(dub.ex.wb$Method[1:6], nrow = 2) + 
+  geom_point(aes(x = medianLow.True.ex.wb, y =  medianHigh.True.ex.wb), color = "black", show.legend = FALSE) + 
+  #theme(legend.position = "none") + 
   labs(title =  "Boxplot of Extreme Temperatures", 
        x = "Low", 
        y = "High")
-ggsave("Ex_Temp_WB.png", width = 10)
+ggsave("Ex_Temp_WB.png", width = 8, height = 5)
 ```
 
 ```{r exp.extreme.med}
@@ -1719,7 +1724,8 @@ ind.exp.32 <- qqPlot(data.list[[100]]$trait[data.list[[100]]$T == 32],
        param.list = list(rate = (exp(mean(unlist(lapply(param_list1[[1]], function(matrix) matrix[, 1])))) * (32 - 
                                mean(unlist(lapply(param_list1[[2]], function(matrix) matrix[, 1]))))^2  + 
                                mean(unlist(lapply(param_list1[[3]], function(matrix) matrix[, 1]))))), plot.it = FALSE)
-
+png(file="ind.exp.qq.png",
+    width = 7, height = 6, units = "in", res = 250)
 plot(ind.exp.10, pch = 20, xlim = c(0, 80), ylim = c(0, 100), col = viridis(5)[1], 
      main = "QQ - Plot for Exp Data and Exp Distribution", 
        xlab = "Quantiles of Exponential with Posterior Mean Rate Parameter", 
@@ -1731,6 +1737,7 @@ points(ind.exp.32, pch = 20, col =  viridis(5)[5])
 legend("topleft", legend = c("10", "17", "21", "25", "32"), 
        pch = c(20, 20, 20, 20, 20), col = c(viridis(5)[1], viridis(5)[2], viridis(5)[3], viridis(5)[4], viridis(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
+dev.off()
 ```
 
 ```{r QQPlot.Mean.Exp.Data}
@@ -1774,7 +1781,8 @@ mean.exp.32 <- qqPlot(df.mean.mean.exp$trait[df.mean.mean.exp$T == 32],
                                mean(unlist(lapply(param_list2[[2]], function(matrix) matrix[, 1]))))^2  + 
                                mean(unlist(lapply(param_list2[[3]], function(matrix) matrix[, 1]))))), plot.it = FALSE)
 
-
+png(file="mean.exp.qq.png",
+    width = 7, height = 6, units = "in", res = 250)
 plot(mean.exp.10, pch = 20, xlim = c(0, 30), ylim = c(0, 50), col = viridis(5)[1], 
      main = "QQ - Plot for Mean Exp Data and Exp Distribution", 
        xlab = "Quantiles of Exponential with Posterior Mean Rate Parameter", 
@@ -1786,6 +1794,7 @@ points(mean.exp.32, pch = 20, col =  viridis(5)[5])
 legend("topleft", legend = c("10", "17", "21", "25", "32"), 
        pch = c(20, 20, 20, 20, 20), col = c(viridis(5)[1], viridis(5)[2], viridis(5)[3], viridis(5)[4], viridis(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
+dev.off()
 ```
 
 ```{r QQPlot.Inv.Exp.Data}
@@ -1839,7 +1848,8 @@ inv.exp.32 <- qqPlot(1/data.list[[100]]$trait[data.list[[100]]$T == 32],
                        max = Inf), 
        plot.it = FALSE)
 
-
+png(file="inv.exp.qq.png",
+    width = 7, height = 6, units = "in", res = 250)
 plot(inv.exp.10, pch = 20, col = viridis(5)[1], 
      main = "QQ - Plot for Inverse Exp Data and Trunc Norm Distribution", 
        xlab = "Quantiles of Truncated Normal with Posterior Mean Rate Parameter", 
@@ -1851,6 +1861,7 @@ points(inv.exp.32, pch = 20, col =  viridis(5)[5])
 legend("topleft", legend = c("10", "17", "21", "25", "32"), 
        pch = c(20, 20, 20, 20, 20), col = c(viridis(5)[1], viridis(5)[2], viridis(5)[3], viridis(5)[4], viridis(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
+dev.off()
 ```
 
 ```{r QQPlot.Mean.Inv.Exp.Data}
@@ -1914,7 +1925,8 @@ mean.inv.exp.32 <- qqPlot(1/df.mean.mean.exp$trait[df.mean.mean.exp$T == 32],
                        max = Inf), 
        plot.it = FALSE)
 
-
+png(file="mean.inv.exp.qq.png",
+    width = 7, height = 6, units = "in", res = 250)
 plot(mean.inv.exp.10, pch = 20, xlim = c(0, 30), ylim = c(0, 0.75), col = viridis(5)[1], 
      main = "QQ - Plot for Mean Inverse Exp Data and Trunc Norm Distribution", 
        xlab = "Quantiles of Truncated Normal with Posterior Mean Rate Parameter", 
@@ -1926,6 +1938,7 @@ points(mean.inv.exp.32, pch = 20, col =  viridis(5)[5])
 legend("topleft", legend = c("10", "17", "21", "25", "32"), 
        pch = c(20, 20, 20, 20, 20), col = c(viridis(5)[1], viridis(5)[2], viridis(5)[3], viridis(5)[4], viridis(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
+dev.off()
 ```
 
 ```{r QQPlot.Inv.Mean.Exp.Data}
@@ -1989,7 +2002,8 @@ inv.mean.exp.32 <- qqPlot(df.mean.inv.exp$trait[df.mean.inv.exp$T == 32],
                        max = Inf), 
        plot.it = FALSE)
 
-
+png(file="inv.mean.exp.qq.png",
+    width = 7, height = 6, units = "in", res = 250)
 plot(inv.mean.exp.10, pch = 20, xlim = c(0, 1), ylim = c(0, 5), col = viridis(5)[1], 
      main = "QQ - Plot for Inverse Mean Exp Data and Trunc Norm Distribution", 
        xlab = "Quantiles of Truncated Normal with Posterior Mean Rate Parameter", 
@@ -2001,6 +2015,7 @@ points(inv.mean.exp.32, pch = 20, col =  viridis(5)[5])
 legend("topleft", legend = c("10", "17", "21", "25", "32"), 
        pch = c(20, 20, 20, 20, 20), col = c(viridis(5)[1], viridis(5)[2], viridis(5)[3], viridis(5)[4], viridis(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
+dev.off()
 ```
 
 
@@ -2036,6 +2051,8 @@ ind.wb.32 <- qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T ==
                                (mean(unlist(lapply(Weibull_param_list1[[2]], function(matrix) matrix[, 1])))))^2  + 
                                mean(unlist(lapply(Weibull_param_list1[[3]], function(matrix) matrix[, 1]))))), plot.it = FALSE)
 
+png(file="ind.wb.qq.png",
+    width = 7, height = 6, units = "in", res = 250)
 plot(ind.wb.10, xlim = c(0, 6), ylim = c(0, 35), pch = 20, col = viridis(5)[1], 
        main = "QQ - Plot for WB Data and Exp Distribution", 
        xlab = "Quantiles of Exponential with Posterior Mean Rate Parameter", 
@@ -2047,6 +2064,7 @@ points(ind.wb.32, pch = 20, col =  viridis(5)[5])
 legend("topleft", legend = c("10", "17", "21", "25", "32"), 
        pch = c(20, 20, 20, 20, 20), col = c(viridis(5)[1], viridis(5)[2], viridis(5)[3], viridis(5)[4], viridis(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
+dev.off()
 ```
 
 ```{r QQPlot.Mean.WB.Data}
@@ -2091,6 +2109,8 @@ mean.wb.32 <- qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T == 32],
                                mean(unlist(lapply(Weibull_param_list2[[3]], function(matrix) matrix[, 1]))))), plot.it = FALSE)
 
 
+png(file="mean.wb.qq.png",
+    width = 7, height = 6, units = "in", res = 250)
 plot(mean.wb.10, pch = 20, xlim = c(0, 3), ylim = c(0, 30), col = viridis(5)[1], 
      main = "QQ - Plot for Mean WB Data and Exp Distribution", 
        xlab = "Quantiles of Exponential with Posterior Mean Rate Parameter", 
@@ -2102,6 +2122,7 @@ points(mean.wb.32, pch = 20, col =  viridis(5)[5])
 legend("topleft", legend = c("10", "17", "21", "25", "32"), 
        pch = c(20, 20, 20, 20, 20), col = c(viridis(5)[1], viridis(5)[2], viridis(5)[3], viridis(5)[4], viridis(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
+dev.off()
 ```
 
 ```{r QQPlot.Inv.WB.Data}
@@ -2155,6 +2176,8 @@ inv.wb.32 <- qqPlot(1/Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T 
                        max = Inf), 
        plot.it = FALSE)
 
+png(file="inv.wb.qq.png",
+    width = 7, height = 6, units = "in", res = 250)
 plot(inv.wb.10, xlim = c(0, 30), ylim = c(0, 3), pch = 20, col = viridis(5)[1], 
        main = "QQ - Plot for Inverse WB Data and Trunc Norm Distribution", 
        xlab = "Quantiles of Truncated Normal with Posterior Mean Rate Parameter", 
@@ -2166,6 +2189,7 @@ points(inv.wb.32, pch = 20, col =  viridis(5)[5])
 legend("topleft", legend = c("10", "17", "21", "25", "32"), 
        pch = c(20, 20, 20, 20, 20), col = c(viridis(5)[1], viridis(5)[2], viridis(5)[3], viridis(5)[4], viridis(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
+dev.off()
 
 ```
 
@@ -2230,6 +2254,8 @@ mean.inv.wb.32 <- qqPlot(df.mean.mean.wb$trait[df.mean.mean.wb$T == 32],
                        max = Inf), 
        plot.it = FALSE)
 
+png(file="mean.inv.wb.qq.png",
+    width = 7, height = 6, units = "in", res = 250)
 plot(mean.inv.wb.10, pch = 20, ylim = c(0, 30), xlim = c(0, 150), col = viridis(5)[1], 
        main = "QQ - Plot for Mean Inverse WB Data and Trunc Norm Distribution", 
        xlab = "Quantiles of Truncated Normal with Posterior Mean Rate Parameter", 
@@ -2241,6 +2267,7 @@ points(mean.inv.wb.32, pch = 20, col =  viridis(5)[5])
 legend("topleft", legend = c("10", "17", "21", "25", "32"), 
        pch = c(20, 20, 20, 20, 20), col = c(viridis(5)[1], viridis(5)[2], viridis(5)[3], viridis(5)[4], viridis(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
+dev.off()
 
 ```
 
@@ -2305,6 +2332,8 @@ inv.mean.wb.32 <- qqPlot(df.mean.inv.wb$trait[df.mean.inv.wb$T == 32],
                        max = Inf), 
        plot.it = FALSE)
 
+png(file="inv.mean.wb.qq.png",
+    width = 7, height = 6, units = "in", res = 250)
 plot(inv.mean.wb.10, pch = 20, xlim = c(0, 60), ylim = c(0, 1), col = viridis(5)[1], 
        main = "QQ - Plot for Inverse Mean WB Data and Trunc Norm Distribution", 
        xlab = "Quantiles of Truncated Normal with Posterior Mean Rate Parameter", 
@@ -2316,6 +2345,7 @@ points(inv.mean.wb.32, pch = 20, col =  viridis(5)[5])
 legend("topleft", legend = c("10", "17", "21", "25", "32"), 
        pch = c(20, 20, 20, 20, 20), col = c(viridis(5)[1], viridis(5)[2], viridis(5)[3], viridis(5)[4], viridis(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
+dev.off()
 
 ```
 
@@ -2355,6 +2385,9 @@ wb.wb.32 <- qqPlot(Weibull_data.list[[100]]$trait[Weibull_data.list[[100]]$T == 
                                mean(unlist(lapply(Weibull_param_list6[[3]], function(matrix) matrix[, 1]))))/log(2)^(1/mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))), 
                          shape = mean(unlist(lapply(Weibull_param_list6[[5]], function(matrix) matrix[, 1])))), plot.it = FALSE)
 
+
+png(file="ind.wb.wb.qq.png",
+    width = 7, height = 6, units = "in", res = 250)
 plot(wb.wb.10, xlim = c(0, 40), ylim = c(0, 35), pch = 20, col = viridis(5)[1], 
        main = "QQ - Plot for WB Data and WB Distribution", 
        xlab = "Quantiles of Weibull with Posterior Mean Parameters", 
@@ -2366,6 +2399,7 @@ points(wb.wb.32, pch = 20, col = viridis(5)[5])
 legend("topleft", legend = c("10", "17", "21", "25", "32"), 
        pch = c(20, 20, 20, 20, 20), col = c(viridis(5)[1], viridis(5)[2], viridis(5)[3], viridis(5)[4], viridis(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
+dev.off()
 ```
 
 
@@ -2999,7 +3033,7 @@ data.rmse.wb |> ggplot(aes(x = Method, y = RMSE)) +
 
 
 ```{r n.w.compare.exp.mr}
-ggplot()  + 
+exp.ind.mr <- ggplot()  + 
   geom_line(data = N_mean.xdf1, aes(x = point, y = med.value), color = cividis(10)[1], lwd = 1)  + 
   geom_ribbon(data = N_mean.xdf1, aes(ymin = lower.hdi, ymax = upper.hdi, x = point), fill = cividis(10)[1], alpha = 0.3)  + 
   geom_line(data = mean.xdf1, aes(x = point, y = med.value), color = rocket(10)[5], lwd = 1)  + 
@@ -3009,7 +3043,9 @@ ggplot()  +
        x = "Temperature", 
        y = "Mortality Rate")  + 
   theme_minimal()
-ggplot()  + 
+ggsave("exp.ind.mr.png", plot = exp.ind.mr, height = 5, width = 6)
+
+exp.mean.mr <- ggplot()  + 
   geom_line(data = N_mean.xdf2, aes(x = point, y = med.value), color = cividis(10)[1], lwd = 1)  + 
   geom_ribbon(data = N_mean.xdf2, aes(ymin = lower.hdi, ymax = upper.hdi, x = point), fill = cividis(10)[1], alpha = 0.3)  + 
   geom_line(data = mean.xdf2, aes(x = point, y = med.value), color = rocket(10)[5], lwd = 1)  + 
@@ -3019,7 +3055,9 @@ ggplot()  +
        x = "Temperature", 
        y = "Mortality Rate") + 
   theme_minimal()
-ggplot()  + 
+ggsave("exp.mean.mr.png", plot = exp.mean.mr, height = 5, width = 6)
+
+exp.inv.mr <- ggplot()  + 
   geom_line(data = N_mean.xdf3, aes(x = point, y = med.value), color = cividis(10)[1], lwd = 1)  + 
   geom_ribbon(data = N_mean.xdf3, aes(ymin = lower.hdi, ymax = upper.hdi, x = point), fill = cividis(10)[1], alpha = 0.3)  + 
   geom_line(data = mean.xdf3, aes(x = point, y = med.value), color = rocket(10)[5], lwd = 1)  + 
@@ -3029,7 +3067,9 @@ ggplot()  +
        x = "Temperature", 
        y = "Mortality Rate")  + 
   theme_minimal()
-ggplot()  + 
+ggsave("exp.inv.mr.png", plot = exp.inv.mr, height = 5, width = 6)
+
+exp.mean.inv.mr <- ggplot()  + 
   geom_line(data = N_mean.xdf4, aes(x = point, y = med.value), color = cividis(10)[1], lwd = 1)  + 
   geom_ribbon(data = N_mean.xdf4, aes(ymin = lower.hdi, ymax = upper.hdi, x = point), fill = cividis(10)[1], alpha = 0.3)  + 
   geom_line(data = mean.xdf4, aes(x = point, y = med.value), color = rocket(10)[5], lwd = 1)  + 
@@ -3039,12 +3079,14 @@ ggplot()  +
        x = "Temperature", 
        y = "Mortality Rate")  + 
   theme_minimal()
-ggplot()  + 
+ggsave("exp.mean.inv.mr.png", plot = exp.mean.inv.mr, height = 5, width = 6)
+
+exp.inv.mean.mr <- ggplot()  + 
   geom_line(data = N_mean.xdf5, aes(x = point, y = med.value, color = "Narrow"), lwd = 1)  + 
   geom_ribbon(data = N_mean.xdf5, aes(ymin = lower.hdi, ymax = upper.hdi, x = point, fill = "Narrow"), alpha = 0.3)  + 
   geom_line(data = mean.xdf5, aes(x = point, y = med.value, color = "Wide"), lwd = 1)  + 
   geom_ribbon(data = mean.xdf5, aes(ymin = lower.hdi, ymax = upper.hdi, x = point, fill = "Wide"), alpha = 0.2)  + 
-  geom_line(data = mean.xdf5, aes(x = point, y = true_curve), color = "black", linetype = "dashed")  + 
+  geom_line(data = mean.xdf5, aes(x = point, y = true_curve, color = "True Curve"), linetype = "dashed")  + 
   labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean Data)", 
        x = "Temperature", 
        y = "Mortality Rate", 
@@ -3053,10 +3095,11 @@ ggplot()  +
   scale_color_manual(values = c("Narrow" = cividis(10)[1], "Wide" = rocket(10)[5], "True Curve" = "black"))  + 
   scale_fill_manual(values = c("Narrow" = cividis(10)[1], "Wide" = rocket(10)[5]))  + 
   theme_minimal()
+ggsave("exp.inv.mean.mr.png", plot = exp.inv.mean.mr, height = 5, width = 7)
 ```
 
 ```{r n.w.compare.exp.lt}
-ggplot()  + 
+exp.ind.life <- ggplot()  + 
   geom_line(data = N_mean.xdf1, aes(x = point, y = med.value.inv), color = cividis(10)[1], lwd = 1)  + 
   geom_ribbon(data = N_mean.xdf1, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x = point), fill = cividis(10)[1], alpha = 0.3)  + 
   geom_line(data = mean.xdf1, aes(x = point, y = med.value.inv), color = rocket(10)[5], lwd = 1)  + 
@@ -3066,17 +3109,21 @@ ggplot()  +
        x = "Temperature", 
        y = "Lifetime")  + 
   theme_minimal()
-ggplot()  + 
+ggsave("exp.ind.life.png", plot = exp.ind.life, height = 5, width = 6)
+
+exp.mean.life <- ggplot()  + 
   geom_line(data = N_mean.xdf2, aes(x = point, y = med.value.inv), color = cividis(10)[1], lwd = 1)  + 
   geom_ribbon(data = N_mean.xdf2, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x = point), fill = cividis(10)[1], alpha = 0.3)  + 
   geom_line(data = mean.xdf2, aes(x = point, y = med.value.inv), color = rocket(10)[5], lwd = 1)  + 
   geom_ribbon(data = mean.xdf2, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x = point), fill = rocket(10)[5], alpha = 0.2)  + 
-  geom_line(data = mean.xdf2, aes(x = point, y = true_curve.inv), color = "black", linetype = "dashed")  + 
+  geom_line(data = mean.xdf2, aes(x = point, y = 1/true_curve), color = "black", linetype = "dashed")  + 
   labs(title = "Narrow and Wide Median Curve Comparison (Mean Data)", 
        x = "Temperature", 
        y = "Lifetime")  + 
   theme_minimal()
-ggplot()  + 
+ggsave("exp.mean.life.png", plot = exp.mean.life, height = 5, width = 6)
+
+exp.inv.life <- ggplot()  + 
   geom_line(data = N_mean.xdf3, aes(x = point, y = med.value.inv), color = cividis(10)[1], lwd = 1)  + 
   geom_ribbon(data = N_mean.xdf3, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x = point), fill = cividis(10)[1], alpha = 0.3)  + 
   geom_line(data = mean.xdf3, aes(x = point, y = med.value.inv), color = rocket(10)[5], lwd = 1)  + 
@@ -3086,22 +3133,26 @@ ggplot()  +
        x = "Temperature", 
        y = "Lifetime")  + 
   theme_minimal()
-ggplot()  + 
+ggsave("exp.inv.life.png", plot = exp.inv.life, height = 5, width = 6)
+
+exp.mean.inv.life <- ggplot()  + 
   geom_line(data = N_mean.xdf4, aes(x = point, y = med.value.inv), color = cividis(10)[1], lwd = 1)  + 
   geom_ribbon(data = N_mean.xdf4, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x = point), fill = cividis(10)[1], alpha = 0.3)  + 
   geom_line(data = mean.xdf4, aes(x = point, y = med.value.inv), color = rocket(10)[5], lwd = 1)  + 
   geom_ribbon(data = mean.xdf4, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x = point), fill = rocket(10)[5], alpha = 0.2)  + 
-  geom_line(data = mean.xdf4, aes(x = point, y = true_curve.inv), color = "black", linetype = "dashed")  + 
+  geom_line(data = mean.xdf4, aes(x = point, y = 1/true_curve), color = "black", linetype = "dashed")  + 
   labs(title = "Narrow and Wide Median Curve Comparison (Mean Inverse Data)", 
        x = "Temperature", 
        y = "Lifetime")  + 
   theme_minimal()
-ggplot()  + 
+ggsave("exp.mean.inv.life.png", plot = exp.mean.inv.life, height = 5, width = 6)
+
+exp.inv.mean.life <- ggplot()  + 
   geom_line(data = N_mean.xdf5, aes(x = point, y = med.value.inv, color = "Narrow"), lwd = 1)  + 
   geom_ribbon(data = N_mean.xdf5, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x = point, fill = "Narrow"), alpha = 0.3)  + 
   geom_line(data = mean.xdf5, aes(x = point, y = med.value.inv, color = "Wide"), lwd = 1)  + 
   geom_ribbon(data = mean.xdf5, aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv, x = point, fill = "Wide"), alpha = 0.2)  + 
-  geom_line(data = mean.xdf5, aes(x = point, y = true_curve.inv), color = "black", linetype = "dashed")  + 
+  geom_line(data = mean.xdf5, aes(x = point, y = 1/true_curve, color = "True Curve"), linetype = "dashed")  + 
   labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean Data)", 
        x = "Temperature", 
        y = "Lifetime", 
@@ -3110,11 +3161,12 @@ ggplot()  +
   scale_color_manual(values = c("Narrow" = cividis(10)[1], "Wide" = rocket(10)[5], "True Curve" = "black"))  + 
   scale_fill_manual(values = c("Narrow" = cividis(10)[1], "Wide" = rocket(10)[5]))  + 
   theme_minimal()
+ggsave("exp.inv.mean.life.png", plot = exp.inv.mean.life, height = 5, width = 7)
 
 ```
 
 ```{r n.w.compare.wb.lt}
-ggplot()  + 
+wb.ind.life <- ggplot()  + 
   geom_line(data =  mean.xdf1_W_N, aes(x = point, y = med.value.inv), color = mako(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf1_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3)  + 
   geom_line(data =  mean.xdf1_W, aes(x = point, y = med.value.inv), color = plasma(10)[8], lwd = 1)  + 
@@ -3124,7 +3176,9 @@ ggplot()  +
        x = "Temperature", 
        y = "Lifetime")  + 
   theme_minimal()
-ggplot()  + 
+ggsave("wb.ind.life.png", plot = wb.ind.life, height = 5, width = 6.5)
+
+wb.mean.life <- ggplot()  + 
   geom_line(data =  mean.xdf2_W_N, aes(x = point, y = med.value.inv), color = mako(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf2_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3)  + 
   geom_line(data =  mean.xdf2_W, aes(x = point, y = med.value.inv), color = plasma(10)[8], lwd = 1)  + 
@@ -3134,7 +3188,9 @@ ggplot()  +
        x = "Temperature", 
        y = "Lifetime")  + 
   theme_minimal()
-ggplot()  + 
+ggsave("wb.mean.life.png", plot = wb.mean.life, height = 5, width = 6.5)
+
+wb.inv.life <- ggplot()  + 
   geom_line(data =  mean.xdf3_W_N, aes(x = point, y = med.value.inv), color = mako(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf3_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3)  + 
   geom_line(data =  mean.xdf3_W, aes(x = point, y = med.value.inv), color = plasma(10)[8], lwd = 1)  + 
@@ -3144,7 +3200,9 @@ ggplot()  +
        x = "Temperature", 
        y = "Lifetime")  + 
   theme_minimal()
-ggplot()  + 
+ggsave("wb.inv.life.png", plot = wb.inv.life, height = 5, width = 6.5)
+
+wb.mean.inv.life <- ggplot()  + 
   geom_line(data =  mean.xdf4_W_N, aes(x = point, y = med.value.inv), color = mako(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf4_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3)  + 
   geom_line(data =  mean.xdf4_W, aes(x = point, y = med.value.inv), color = plasma(10)[8], lwd = 1)  + 
@@ -3154,13 +3212,27 @@ ggplot()  +
        x = "Temperature", 
        y = "Lifetime")  + 
   theme_minimal()
-ggplot()  + 
-  geom_line(data =  mean.xdf5_W_N, aes(x = point, y = med.value.inv, color = "Narrow"), lwd = 1)  + 
-  geom_ribbon(data = mean.xdf5_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv, fill = "Narrow"), alpha = 0.3)  + 
-  geom_line(data =  mean.xdf5_W, aes(x = point, y = med.value.inv, color = "Wide"), lwd = 1)  + 
-  geom_ribbon(data = mean.xdf5_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv, fill = "Wide"), alpha = 0.3)  + 
+ggsave("wb.mean.inv.life.png", plot = wb.mean.inv.life, height = 5, width = 6.5)
+
+wb.inv.mean.life <- ggplot()  + 
+  geom_line(data =  mean.xdf5_W_N, aes(x = point, y = med.value.inv), color = mako(10)[8], lwd = 1)  + 
+  geom_ribbon(data = mean.xdf5_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3)  + 
+  geom_line(data =  mean.xdf5_W, aes(x = point, y = med.value.inv), color = plasma(10)[8], lwd = 1)  + 
+  geom_ribbon(data = mean.xdf5_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = plasma(10)[8], alpha = 0.3)  + 
   geom_line(data = mean.xdf5_W, aes(y = 1/true_curve, x = point), color = "black", linetype = "dashed") + 
     labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean WB Data)", 
+       x = "Temperature", 
+       y = "Lifetime")  + 
+  theme_minimal()
+ggsave("wb.inv.mean.life.png", plot = wb.inv.mean.life, height = 5, width = 6.5)
+
+wb.wb.ind.life <- ggplot()  + 
+  geom_line(data =  mean.xdf6_W_N, aes(x = point, y = med.value.inv, color = "Narrow"), lwd = 1)  + 
+  geom_ribbon(data = mean.xdf6_W_N, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv, fill = "Narrow"), alpha = 0.3)  + 
+  geom_line(data =  mean.xdf6_W, aes(x = point, y = med.value.inv, color = "Wide"), lwd = 1)  + 
+  geom_ribbon(data = mean.xdf6_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv, fill = "Wide"), alpha = 0.3)  + 
+  geom_line(data = mean.xdf6_W, aes(x = point, y = log(2)/true_curve, color = "True Curve"), linetype = "dashed")  + 
+    labs(title = "Narrow and Wide Median Curve Comparison (Individual WB Data and WB Model)", 
        x = "Temperature", 
        y = "Lifetime", 
        fill = "95% HDI Bands", 
@@ -3168,56 +3240,77 @@ ggplot()  +
   scale_color_manual(values = c("Narrow" = mako(10)[8], "Wide" = plasma(10)[8], "True Curve" = "black"))  + 
   scale_fill_manual(values = c("Narrow" = mako(10)[8], "Wide" = plasma(10)[8]))  + 
   theme_minimal()
+ggsave("wb.wb.ind.life.png", plot = wb.wb.ind.life, height = 5, width = 7.5)
 ```
 
 ```{r n.w.compare.wb.mr}
-comp.plot.1 <- ggplot()  + 
+wb.ind.mr <- ggplot()  + 
   geom_line(data =  mean.xdf1_W_N, aes(x = point, y = med.value), color = mako(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf1_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3)  + 
   geom_line(data =  mean.xdf1_W, aes(x = point, y = med.value), color = plasma(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf1_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3)  + 
   geom_line(data = mean.xdf1_W, aes(y = true_curve, x = point), color = "black", linetype = "dashed") + 
-    labs(title = "Individual Weibull Data", 
+    labs(title = "Narrow and Wide Median Curve Comparison (Individual WB Data)", 
        x = "Temperature", 
        y = "Mortality Rate")  + 
   theme_minimal()
-comp.plot.2 <- ggplot()  + 
+ggsave("wb.ind.mr.png", plot = wb.ind.mr, height = 5, width = 6.5)
+
+wb.mean.mr <- ggplot()  + 
   geom_line(data =  mean.xdf2_W_N, aes(x = point, y = med.value), color = mako(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf2_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3)  + 
   geom_line(data =  mean.xdf2_W, aes(x = point, y = med.value), color = plasma(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf2_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3)  + 
   geom_line(data = mean.xdf2_W, aes(y = true_curve, x = point), color = "black", linetype = "dashed") + 
-    labs(title = "Mean Weibull Data", 
+    labs(title = "Narrow and Wide Median Curve Comparison (Mean WB Data)", 
        x = "Temperature", 
        y = "Mortality Rate")  + 
   theme_minimal()
-comp.plot.3 <- ggplot()  + 
+ggsave("wb.mean.mr.png", plot = wb.mean.mr, height = 5, width = 6.5)
+
+wb.inv.mr <- ggplot()  + 
   geom_line(data =  mean.xdf3_W_N, aes(x = point, y = med.value), color = mako(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf3_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3)  + 
   geom_line(data =  mean.xdf3_W, aes(x = point, y = med.value), color = plasma(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf3_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3)  + 
   geom_line(data = mean.xdf3_W, aes(y = true_curve, x = point), color = "black", linetype = "dashed") + 
-    labs(title = "Individual Inverse Weibull Data", 
+    labs(title = "Narrow and Wide Median Curve Comparison (Inverse WB Data)", 
        x = "Temperature", 
        y = "Mortality Rate")  + 
   theme_minimal()
-comp.plot.4 <- ggplot()  + 
+ggsave("wb.inv.mr.png", plot = wb.inv.mr, height = 5, width = 6.5)
+
+wb.mean.inv.mr <- ggplot()  + 
   geom_line(data =  mean.xdf4_W_N, aes(x = point, y = med.value), color = mako(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf4_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3)  + 
   geom_line(data =  mean.xdf4_W, aes(x = point, y = med.value), color = plasma(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf4_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3)  + 
   geom_line(data = mean.xdf4_W, aes(y = true_curve, x = point), color = "black", linetype = "dashed") + 
-    labs(title = "Mean Inverse Weibull Data", 
+    labs(title = "Narrow and Wide Median Curve Comparison (Mean Inverse WB Data)", 
        x = "Temperature", 
        y = "Mortality Rate")  + 
   theme_minimal()
-comp.plot.5 <- ggplot()  + 
-  geom_line(data =  mean.xdf5_W_N, aes(x = point, y = med.value, color = "Narrow"), lwd = 1)  + 
-  geom_ribbon(data = mean.xdf5_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi, fill = "Narrow"), alpha = 0.3)  + 
-  geom_line(data =  mean.xdf5_W, aes(x = point, y = med.value, color = "Wide"), lwd = 1)  + 
-  geom_ribbon(data = mean.xdf5_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi, fill = "Wide"), alpha = 0.3)  + 
+ggsave("wb.mean.inv.mr.png", plot = wb.mean.inv.mr, height = 5, width = 6.5)
+
+wb.inv.mean.mr <- ggplot()  + 
+  geom_line(data =  mean.xdf5_W_N, aes(x = point, y = med.value), color = mako(10)[8], lwd = 1)  + 
+  geom_ribbon(data = mean.xdf5_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = mako(10)[8], alpha = 0.3)  + 
+  geom_line(data =  mean.xdf5_W, aes(x = point, y = med.value), color = plasma(10)[8], lwd = 1)  + 
+  geom_ribbon(data = mean.xdf5_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3)  + 
   geom_line(data = mean.xdf5_W, aes(y = true_curve, x = point), color = "black", linetype = "dashed") + 
-    labs(title  = "Inverse Mean Weibull Data", 
+    labs(title = "Narrow and Wide Median Curve Comparison (Inverse Mean WB Data)", 
+       x = "Temperature", 
+       y = "Mortality Rate")  + 
+  theme_minimal()
+ggsave("wb.inv.mean.mr.png", plot = wb.inv.mean.mr, height = 5, width = 6.5)
+
+wb.wb.ind.mr <- ggplot()  + 
+  geom_line(data =  mean.xdf6_W_N, aes(x = point, y = med.value, color = "Narrow"), lwd = 1)  + 
+  geom_ribbon(data = mean.xdf6_W_N, aes(x = point, ymin = lower.hdi, ymax = upper.hdi, fill = "Narrow"), alpha = 0.3)  + 
+  geom_line(data =  mean.xdf6_W, aes(x = point, y = med.value, color = "Wide"), lwd = 1)  + 
+  geom_ribbon(data = mean.xdf6_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi, fill = "Wide"), alpha = 0.3)  + 
+  geom_line(data = mean.xdf6_W, aes(x = point, y = true_curve, color = "True Curve"), linetype = "dashed")  + 
+    labs(title = "Narrow and Wide Median Curve Comparison (Individual WB Data and WB Model)", 
        x = "Temperature", 
        y = "Mortality Rate", 
        fill = "95% HDI Bands", 
@@ -3225,12 +3318,7 @@ comp.plot.5 <- ggplot()  +
   scale_color_manual(values = c("Narrow" = mako(10)[8], "Wide" = plasma(10)[8], "True Curve" = "black"))  + 
   scale_fill_manual(values = c("Narrow" = mako(10)[8], "Wide" = plasma(10)[8]))  + 
   theme_minimal()
-
-ggsave("comp.plot.1.png", plot = comp.plot.1)
-ggsave("comp.plot.2.png", plot = comp.plot.2)
-ggsave("comp.plot.3.png", plot = comp.plot.3, width = 10)
-ggsave("comp.plot.4.png", plot = comp.plot.4)
-ggsave("comp.plot.5.png", plot = comp.plot.5, width = 10)
+ggsave("wb.wb.ind.mr.png", plot = wb.wb.ind.mr, height = 5, width = 7.5)
 ```
 
 
@@ -3319,22 +3407,24 @@ data.rmse.compare.wb |> ggplot(aes(x = Method, y = RMSE, fill = Set))  +
 
 ```{r weibull.data.compare}
 wb.exp.plot.mr <- ggplot()  + 
-  geom_line(data = mean.xdf1_W, aes(x = point, y = avg.value), color = plasma(10)[8], lwd = 1)  + 
+  geom_line(data = mean.xdf1_W, aes(x = point, y = med.value), color = plasma(10)[8], lwd = 1)  + 
   geom_ribbon(data = mean.xdf1_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[8], alpha = 0.3)  + 
-  geom_line(data = mean.xdf6_W, aes(x = point, y = avg.value), color = plasma(10)[2], lwd = 1)  + 
+  geom_line(data = mean.xdf6_W, aes(x = point, y = med.value), color = plasma(10)[2], lwd = 1)  + 
   geom_ribbon(data = mean.xdf6_W, aes(x = point, ymin = lower.hdi, ymax = upper.hdi), fill = plasma(10)[2], alpha = 0.3)  + 
   geom_line(data = mean.xdf1_W, aes(x = point, y = true_curve), color = "black", linetype = "dashed")  + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
+  labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Mortality Rate")  + 
   theme_minimal()
+ggsave("wb.comp.mort.png", plot = wb.exp.plot.mr, width = 5, height = 5)
+
 wb.exp.plot.life <- ggplot()  + 
-  geom_line(data = mean.xdf1_W, aes(x = point, y = avg.value.inv, color = "Exponential Model"), lwd = 1)  + 
+  geom_line(data = mean.xdf1_W, aes(x = point, y = med.value.inv, color = "Exponential Model"), lwd = 1)  + 
   geom_ribbon(data = mean.xdf1_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv, fill = "Exponential Model"), alpha = 0.3)  + 
-  geom_line(data = mean.xdf6_W, aes(x = point, y = avg.value.inv, color = "Weibull Model"), lwd = 1)  + 
+  geom_line(data = mean.xdf6_W, aes(x = point, y = med.value.inv, color = "Weibull Model"), lwd = 1)  + 
   geom_ribbon(data = mean.xdf6_W, aes(x = point, ymin = lower.hdi.inv, ymax = upper.hdi.inv, fill = "Weibull Model"), alpha = 0.3)  + 
   geom_line(data = mean.xdf1_W, aes(x = point, y = log(2)/true_curve, color = "True Curve"), linetype = "dashed")  + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
+  labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime", 
        color = "Curve", 
@@ -3343,15 +3433,13 @@ wb.exp.plot.life <- ggplot()  +
   scale_fill_manual(values = c("Exponential Model" = plasma(10)[8], "Weibull Model" = plasma(10)[2]))  + 
   theme_minimal()
 
-gridExtra::grid.arrange(wb.exp.plot.mr, wb.exp.plot.life, nrow = 1, widths = c(1, 1.75))
-exp_wb_model_compare <- gridExtra::arrangeGrob(wb.exp.plot.mr, wb.exp.plot.life, nrow = 1, widths = c(1, 1.25))
-ggsave("exp_wb_model_compare.png", plot = exp_wb_model_compare, width = 12)
+ggsave("wb.comp.life.png", plot = wb.exp.plot.life, width = 6.5, height = 5)
 
 ```
 
 
 
-```{r data.example}
+```{r data.example.exp}
 data.list[[100]]$inv.trait <- 1/data.list[[100]]$trait
 group_means.plot <- tapply(data.list[[100]]$trait, data.list[[100]]$T, function(x) {
     split_values <- split(x, rep(1:10, each = 10))
@@ -3377,23 +3465,79 @@ ind.plot <- ggplot(data.list[[100]], aes(x = T, y = trait)) +
   geom_point() + 
   labs(x = "Temperature", y = "Lifetime", title = "Individual Data") + 
   theme_classic()
+ggsave("ind.plot.png", plot = ind.plot, width = 3, height = 3)
 mean.plot <- ggplot(df.mean.plot, aes(x = T, y = trait)) + 
   geom_point() + 
   labs(x = "Temperature", y = "Lifetime", title = "Mean Data") + 
   theme_classic()
+ggsave("mean.plot.png", plot = mean.plot, width = 3, height = 3)
 inv.plot <- ggplot(data.list[[100]], aes(x = T, y = 1/trait)) + 
   geom_point() + 
   labs(x = "Temperature", y = "1/Lifetime", title = "Inverse Data") + 
   theme_classic()
+ggsave("inv.plot.png", plot = inv.plot, width = 3, height = 3)
 mean.inv.plot <- ggplot(df.mean.plot, aes(x = T, y = 1/trait)) + 
   geom_point() + 
   labs(x = "Temperature", y = "1/Lifetime", title = "Mean Inverse Data") + 
   theme_classic()
+ggsave("mean.inv.plot.png", plot = mean.inv.plot, width = 3, height = 3)
 inv.mean.plot <- ggplot(df.mean.inv.plot, aes(x = T, y = trait)) + 
   geom_point() + 
   labs(x = "Temperature", y = "1/Lifetime", title = "Inverse Mean Data") + 
   theme_classic()
+ggsave("inv.mean.plot.png", plot = inv.mean.plot, width = 3, height = 3)
 
 gridExtra::grid.arrange(ind.plot, mean.plot, inv.plot, mean.inv.plot, inv.mean.plot, nrow = 2)
+```
+
+```{r data.example.wb}
+Weibull_data.list[[100]]$inv.trait <- 1/Weibull_data.list[[100]]$trait
+wb.group_means.plot <- tapply(Weibull_data.list[[100]]$trait, Weibull_data.list[[100]]$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+    })
+wb.df.mean.plot <- data.frame(
+    T = c(rep(10, 10), rep(17, 10), rep(21, 10), rep(25, 10), rep(32, 10)), # Extract T values as numeric
+    trait = unlist(wb.group_means.plot)  # Extract means and unlist the result
+    )
+wb.group_means.inv.plot <- tapply(Weibull_data.list[[100]]$inv.trait, Weibull_data.list[[100]]$T, function(x) {
+    split_values <- split(x, rep(1:10, each = 10))
+    means <- sapply(split_values, mean)
+    return(means)
+    })
+wb.df.mean.inv.plot <- data.frame(
+    T = c(rep(10, 10), rep(17, 10), rep(21, 10), rep(25, 10), rep(32, 10)), # Extract T values as numeric
+    trait = unlist(wb.group_means.inv.plot)  # Extract means and unlist the result
+    )
+
+
+wb.ind.plot <- ggplot(Weibull_data.list[[100]], aes(x = T, y = trait)) + 
+  geom_point() + 
+  labs(x = "Temperature", y = "Lifetime", title = "Individual Data") + 
+  theme_classic()
+ggsave("wb.ind.plot.png", plot = wb.ind.plot, width = 3, height = 3)
+wb.mean.plot <- ggplot(wb.df.mean.plot, aes(x = T, y = trait)) + 
+  geom_point() + 
+  labs(x = "Temperature", y = "Lifetime", title = "Mean Data") + 
+  theme_classic()
+ggsave("wb.mean.plot.png", plot = wb.mean.plot, width = 3, height = 3)
+wb.inv.plot <- ggplot(Weibull_data.list[[100]], aes(x = T, y = 1/trait)) + 
+  geom_point() + 
+  labs(x = "Temperature", y = "1/Lifetime", title = "Inverse Data") + 
+  theme_classic()
+ggsave("wb.inv.plot.png", plot = wb.inv.plot, width = 3, height = 3)
+wb.mean.inv.plot <- ggplot(wb.df.mean.plot, aes(x = T, y = 1/trait)) + 
+  geom_point() + 
+  labs(x = "Temperature", y = "1/Lifetime", title = "Mean Inverse Data") + 
+  theme_classic()
+ggsave("wb.mean.inv.plot.png", plot = wb.mean.inv.plot, width = 3, height = 3)
+wb.inv.mean.plot <- ggplot(wb.df.mean.inv.plot, aes(x = T, y = trait)) + 
+  geom_point() + 
+  labs(x = "Temperature", y = "1/Lifetime", title = "Inverse Mean Data") + 
+  theme_classic()
+ggsave("wb.inv.mean.plot.png", plot = wb.inv.mean.plot, width = 3, height = 3)
+
+gridExtra::grid.arrange(wb.ind.plot, wb.mean.plot, wb.inv.plot, wb.mean.inv.plot, wb.inv.mean.plot, nrow = 2)
 ```
 
