@@ -193,26 +193,27 @@ theme_minimal()
 
 gridExtra::grid.arrange(plot1_mean, plot1_med, nrow = 1)
 gridExtra::grid.arrange(plot1_mean.inv, plot1_med.inv, nrow = 1)
-ggsave("mortality_hdi.png", plot = plot1_mean)
-ggsave("lifetime_hdi.png", plot = plot1_mean.inv)
+ggsave("ind.mort.exp.png", plot = plot1_med, width = 5, height = 5)
+ggsave("ind.life.exp.png", plot = plot1_med.inv, width = 5, height = 5)
 
 # Assign true values 
 # Create a list to store histograms of the posterior distribution of each parameter
 true_values <- c(log(true.a), true.Topt, true.c, NA)
 hist_list1 <- vector("list", length = 4)
+parameter.names <- c("a", "Topt", "c", "Deviance")
+png("hist.ind.exp.png", width = 8, height = 6, units = "in", res = 250)
 par(mfrow = c(2, 2))
-
 for (i in 1:4) {
   # Extract the first column from each matrix in param_list[[i]] 
   # This column is the mean of each param for each chain
-  first_column_list1 <- lapply(param_list1[[i]], function(matrix) matrix[, 1])
+  first_column_list1 <- lapply(param_list1[[i]], function(matrix) matrix[, 2])
   # Combine the vectors into a single vector
   combined_vector1 <- unlist(first_column_list1)
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(combined_vector1)-50, max(combined_vector1) + 1, length = 1000)
   # Create a histogram and store it in the list
-  hist_list1[[i]] <- hist(combined_vector1, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                          xlab = "Values", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
+  hist_list1[[i]] <- hist(combined_vector1, main = paste("Posterior Medians of Parameter", parameter.names[i]), 
+                          xlab = "Posterior Median", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
@@ -226,6 +227,8 @@ for (i in 1:4) {
   }
   
 }
+dev.off()
+
 
 
 proportions_list_a1 <- lapply(param_list1[[1]], function(matrix) {
@@ -510,23 +513,27 @@ theme_minimal()
 
 gridExtra::grid.arrange(plot2_mean, plot2_med, nrow = 1)
 gridExtra::grid.arrange(plot2_mean.inv, plot2_med.inv, nrow = 1)
+ggsave("mean.mort.exp.png", plot = plot2_med, width = 5, height = 5)
+ggsave("mean.life.exp.png", plot = plot2_med.inv, width = 5, height = 5)
 
 # Assign true values 
 # Create a list to store histograms of the posterior distribution of each parameter
 true_values <- c(log(true.a), true.Topt, true.c, NA)
 hist_list2 <- vector("list", length = 4)
+parameter.names <- c("a", "Topt", "c", "Deviance")
+png("hist.mean.exp.png", width = 8, height = 6, units = "in", res = 250)
 par(mfrow = c(2, 2))
 for (i in 1:4) {
   # Extract the first column from each matrix in param_list[[i]] 
   # This column is the mean of each param for each chain
-  first_column_list2 <- lapply(param_list2[[i]], function(matrix) matrix[, 1])
+  first_column_list2 <- lapply(param_list2[[i]], function(matrix) matrix[, 2])
   # Combine the vectors into a single vector
   combined_vector2 <- unlist(first_column_list2)
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(combined_vector2)-50, max(combined_vector2) + 1, length = 1000)
   # Create a histogram and store it in the list
-  hist_list2[[i]] <- hist(combined_vector2, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                        xlab = "Values", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
+  hist_list2[[i]] <- hist(combined_vector2, main = paste("Posterior Medians of Parameter", parameter.names[i]), 
+                        xlab = "Posterior Median", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
@@ -540,7 +547,7 @@ for (i in 1:4) {
     }
 
   }
-
+dev.off()
 
 proportions_list_a2 <- lapply(param_list2[[1]], function(matrix) {
   # Extract columns for mean, lower hdi, and upper hdi of posterior samples for a
@@ -829,25 +836,27 @@ plot3_med.inv <- ggplot(mean.xdf3, aes(x = point)) +
 
 gridExtra::grid.arrange(plot3_mean, plot3_med, nrow = 1)
 gridExtra::grid.arrange(plot3_mean.inv, plot3_med.inv, nrow = 1)
-ggsave("inv_mortality_hdi.png", plot = plot3_mean)
-ggsave("inv_lifetime_hdi.png", plot = plot3_mean.inv)
+ggsave("inv.mort.exp.png", plot = plot3_med, width = 5, height = 5)
+ggsave("inv.life.exp.png", plot = plot3_med.inv, width = 5, height = 5)
 
 # Assign true values 
 # Create a list to store histograms of the posterior distribution of each parameter
 true_values <- c(log(true.a), true.Topt, true.c, NA, NA)
 hist_list3 <- vector("list", length = 5)
+parameter.names.sig <- c("a", "Topt", "c", "Deviance", "Sigma")
+png("hist.inv.exp.png", width = 10, height = 6, units = "in", res = 250)
 par(mfrow = c(2, 3))
 for (i in 1:5) {
   # Extract the first column from each matrix in param_list[[i]]
   # This column is the mean of each param for each chain
-  first_column_list3 <- lapply(param_list3[[i]], function(matrix) matrix[, 1])
+  first_column_list3 <- lapply(param_list3[[i]], function(matrix) matrix[, 2])
   # Combine the vectors into a single vector
   combined_vector3 <- unlist(first_column_list3)
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(combined_vector3)-1, max(combined_vector3) + 1, length = 1000)
   # Create a histogram and store it in the list
-  hist_list3[[i]] <- hist(combined_vector3, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                          xlab = "Values", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
+  hist_list3[[i]] <- hist(combined_vector3, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
+                          xlab = "Posterior Median", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
@@ -863,6 +872,7 @@ for (i in 1:5) {
     lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
 }
+dev.off()
 
 
 proportions_list_a3 <- lapply(param_list3[[1]], function(matrix) {
@@ -1164,21 +1174,25 @@ plot4_med.inv <- ggplot(mean.xdf4, aes(x = point)) +
 
 gridExtra::grid.arrange(plot4_mean, plot4_med, nrow = 1)
 gridExtra::grid.arrange(plot4_mean.inv, plot4_med.inv, nrow = 1)
+ggsave("mean.inv.mort.exp.png", plot = plot4_med, width = 5, height = 5)
+ggsave("mean.inv.life.exp.png", plot = plot4_med.inv, width = 5, height = 5)
 
 # Create a list to store histograms of the posterior distribution of each parameter
 hist_list4 <- vector("list", length = 4)
+parameter.names.sig <- c("a", "Topt", "c", "Deviance", "Sigma")
+png("hist.mean.inv.exp.png", width = 10, height = 6, units = "in", res = 250)
 par(mfrow = c(2, 3))
 for (i in 1:5) {
   # Extract the first column from each matrix in param_list[[i]]
   # This column is the mean of each param for each chain
-  first_column_list4 <- lapply(param_list4[[i]], function(matrix) matrix[, 1])
+  first_column_list4 <- lapply(param_list4[[i]], function(matrix) matrix[, 2])
   # Combine the vectors into a single vector
   combined_vector4 <- unlist(first_column_list4)
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(combined_vector4)-1, max(combined_vector4) + 1, length = 1000)
   # Create a histogram and store it in the list
-  hist_list4[[i]] <- hist(combined_vector4, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                          xlab = "Values", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
+  hist_list4[[i]] <- hist(combined_vector4, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
+                          xlab = "Posterior Median", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
@@ -1194,6 +1208,7 @@ for (i in 1:5) {
     lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
 }
+dev.off()
 
 
 proportions_list_a4 <- lapply(param_list4[[1]], function(matrix) {
@@ -1497,21 +1512,25 @@ plot5_med.inv <- ggplot(mean.xdf5, aes(x = point)) +
 
 gridExtra::grid.arrange(plot5_mean, plot5_med, nrow = 1)
 gridExtra::grid.arrange(plot5_mean.inv, plot5_med.inv, nrow = 1)
+ggsave("inv.mean.mort.exp.png", plot = plot5_med, width = 5, height = 5)
+ggsave("inv.mean.life.exp.png", plot = plot5_med.inv, width = 5, height = 5)
 
 # Create a list to store histograms of the posterior distribution of each parameter
 hist_list5 <- vector("list", length = 5)
+parameter.names.sig <- c("a", "Topt", "c", "Deviance", "Sigma")
+png("hist.inv.mean.exp.png", width = 10, height = 6, units = "in", res = 250)
 par(mfrow = c(2, 3))
 for (i in 1:5) {
   # Extract the first column from each matrix in param_list[[i]]
   # This column is the mean of each param for each chain
-  first_column_list5 <- lapply(param_list5[[i]], function(matrix) matrix[, 1])
+  first_column_list5 <- lapply(param_list5[[i]], function(matrix) matrix[, 2])
   # Combine the vectors into a single vector
   combined_vector5 <- unlist(first_column_list5)
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(combined_vector5)-1, max(combined_vector5) + 1, length = 1000)
   # Create a histogram and store it in the list
-  hist_list5[[i]] <- hist(combined_vector5, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                          xlab = "Values", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
+  hist_list5[[i]] <- hist(combined_vector5, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
+                          xlab = "Posterior Median", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
   # Add prior based on which parameter 
   if(i == 1){
@@ -1527,6 +1546,7 @@ for (i in 1:5) {
     lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
   }
 }
+dev.off()
 
 proportions_list_a5 <-  lapply(param_list5[[1]], function(matrix) {
   # Extract columns for mean, lower hdi, and upper hdi of posterior samples for a
