@@ -46,6 +46,8 @@ w <- length(Weibull_N_data.list)
 # True value vector with a in log space
 Weibull_true_values <- c(log(true.a), true.Topt, true.c, NA, sh.est)
 
+data.raw.w.n <- Weibull_N_data.list[[100]]
+
 ########################################## Lambda #############################################
 
 # Create list of matrices to store parameter summary statistics
@@ -190,6 +192,7 @@ plot1_mean.inv_W_N <- ggplot(mean.xdf1_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = log(2)/true_curve), color = mako(10)[1], linetype = "dashed") +
+  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime") +
@@ -199,6 +202,7 @@ plot1_med.inv_W_N <- ggplot(mean.xdf1_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = log(2)/true_curve), color = mako(10)[1], linetype = "dashed") +
+  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime") +
@@ -206,21 +210,25 @@ plot1_med.inv_W_N <- ggplot(mean.xdf1_W_N, aes(x = point)) +
 
 gridExtra::grid.arrange(plot1_mean_W_N, plot1_med_W_N, nrow = 1)
 gridExtra::grid.arrange(plot1_mean.inv_W_N, plot1_med.inv_W_N, nrow = 1)
+ggsave("n.ind.mort.wb.png", plot = plot1_med_W_N, width = 5, height = 5)
+ggsave("n.ind.life.wb.png", plot = plot1_med.inv_W_N, width = 5, height = 5)
 
 # Create a list to store histograms of the posterior distribution of each parameter
 Weibull_N_hist_list1 <- vector("list", length = 4)
+parameter.names <- c("a", "Topt", "c", "Deviance")
+png("n.hist.ind.wb.png", width = 8, height = 6, units = "in", res = 250)
 par(mfrow = c(2, 2))
 for (i in 1:4) {
   # Extract the first column from each matrix in param_list[[i]]
   # This column is the mean of each param for each chain
-  Weibull_N_first_column_list1 <- lapply(Weibull_N_param_list1[[i]], function(matrix) matrix[, 1])
+  Weibull_N_first_column_list1 <- lapply(Weibull_N_param_list1[[i]], function(matrix) matrix[, 2])
   # Combine the vectors into a single vector
   Weibull_N_combined_vector1 <- unlist(Weibull_N_first_column_list1)
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(Weibull_N_combined_vector1) - 1, max(Weibull_N_combined_vector1) + 1, length = 1000)
   # Create a histogram and store it in the list
-  Weibull_N_hist_list1[[i]] <- hist(Weibull_N_combined_vector1, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                            xlab = "Values", col = mako(12)[12], border = "black", breaks = 10, freq = FALSE)
+  Weibull_N_hist_list1[[i]] <- hist(Weibull_N_combined_vector1, main = paste("Posterior Medians of Parameter", parameter.names[i]), 
+                            xlab = "Posterior Median", col = mako(12)[12], border = "black", breaks = 10, freq = FALSE)
   abline(v = Weibull_true_values[i], col = mako(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
@@ -234,7 +242,7 @@ for (i in 1:4) {
   }
 
 }
-
+dev.off()
 
 Weibull_N_proportions_list_a1 <- lapply(Weibull_N_param_list1[[1]], function(matrix) {
   # Extract columns for mean, lower hdi, and upper hdi of posterior samples for a
@@ -505,6 +513,7 @@ plot2_mean.inv_W_N <- ggplot(mean.xdf2_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = log(2)/true_curve), color = mako(10)[1], linetype = "dashed") +
+  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime") +
@@ -514,6 +523,7 @@ plot2_med.inv_W_N <- ggplot(mean.xdf2_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = log(2)/true_curve), color = mako(10)[1], linetype = "dashed") +
+  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime") +
@@ -521,21 +531,25 @@ plot2_med.inv_W_N <- ggplot(mean.xdf2_W_N, aes(x = point)) +
 
 gridExtra::grid.arrange(plot2_mean_W_N, plot2_med_W_N, nrow = 1)
 gridExtra::grid.arrange(plot2_mean.inv_W_N, plot2_med.inv_W_N, nrow = 1)
+ggsave("n.mean.mort.wb.png", plot = plot2_med_W_N, width = 5, height = 5)
+ggsave("n.mean.life.wb.png", plot = plot2_med.inv_W_N, width = 5, height = 5)
 
 # Create a list to store histograms of the posterior distribution of each parameter
 Weibull_N_hist_list2 <- vector("list", length = 4)
+parameter.names <- c("a", "Topt", "c", "Deviance")
+png("n.hist.mean.wb.png", width = 8, height = 6, units = "in", res = 250)
 par(mfrow = c(2, 2))
 for (i in 1:4) {
   # Extract the first column from each matrix in param_list[[i]]
   # This column is the mean of each param for each chain
-  Weibull_N_first_column_list2 <- lapply(Weibull_N_param_list2[[i]], function(matrix) matrix[, 1])
+  Weibull_N_first_column_list2 <- lapply(Weibull_N_param_list2[[i]], function(matrix) matrix[, 2])
   # Combine the vectors into a single vector
   Weibull_N_combined_vector2 <- unlist(Weibull_N_first_column_list2)
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(Weibull_N_combined_vector2) - 1, max(Weibull_N_combined_vector2) + 1, length = 1000)
   # Create a histogram and store it in the list
-  Weibull_N_hist_list2[[i]] <- hist(Weibull_N_combined_vector2, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                            xlab = "Values", col = mako(12)[12], border = "black", breaks = 10, freq = FALSE)
+  Weibull_N_hist_list2[[i]] <- hist(Weibull_N_combined_vector2, main = paste("Posterior Medians of Parameter", parameter.names[i]), 
+                            xlab = "Posterior Median", col = mako(12)[12], border = "black", breaks = 10, freq = FALSE)
   abline(v = Weibull_true_values[i], col = mako(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
@@ -548,6 +562,7 @@ for (i in 1:4) {
     lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
   }
 }
+dev.off()
 
 
 Weibull_N_proportions_list_a2 <- lapply(Weibull_N_param_list2[[1]], function(matrix) {
@@ -819,7 +834,7 @@ plot3_mean.inv_W_N <- ggplot(mean.xdf3_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = 1/true_curve), color = mako(10)[1], linetype = "dashed") +
-  # geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
+  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime") +
@@ -829,7 +844,7 @@ plot3_med.inv_W_N <- ggplot(mean.xdf3_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = 1/true_curve), color = mako(10)[1], linetype = "dashed") +
-  # geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
+  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime") +
@@ -837,21 +852,25 @@ plot3_med.inv_W_N <- ggplot(mean.xdf3_W_N, aes(x = point)) +
 
 gridExtra::grid.arrange(plot3_mean_W_N, plot3_med_W_N, nrow = 1)
 gridExtra::grid.arrange(plot3_mean.inv_W_N, plot3_med.inv_W_N, nrow = 1)
+ggsave("n.inv.mort.wb.png", plot = plot3_med_W_N, width = 5, height = 5)
+ggsave("n.inv.life.wb.png", plot = plot3_med.inv_W_N, width = 5, height = 5)
 
 # Create a list to store histograms of the posterior distribution of each parameter
 Weibull_N_hist_list3 <- vector("list", length = 5)
+parameter.names.sig <- c("a", "Topt", "c", "Deviance", "Sigma")
+png("n.hist.inv.wb.png", width = 10, height = 6, units = "in", res = 250)
 par(mfrow = c(2, 3))
 for (i in 1:5) {
   # Extract the first column from each matrix in param_list[[i]]
   # This column is the mean of each param for each chain
-  Weibull_N_first_column_list3 <- lapply(Weibull_N_param_list3[[i]], function(matrix) matrix[, 1])
+  Weibull_N_first_column_list3 <- lapply(Weibull_N_param_list3[[i]], function(matrix) matrix[, 2])
   # Combine the vectors into a single vector
   Weibull_N_combined_vector3 <- unlist(Weibull_N_first_column_list3)
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(Weibull_N_combined_vector3) - 1, max(Weibull_N_combined_vector3) + 1, length = 1000)
   # Create a histogram and store it in the list
-  Weibull_N_hist_list3[[i]] <- hist(Weibull_N_combined_vector3, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                            xlab = "Values", col = mako(12)[12], border = "black", breaks = 10, freq = FALSE)
+  Weibull_N_hist_list3[[i]] <- hist(Weibull_N_combined_vector3, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
+                            xlab = "Posterior Median", col = mako(12)[12], border = "black", breaks = 10, freq = FALSE)
   abline(v = Weibull_true_values[i], col = mako(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
@@ -867,6 +886,7 @@ for (i in 1:5) {
     lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
   }
 }
+dev.off()
 
 
 Weibull_N_proportions_list_a3 <- lapply(Weibull_N_param_list3[[1]], function(matrix) {
@@ -1151,7 +1171,7 @@ plot4_mean.inv_W_N <- ggplot(mean.xdf4_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = 1/true_curve), color = mako(10)[1], linetype = "dashed") +
-  #geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
+  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime") +
@@ -1160,7 +1180,7 @@ plot4_mean.inv_W_N <- ggplot(mean.xdf4_W_N, aes(x = point)) +
 plot4_med.inv_W_N <- ggplot(mean.xdf4_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
-  #geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
+  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   geom_line(aes(y = 1/true_curve), color = mako(10)[1], linetype = "dashed") +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
@@ -1169,21 +1189,25 @@ plot4_med.inv_W_N <- ggplot(mean.xdf4_W_N, aes(x = point)) +
 
 gridExtra::grid.arrange(plot4_mean_W_N, plot4_med_W_N, nrow = 1)
 gridExtra::grid.arrange(plot4_mean.inv_W_N, plot4_med.inv_W_N, nrow = 1)
+ggsave("n.mean.inv.mort.wb.png", plot = plot4_med_W_N, width = 5, height = 5)
+ggsave("n.mean.inv.life.wb.png", plot = plot4_med.inv_W_N, width = 5, height = 5)
 
 # Create a list to store histograms of the posterior distribution of each parameter
 Weibull_N_hist_list4 <- vector("list", length = 4)
+parameter.names.sig <- c("a", "Topt", "c", "Deviance", "Sigma")
+png("n.hist.mean.inv.wb.png", width = 10, height = 6, units = "in", res = 250)
 par(mfrow = c(2, 3))
 for (i in 1:5) {
   # Extract the first column from each matrix in param_list[[i]]
   # This column is the mean of each param for each chain
-  Weibull_N_first_column_list4 <- lapply(Weibull_N_param_list4[[i]], function(matrix) matrix[, 1])
+  Weibull_N_first_column_list4 <- lapply(Weibull_N_param_list4[[i]], function(matrix) matrix[, 2])
   # Combine the vectors into a single vector
   Weibull_N_combined_vector4 <- unlist(Weibull_N_first_column_list4)
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(Weibull_N_combined_vector4) - 1, max(Weibull_N_combined_vector4) + 1, length = 1000)
   # Create a histogram and store it in the list
-  Weibull_N_hist_list4[[i]] <- hist(Weibull_N_combined_vector4, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                            xlab = "Values", col = mako(12)[12], border = "black", breaks = 10, freq = FALSE)
+  Weibull_N_hist_list4[[i]] <- hist(Weibull_N_combined_vector4, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
+                            xlab = "Posterior Median", col = mako(12)[12], border = "black", breaks = 10, freq = FALSE)
   abline(v = Weibull_true_values[i], col = mako(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
@@ -1199,7 +1223,7 @@ for (i in 1:5) {
     lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
   }
 }
-
+dev.off()
 
 Weibull_N_proportions_list_a4 <- lapply(Weibull_N_param_list4[[1]], function(matrix) {
   # Extract columns for mean, lower hdi, and upper hdi of posterior samples for a
@@ -1482,7 +1506,7 @@ plot5_mean.inv_W_N <- ggplot(mean.xdf5_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = 1/true_curve), color = mako(10)[1], linetype = "dashed") +
-  #geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
+  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime") +
@@ -1492,7 +1516,7 @@ plot5_med.inv_W_N <- ggplot(mean.xdf5_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = 1/true_curve), color = mako(10)[1], linetype = "dashed") +
-  #geom_point(aes(x = T, y = 1/trait), data = data.raw.w.n) +
+  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime") +
@@ -1500,21 +1524,25 @@ plot5_med.inv_W_N <- ggplot(mean.xdf5_W_N, aes(x = point)) +
 
 gridExtra::grid.arrange(plot5_mean_W_N, plot5_med_W_N, nrow = 1)
 gridExtra::grid.arrange(plot5_mean.inv_W_N, plot5_med.inv_W_N, nrow = 1)
+ggsave("n.inv.mean.mort.wb.png", plot = plot5_med_W_N, width = 5, height = 5)
+ggsave("n.inv.mean.life.wb.png", plot = plot5_med.inv_W_N, width = 5, height = 5)
 
 # Create a list to store histograms of the posterior distribution of each parameter
 Weibull_N_hist_list5 <- vector("list", length = 5)
+parameter.names.sig <- c("a", "Topt", "c", "Deviance", "Sigma")
+png("n.hist.inv.mean.wb.png", width = 10, height = 6, units = "in", res = 250)
 par(mfrow = c(2, 3))
 for (i in 1:5) {
   # Extract the first column from each matrix in param_list[[i]]
   # This column is the mean of each param for each chain
-  Weibull_N_first_column_list5 <- lapply(Weibull_N_param_list5[[i]], function(matrix) matrix[, 1])
+  Weibull_N_first_column_list5 <- lapply(Weibull_N_param_list5[[i]], function(matrix) matrix[, 2])
   # Combine the vectors into a single vector
   Weibull_N_combined_vector5 <- unlist(Weibull_N_first_column_list5)
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(Weibull_N_combined_vector5) - 1, max(Weibull_N_combined_vector5) + 1, length = 1000)
   # Create a histogram and store it in the list
-  Weibull_N_hist_list5[[i]] <- hist(Weibull_N_combined_vector5, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                            xlab = "Values", col = mako(12)[12], border = "black", breaks = 10, freq = FALSE)
+  Weibull_N_hist_list5[[i]] <- hist(Weibull_N_combined_vector5, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
+                            xlab = "Posterior Median", col = mako(12)[12], border = "black", breaks = 10, freq = FALSE)
   abline(v = Weibull_true_values[i], col = mako(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
@@ -1530,6 +1558,7 @@ for (i in 1:5) {
     lines(x, dexp(x, 0.5), col = mako(12)[6], lty = 2, lwd = 2)
   }
 }
+dev.off()
 
 Weibull_N_proportions_list_a5 <- lapply(Weibull_N_param_list5[[1]], function(matrix) {
   # Extract columns for mean, lower hdi, and upper hdi of posterior samples for a
@@ -1801,6 +1830,7 @@ plot6_mean.inv_W_N <- ggplot(mean.xdf6_W_N, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = log(2)/true_curve), color = mako(10)[1], linetype = "dashed") +
+  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Mean Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime") +
@@ -1810,6 +1840,7 @@ plot6_med.inv_W_N <- ggplot(mean.xdf6_W_N, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = mako(10)[8], alpha = 0.3) +
   geom_line(aes(y = log(2)/true_curve), color = mako(10)[1], linetype = "dashed") +
+  geom_point(aes(x = T, y = trait), data = data.raw.w.n) +
   labs(title = "Median Curve with Interval Bands and True Curve", 
        x = "Temperature", 
        y = "Lifetime") +
@@ -1817,21 +1848,25 @@ plot6_med.inv_W_N <- ggplot(mean.xdf6_W_N, aes(x = point)) +
 
 gridExtra::grid.arrange(plot6_mean_W_N, plot6_med_W_N, nrow = 1)
 gridExtra::grid.arrange(plot6_mean.inv_W_N, plot6_med.inv_W_N, nrow = 1)
+ggsave("n.ind.wb.mort.wb.png", plot = plot6_med_W_N, width = 5, height = 5)
+ggsave("n.ind.wb.life.wb.png", plot = plot6_med.inv_W_N, width = 5, height = 5)
 
 # Create a list to store histograms of the posterior distribution of each parameter
 Weibull_N_hist_list6 <- vector("list", length = 5)
+parameter.names.sh <- c("a", "Topt", "c", "Deviance", "Shape")
+png("n.hist.wb.ind.wb.png", width = 10, height = 6, units = "in", res = 250)
 par(mfrow = c(2, 3))
 for (i in 1:5) {
   # Extract the first column from each matrix in param_list[[i]]
   # This column is the mean of each param for each chain
-  Weibull_N_first_column_list6 <- lapply(Weibull_N_param_list6[[i]], function(matrix) matrix[, 1])
+  Weibull_N_first_column_list6 <- lapply(Weibull_N_param_list6[[i]], function(matrix) matrix[, 2])
   # Combine the vectors into a single vector
   Weibull_N_combined_vector6 <- unlist(Weibull_N_first_column_list6)
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(Weibull_N_combined_vector6) - 1, max(Weibull_N_combined_vector6) + 1, length = 1000)
   # Create a histogram and store it in the list
-  Weibull_N_hist_list6[[i]] <- hist(Weibull_N_combined_vector6, main = paste("Combined Histogram Mean (Parameter", i, ")"), 
-                                    xlab = "Values", col = mako(12)[12], border = "black", breaks = 10, freq = FALSE)
+  Weibull_N_hist_list6[[i]] <- hist(Weibull_N_combined_vector6, main = paste("Posterior Medians of Parameter", parameter.names.sh[i]), 
+                                    xlab = "Posterior Median", col = mako(12)[12], border = "black", breaks = 10, freq = FALSE)
   abline(v = Weibull_true_values[i], col = mako(12)[1], lwd = 2)
   # Add prior based on which parameter
   if(i == 1){
@@ -1847,7 +1882,7 @@ for (i in 1:5) {
     lines(x, dexp(x, 0.001), col = mako(12)[6], lty = 2, lwd = 2)
   }
 }
-
+dev.off()
 
 Weibull_N_proportions_list_a6 <- lapply(Weibull_N_param_list6[[1]], function(matrix) {
   # Extract columns for mean, lower hdi, and upper hdi of posterior samples for a
