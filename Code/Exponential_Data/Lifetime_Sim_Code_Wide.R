@@ -35,8 +35,12 @@ b <- length(data.list)
 # Spot for sigma and deviance
 true_values <- c(log(true.a), true.Topt, true.c, NA, NA)
 
+xseq <- seq(from = 5, to = 37, length.out = 250)
+
 ##########################################Lambda #############################################
 
+# Vector for RMSEs for each sample of each model
+rmse.range.ind <- c()
 # Create list of matrices to store parameter summary statistics
 param_list1 <- vector("list", length = 4)
 for (i in 1:4) {
@@ -120,7 +124,25 @@ for(i in 1:b){
     param_list1[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
     param_list1[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
   }
+  df.rmse1 <- samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
+  # Create a grid for temperatures and iterations
+  rmse.df1 <- expand.grid(point = xseq, iteration = 1:nrow(df.rmse1))
+  # Apply the quadratic equation for each combination
+  rmse.df1$value <- apply(rmse.df1, 1, function(row) {
+    k <- row["iteration"]
+    location <- row["point"]
+    (exp(df.rmse1[k, 3]) * (location - df.rmse1[k, 4])^2 + df.rmse1[k, 1])
+  })
+  # Calculate RMSE between the evaluated curve and the true curve
+  true_curve <- f(xseq)   
+  rmse_values <- sapply(1:nrow(df.rmse1), function(k) {
+    evaluated_curve <- rmse.df1$value[rmse.df1$iteration == k]
+    sqrt(mean((evaluated_curve - true_curve)^2))
+  })
+  # Append the RMSE values for this model to the main vector
+  rmse.range.ind <- c(rmse.range.ind, rmse_values)
 }
+
 # Take samp, the mcmc list, chain 1 and save every fourth row
 # Saved every fourth row to avoid autocorrelation
 df.new1 = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
@@ -157,8 +179,7 @@ plot1_mean <- ggplot(mean.xdf1, aes(x = point)) +
 geom_line(aes(y = avg.value), color = "black") + 
 geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
 geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
-labs(title = "Mean Curve with Interval Bands and True Curve", 
-     x = "Temperature", 
+labs(x = "Temperature", 
      y = "Mortality Rate") + 
 theme_minimal()
 # Plot the median mortality rate response
@@ -166,8 +187,7 @@ plot1_med <- ggplot(mean.xdf1, aes(x = point)) +
 geom_line(aes(y = med.value), color = "black") + 
 geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
 geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
-labs(title = "Median Curve with Interval Bands and True Curve", 
-     x = "Temperature", 
+labs(x = "Temperature", 
      y = "Mortality Rate") + 
 theme_minimal()
 # Plot the mean lifetime response
@@ -176,8 +196,7 @@ geom_line(aes(y = avg.value.inv), color = "black") +
 geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
 geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
 geom_point(aes(x = T, y = trait), data = data.raw) + 
-labs(title = "Mean Curve with Interval Bands and True Curve", 
-     x = "Temperature", 
+labs(x = "Temperature", 
      y = "Lifetime") + 
 theme_minimal()
 # Plot the median lifetime response
@@ -186,8 +205,7 @@ geom_line(aes(y = med.value.inv), color = "black") +
 geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
 geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
 geom_point(aes(x = T, y = trait), data = data.raw) + 
-labs(title = "Median Curve with Interval Bands and True Curve", 
-     x = "Temperature", 
+labs(x = "Temperature", 
      y = "Lifetime") + 
 theme_minimal()
 
@@ -344,10 +362,13 @@ save(param_list1,
      rmse_values_b_lambda,
      rmse_values_c_lambda,
      tab.lambda,
+     rmse.range.ind,
      file="individual_exponential.RData")
 
 ##########################################Mean Lambda #############################################
 
+# Vector for RMSEs for each sample of each model
+rmse.range.mean <- c()
 # Create list of matrices to store parameter summary statistics
 param_list2 <- vector("list", length = 4)
 for (i in 1:4) {
@@ -441,7 +462,25 @@ for(i in 1:b){
     param_list2[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
     param_list2[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
   }
-  }
+  df.rmse2 <- samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
+  # Create a grid for temperatures and iterations
+  rmse.df2 <- expand.grid(point = xseq, iteration = 1:nrow(df.rmse2))
+  # Apply the quadratic equation for each combination
+  rmse.df2$value <- apply(rmse.df2, 1, function(row) {
+    k <- row["iteration"]
+    location <- row["point"]
+    (exp(df.rmse2[k, 3]) * (location - df.rmse2[k, 4])^2 + df.rmse2[k, 1])
+  })
+  # Calculate RMSE between the evaluated curve and the true curve
+  true_curve <- f(xseq)   
+  rmse_values <- sapply(1:nrow(df.rmse2), function(k) {
+    evaluated_curve <- rmse.df2$value[rmse.df2$iteration == k]
+    sqrt(mean((evaluated_curve - true_curve)^2))
+  })
+  # Append the RMSE values for this model to the main vector
+  rmse.range.mean <- c(rmse.range.mean, rmse_values)
+}
+
 # Take samp, the mcmc list, chain 1 and save every fourth row
 # Saved every fourth row to avoid autocorrelation
 df.new2 = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
@@ -478,16 +517,14 @@ plot2_mean <- ggplot(mean.xdf2, aes(x = point)) +
 geom_line(aes(y = avg.value), color = "black") + 
 geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
 geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
-labs(title = "Mean Curve with Interval Bands and True Curve", 
-     x = "Temperature", 
+labs(x = "Temperature", 
      y = "Mortality Rate") + 
 theme_minimal()
 plot2_med <- ggplot(mean.xdf2, aes(x = point)) + 
 geom_line(aes(y = med.value), color = "black") + 
 geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
 geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
-labs(title = "Median Curve with Interval Bands and True Curve", 
-     x = "Temperature", 
+labs(x = "Temperature", 
      y = "Mortality Rate") + 
 theme_minimal()
 # Plot mean lifetime response
@@ -496,8 +533,7 @@ geom_line(aes(y = avg.value.inv), color = "black") +
 geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
 geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
 geom_point(aes(x = T, y = trait), data = data.raw) + 
-labs(title = "Mean Curve with Interval Bands and True Curve", 
-     x = "Temperature", 
+labs(x = "Temperature", 
      y = "Lifetime") + 
 theme_minimal()
 # Plot median lifetime response
@@ -506,8 +542,7 @@ geom_line(aes(y = med.value.inv), color = "black") +
 geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
 geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
 geom_point(aes(x = T, y = trait), data = data.raw) + 
-labs(title = "Median Curve with Interval Bands and True Curve", 
-     x = "Temperature", 
+labs(x = "Temperature", 
      y = "Lifetime") + 
 theme_minimal()
 
@@ -661,10 +696,13 @@ save(param_list2,
      rmse_values_b_lambda_mean,
      rmse_values_c_lambda_mean,
      tab.lambda.mean,
+     rmse.range.mean,
      file="mean_exponential.RData")
 
 ##########################################Inverse Lambda #############################################
 
+# Vector for RMSEs for each sample of each model
+rmse.range.inv <- c()
 # Create list of matrices to store parameter summary statistics
 param_list3 <- vector("list", length = 5)
 for (i in 1:5) {
@@ -689,7 +727,7 @@ for(i in 1:b){
   # Priors
   la ~ dnorm(0, 1/10) 
   Topt ~ dnorm(22, 1/10) 
-  c ~ dexp(0.5) # Has to be positive
+  c ~ dgamma(10,1) # Has to be positive
   sig ~ dexp(0.5)
   sig2 <- sig^2
   tau <- 1/sig2
@@ -714,7 +752,7 @@ for(i in 1:b){
   nt <- 8 
   nc <- 5 
   data <- data.list[[i]] 
-  trait <- 1/(data$trait)
+  trait <- ifelse(1/(data$trait) > 1, 1, 1/(data$trait))
   N.obs <- length(trait)
   temp <- data$T
   
@@ -753,13 +791,29 @@ for(i in 1:b){
     param_list3[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
     param_list3[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
     param_list3[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
-    # For each chain, store mean, median, and hdi bounds for sig
+    # For each chain, store mean, median, and hdi bounds for sig2
     param_list3[[5]][[i]][j, 1] <- mean(samp[[j]][, 4])
     param_list3[[5]][[i]][j, 2] <- median(samp[[j]][, 4])
     param_list3[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
     param_list3[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
-  
+  df.rmse3 <- samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
+  # Create a grid for temperatures and iterations
+  rmse.df3 <- expand.grid(point = xseq, iteration = 1:nrow(df.rmse3))
+  # Apply the quadratic equation for each combination
+  rmse.df3$value <- apply(rmse.df3, 1, function(row) {
+    k <- row["iteration"]
+    location <- row["point"]
+    (exp(df.rmse3[k, 3]) * (location - df.rmse3[k, 5])^2 + df.rmse3[k, 1])
+  })
+  # Calculate RMSE between the evaluated curve and the true curve
+  true_curve <- f(xseq)   
+  rmse_values <- sapply(1:nrow(df.rmse3), function(k) {
+    evaluated_curve <- rmse.df3$value[rmse.df3$iteration == k]
+    sqrt(mean((evaluated_curve - true_curve)^2))
+  })
+  # Append the RMSE values for this model to the main vector
+  rmse.range.inv <- c(rmse.range.inv, rmse_values)
   
 }
 # Take samp, the mcmc list, chain 1 and save every fourth row
@@ -799,8 +853,7 @@ plot3_mean <- ggplot(mean.xdf3, aes(x = point)) +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
+  labs(x = "Temperature", 
        y = "Mortality Rate") + 
   theme_minimal()
 # Plot median mortality rate response
@@ -809,28 +862,25 @@ plot3_med <- ggplot(mean.xdf3, aes(x = point)) +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
-  labs(title = "Median Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
+  labs(x = "Temperature", 
        y = "Mortality Rate") + 
   theme_minimal()
 # Plot mean lifetime response
 plot3_mean.inv <- ggplot(mean.xdf3, aes(x = point)) + 
-  geom_line(aes(y = avg.value), color = "black") + 
+  geom_line(aes(y = avg.value.inv), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
-  geom_point(aes(x = T, y = trait), data = data.raw) + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
+  geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
+  geom_point(aes(x = T, y = trait), data = data.list[[100]]) + 
+  labs(x = "Temperature", 
        y = "Lifetime") + 
   theme_minimal()
 # Plot median lifetime response
 plot3_med.inv <- ggplot(mean.xdf3, aes(x = point)) + 
   geom_line(aes(y = med.value.inv), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
-  geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
-  geom_point(aes(x = T, y = trait), data = data.raw) + 
-  labs(title = "Median Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
+  geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
+  geom_point(aes(x = T, y = trait), data = data.list[[100]]) + 
+  labs(x = "Temperature", 
        y = "Lifetime") + 
   theme_minimal()
 
@@ -866,7 +916,7 @@ for (i in 1:5) {
     lines(x, dnorm(x, 22, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 3){
-    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
+    lines(x, dgamma(x, 10, 1), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 5){
     lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
@@ -987,10 +1037,13 @@ save(param_list3,
      rmse_values_b_lambda_inv,
      rmse_values_c_lambda_inv,
      tab.inv.lambda,
+     rmse.range.inv,
      file="inverse_exponential.RData")
 
 ##########################################Mean Inverse Lambda #############################################
 
+# Vector for RMSEs for each sample of each model
+rmse.range.mean.inv <- c()
 # Create list of matrices to store parameter summary statistics
 param_list4 <- vector("list", length = 5)
 for (i in 1:5) {
@@ -1097,7 +1150,23 @@ for(i in 1:b){
     param_list4[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
     param_list4[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
-  
+  df.rmse4 <- samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
+  # Create a grid for temperatures and iterations
+  rmse.df4 <- expand.grid(point = xseq, iteration = 1:nrow(df.rmse4))
+  # Apply the quadratic equation for each combination
+  rmse.df4$value <- apply(rmse.df4, 1, function(row) {
+    k <- row["iteration"]
+    location <- row["point"]
+    (exp(df.rmse4[k, 3]) * (location - df.rmse4[k, 5])^2 + df.rmse4[k, 1])
+  })
+  # Calculate RMSE between the evaluated curve and the true curve
+  true_curve <- f(xseq)   
+  rmse_values <- sapply(1:nrow(df.rmse4), function(k) {
+    evaluated_curve <- rmse.df4$value[rmse.df4$iteration == k]
+    sqrt(mean((evaluated_curve - true_curve)^2))
+  })
+  # Append the RMSE values for this model to the main vector
+  rmse.range.mean.inv <- c(rmse.range.mean.inv, rmse_values)
   
 }
 # Take samp, the mcmc list, chain 1 and save every fourth row
@@ -1137,8 +1206,7 @@ plot4_mean <- ggplot(mean.xdf4, aes(x = point)) +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
+  labs(x = "Temperature", 
        y = "Mortality Rate") + 
   theme_minimal()
 # Plot median mortality rate response
@@ -1147,8 +1215,7 @@ plot4_med <- ggplot(mean.xdf4, aes(x = point)) +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
-  labs(title = "Median Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
+  labs(x = "Temperature", 
        y = "Mortality Rate") + 
   theme_minimal()
 # Plot mean lifetime response
@@ -1157,8 +1224,7 @@ plot4_mean.inv <- ggplot(mean.xdf4, aes(x = point)) +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
+  labs(x = "Temperature", 
        y = "Lifetime") + 
   theme_minimal()
 # Plot median lifetime response
@@ -1167,8 +1233,7 @@ plot4_med.inv <- ggplot(mean.xdf4, aes(x = point)) +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
-  labs(title = "Median Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
+  labs(x = "Temperature", 
        y = "Lifetime") + 
   theme_minimal()
 
@@ -1323,11 +1388,14 @@ save(param_list4,
      rmse_values_b_lambda_mean_inv,
      rmse_values_c_lambda_mean_inv,
      tab.mean.inv.lambda,
+     rmse.range.mean.inv,
      file="mean_inverse_exponential.RData")
 
 
 ##########################################Inverse Mean Lambda #############################################
 
+# Vector for RMSEs for each sample of each model
+rmse.range.inv.mean <- c()
 # Create list of matrices to store parameter summary statistics
 param_list5 <- vector("list", length = 5)
 for (i in 1:5) {
@@ -1359,8 +1427,7 @@ for(i in 1:b){
     trait = unlist(group_means)  # Extract means and unlist the result
   )
   data <- df.mean
-  trait <- data$trait
-  1/trait
+  trait <- ifelse(data$trait > 1, 1, data$trait)
   N.obs <- length(trait)
   temp <- data$T
   # Model
@@ -1369,7 +1436,7 @@ for(i in 1:b){
   # Priors
    la ~ dnorm(0, 1/10) 
   Topt ~ dnorm(22, 1/10)
-  c ~ dexp(0.5) # Has to be positive
+  c ~ dgamma(2, 10) # Has to be positive
   sig ~ dexp(0.5)
   sig2 <- sig^2
   tau <- 1/sig2
@@ -1435,9 +1502,25 @@ for(i in 1:b){
     param_list5[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
     param_list5[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
-  
-  
+  df.rmse5 <- samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
+  # Create a grid for temperatures and iterations
+  rmse.df5 <- expand.grid(point = xseq, iteration = 1:nrow(df.rmse5))
+  # Apply the quadratic equation for each combination
+  rmse.df5$value <- apply(rmse.df5, 1, function(row) {
+    k <- row["iteration"]
+    location <- row["point"]
+    (exp(df.rmse5[k, 3]) * (location - df.rmse5[k, 5])^2 + df.rmse5[k, 1])
+  })
+  # Calculate RMSE between the evaluated curve and the true curve
+  true_curve <- f(xseq)   
+  rmse_values <- sapply(1:nrow(df.rmse5), function(k) {
+    evaluated_curve <- rmse.df5$value[rmse.df5$iteration == k]
+    sqrt(mean((evaluated_curve - true_curve)^2))
+  })
+  # Append the RMSE values for this model to the main vector
+  rmse.range.inv.mean <- c(rmse.range.inv.mean, rmse_values)
 }
+
 # Take samp, the mcmc list, chain 1 and save every fourth row
 # Saved every fourth row to avoid autocorrelation
 df.new5 = samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
@@ -1468,15 +1551,14 @@ mean.xdf5 <- xdf5 |> group_by(point) |> summarize(avg.value.inv = mean(trunc.inv
                                                 lower.hdi = hdi(value)[1], 
                                                 upper.hdi = hdi(value)[2])
 # Creating columns of the true curve values and the true inverted curve values
-mean.xdf5$true_curve <- true_curve(xseq)
+mean.xdf5$true_curve <- f(xseq)
 # Plot mean mortality rate response
 plot5_mean <- ggplot(mean.xdf5, aes(x = point)) + 
   geom_line(aes(y = avg.value), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
+  labs(x = "Temperature", 
        y = "Mortality Rate") + 
   theme_minimal()
 # Plot median mortality rate response
@@ -1485,8 +1567,7 @@ plot5_med <- ggplot(mean.xdf5, aes(x = point)) +
   geom_ribbon(aes(ymin = lower.hdi, ymax = upper.hdi), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = true_curve), color = rocket(10)[1], linetype = "dashed") + 
   # geom_point(aes(x = T, y = 1/trait), data = data.raw) + 
-  labs(title = "Median Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
+  labs(x = "Temperature", 
        y = "Mortality Rate") + 
   theme_minimal()
 # Plot mean lifetime response
@@ -1495,8 +1576,7 @@ plot5_mean.inv <- ggplot(mean.xdf5, aes(x = point)) +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
-  labs(title = "Mean Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
+  labs(x = "Temperature", 
        y = "Lifetime") + 
   theme_minimal()
 # Plot median lifetime response
@@ -1505,8 +1585,7 @@ plot5_med.inv <- ggplot(mean.xdf5, aes(x = point)) +
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
   geom_point(aes(x = T, y = trait), data = data.raw) + 
-  labs(title = "Median Curve with Interval Bands and True Curve", 
-       x = "Temperature", 
+  labs(x = "Temperature", 
        y = "Lifetime") + 
   theme_minimal()
 
@@ -1540,7 +1619,7 @@ for (i in 1:5) {
     lines(x, dnorm(x, 22, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 3){
-    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
+    lines(x, dgamma(x, 2, 10), col = rocket(12)[5], lty = 2, lwd = 2)
   }
   if(i == 5){
     lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
@@ -1661,6 +1740,7 @@ save(param_list5,
      rmse_values_b_lambda_inv_mean,
      rmse_values_c_lambda_inv_mean,
      tab.inv.mean.lambda,
+     rmse.range.inv.mean,
      file="inverse_mean_exponential.RData")
 
 
