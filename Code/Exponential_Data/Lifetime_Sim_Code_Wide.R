@@ -195,7 +195,7 @@ plot1_mean.inv <- ggplot(mean.xdf1, aes(x = point)) +
 geom_line(aes(y = avg.value.inv), color = "black") + 
 geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
 geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
-geom_point(aes(x = T, y = trait), data = data.raw) + 
+geom_point(aes(x = T, y = trait), data = data.list[[100]]) + 
 labs(x = "Temperature", 
      y = "Lifetime") + 
 theme_minimal()
@@ -204,7 +204,7 @@ plot1_med.inv <- ggplot(mean.xdf1, aes(x = point)) +
 geom_line(aes(y = med.value.inv), color = "black") + 
 geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
 geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
-geom_point(aes(x = T, y = trait), data = data.raw) + 
+geom_point(aes(x = T, y = trait), data = data.list[[100]]) + 
 labs(x = "Temperature", 
      y = "Lifetime") + 
 theme_minimal()
@@ -233,16 +233,6 @@ for (i in 1:4) {
   hist_list1[[i]] <- hist(combined_vector1, main = paste("Posterior Medians of Parameter", parameter.names[i]), 
                           xlab = "Posterior Median", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
   
 }
 dev.off()
@@ -371,7 +361,7 @@ save(param_list1,
 rmse.range.mean <- c()
 # Create list of matrices to store parameter summary statistics
 param_list2 <- vector("list", length = 4)
-for (i in 1:4) {
+for (i in 1:5) {
 # Initialize the inner list
 inner_list2 <- vector("list", length = b)
 # Populate the inner list
@@ -402,27 +392,32 @@ for(i in 1:b){
   sink("mean_lambda.txt")
   cat("model{
   # Priors
-  la ~ dnorm(0, 1/10) 
+   la ~ dnorm(0, 1/10) 
   Topt ~ dnorm(22, 1/10)
-  c ~ dexp(0.5) # Has to be positive
+  c ~ dexp(10) # Has to be positive
+  sig ~ dexp(0.5)
+  sig2 <- sig^2
+  tau <- 1/sig2
   # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- exp(la) * (temp[i] - Topt)^2 + c
-    trait[i] ~ dexp(mu[i])
+    mu[i] <-  exp(la) * (temp[i] - Topt)^2 + c
+    trait[i] ~ dnorm(mu[i], tau) T(0,)
   }
-      }", file = "mean_lambda.txt")
+}", file = "mean_lambda.txt")
   # Settings
-  parameters <- c("la", "Topt", "c")
+  parameters <- c("la", "Topt", "c", "sig")
   inits <- function(){list(
     # a and b in log space
     la = log(0.1), 
     Topt = 20, 
-    c = 0.6
-    )}
+    c = 0.6, 
+    sig = 2
+  )}
   ni <- 60000 
   nb <- 30000 
   nt <- 8 
   nc <- 5 
+  
   data <- df.mean 
   trait <- data$trait
   N.obs <- length(trait)
@@ -447,10 +442,10 @@ for(i in 1:b){
     param_list2[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
     param_list2[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
     # For each chain, store mean, median, and hdi bounds for Topt 
-    param_list2[[2]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    param_list2[[2]][[i]][j, 2] <- median(samp[[j]][, 4])
-    param_list2[[2]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    param_list2[[2]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
+    param_list2[[2]][[i]][j, 1] <- mean(samp[[j]][, 5])
+    param_list2[[2]][[i]][j, 2] <- median(samp[[j]][, 5])
+    param_list2[[2]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
+    param_list2[[2]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
     # For each chain, store mean, median, and hdi bounds for c
     param_list2[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
     param_list2[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
@@ -461,6 +456,11 @@ for(i in 1:b){
     param_list2[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
     param_list2[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
     param_list2[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    # For each chain, store mean, median, and hdi bounds for sigma
+    param_list2[[5]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    param_list2[[5]][[i]][j, 2] <- median(samp[[j]][, 4])
+    param_list2[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    param_list2[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
   df.rmse2 <- samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
   # Create a grid for temperatures and iterations
@@ -469,7 +469,7 @@ for(i in 1:b){
   rmse.df2$value <- apply(rmse.df2, 1, function(row) {
     k <- row["iteration"]
     location <- row["point"]
-    (exp(df.rmse2[k, 3]) * (location - df.rmse2[k, 4])^2 + df.rmse2[k, 1])
+    (exp(df.rmse2[k, 3]) * (location - df.rmse2[k, 5])^2 + df.rmse2[k, 1])
   })
   # Calculate RMSE between the evaluated curve and the true curve
   true_curve <- f(xseq)   
@@ -495,7 +495,7 @@ xdf2 <- expand.grid(point = xseq, iteration = 1:nrow(df.new2))
 xdf2$value <- apply(xdf2, 1, function(row) {
 i <- row["iteration"]
 location <- row["point"]
-(exp(df.new2[i, 3]) * (location - df.new2[i, 4])^2  + df.new2[i, 1])
+(exp(df.new2[i, 3]) * (location - df.new2[i, 5])^2  + df.new2[i, 1])
 })
 # Apply truncation so that if the evaluated function gives a value smaller than epsilon,
 # it gets truncated to epsilon
@@ -532,7 +532,7 @@ plot2_mean.inv <- ggplot(mean.xdf2, aes(x = point)) +
 geom_line(aes(y = avg.value.inv), color = "black") + 
 geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
 geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
-geom_point(aes(x = T, y = trait), data = data.raw) + 
+geom_point(aes(x = T, y = trait), data = data.list[[100]]) + 
 labs(x = "Temperature", 
      y = "Lifetime") + 
 theme_minimal()
@@ -541,7 +541,7 @@ plot2_med.inv <- ggplot(mean.xdf2, aes(x = point)) +
 geom_line(aes(y = med.value.inv), color = "black") + 
 geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
 geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
-geom_point(aes(x = T, y = trait), data = data.raw) + 
+geom_point(aes(x = T, y = trait), data = data.list[[100]]) + 
 labs(x = "Temperature", 
      y = "Lifetime") + 
 theme_minimal()
@@ -555,10 +555,10 @@ ggsave("mean.life.exp.png", plot = plot2_med.inv, width = 5, height = 5)
 # Create a list to store histograms of the posterior distribution of each parameter
 true_values <- c(log(true.a), true.Topt, true.c, NA)
 hist_list2 <- vector("list", length = 4)
-parameter.names <- c("a", "Topt", "c", "Deviance")
+parameter.names.sig <- c("a", "Topt", "c", "Sigma", "Deviance")
 png("hist.mean.exp.png", width = 8, height = 6, units = "in", res = 250)
-par(mfrow = c(2, 2))
-for (i in 1:4) {
+par(mfrow = c(2, 3))
+for (i in 1:5) {
   # Extract the first column from each matrix in param_list[[i]] 
   # This column is the mean of each param for each chain
   first_column_list2 <- lapply(param_list2[[i]], function(matrix) matrix[, 2])
@@ -567,19 +567,9 @@ for (i in 1:4) {
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(combined_vector2)-50, max(combined_vector2) + 1, length = 1000)
   # Create a histogram and store it in the list
-  hist_list2[[i]] <- hist(combined_vector2, main = paste("Posterior Medians of Parameter", parameter.names[i]), 
+  hist_list2[[i]] <- hist(combined_vector2, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
                         xlab = "Posterior Median", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
-    }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
-    }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
-    }
 
   }
 dev.off()
@@ -908,19 +898,6 @@ for (i in 1:5) {
   hist_list3[[i]] <- hist(combined_vector3, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
                           xlab = "Posterior Median", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dgamma(x, 10, 1), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
 }
 dev.off()
 
@@ -1223,7 +1200,7 @@ plot4_mean.inv <- ggplot(mean.xdf4, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
-  geom_point(aes(x = T, y = trait), data = data.raw) + 
+  geom_point(aes(x = T, y = trait), data = data.list[[100]]) + 
   labs(x = "Temperature", 
        y = "Lifetime") + 
   theme_minimal()
@@ -1232,7 +1209,7 @@ plot4_med.inv <- ggplot(mean.xdf4, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
-  geom_point(aes(x = T, y = trait), data = data.raw) + 
+  geom_point(aes(x = T, y = trait), data = data.list[[100]]) + 
   labs(x = "Temperature", 
        y = "Lifetime") + 
   theme_minimal()
@@ -1259,19 +1236,6 @@ for (i in 1:5) {
   hist_list4[[i]] <- hist(combined_vector4, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
                           xlab = "Posterior Median", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
 }
 dev.off()
 
@@ -1575,7 +1539,7 @@ plot5_mean.inv <- ggplot(mean.xdf5, aes(x = point)) +
   geom_line(aes(y = avg.value.inv), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
-  geom_point(aes(x = T, y = trait), data = data.raw) + 
+  geom_point(aes(x = T, y = trait), data = data.list[[100]]) + 
   labs(x = "Temperature", 
        y = "Lifetime") + 
   theme_minimal()
@@ -1584,7 +1548,7 @@ plot5_med.inv <- ggplot(mean.xdf5, aes(x = point)) +
   geom_line(aes(y = med.value.inv), color = "black") + 
   geom_ribbon(aes(ymin = lower.hdi.inv, ymax = upper.hdi.inv), fill = rocket(10)[5], alpha = 0.3) + 
   geom_line(aes(y = 1/true_curve), color = rocket(10)[1], linetype = "dashed") + 
-  geom_point(aes(x = T, y = trait), data = data.raw) + 
+  geom_point(aes(x = T, y = trait), data = data.list[[100]]) + 
   labs(x = "Temperature", 
        y = "Lifetime") + 
   theme_minimal()
@@ -1611,19 +1575,6 @@ for (i in 1:5) {
   hist_list5[[i]] <- hist(combined_vector5, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
                           xlab = "Posterior Median", col = rocket(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = rocket(12)[1], lwd = 2)
-  # Add prior based on which parameter 
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dgamma(x, 2, 10), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.5), col = rocket(12)[5], lty = 2, lwd = 2)
-  }
 }
 dev.off()
 
@@ -1742,5 +1693,7 @@ save(param_list5,
      tab.inv.mean.lambda,
      rmse.range.inv.mean,
      file="inverse_mean_exponential.RData")
+
+
 
 

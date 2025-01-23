@@ -237,16 +237,6 @@ for (i in 1:4) {
   N_hist_list1[[i]] <- hist(N_combined_vector1, main = paste("Posterior Medians of Parameter", parameter.names[i]), 
                           xlab = "Posterior Median", col = cividis(12)[8], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = cividis(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
 
 }
 dev.off()
@@ -375,7 +365,7 @@ save(N_param_list1,
 rmse.range.mean.n <- c()
 # Create list of matrices to store parameter summary statistics
 N_param_list2 <- vector("list", length = 4)
-for (i in 1:4) {
+for (i in 1:5) {
   # Initialize the inner list
   N_inner_list2 <- vector("list", length = b)
   # Populate the inner list
@@ -406,23 +396,26 @@ for(i in 1:b){
   sink("n_mean_lambda.txt")
   cat("model{
   # Priors
-  la ~ dnorm(0, 1/10) 
-  Topt ~ dnorm(22, 1/10) 
-  c ~ dexp(0.5) # Has to be positive
+   la ~ dnorm(0, 1/10) 
+  Topt ~ dnorm(22, 1/10)
+  c ~ dexp(10) # Has to be positive
+  sig ~ dexp(0.5)
+  sig2 <- sig^2
+  tau <- 1/sig2
   # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- exp(la) * (temp[i] - Topt)^2 + c
-    trait[i] ~ dexp(mu[i])
+    mu[i] <-  exp(la) * (temp[i] - Topt)^2 + c
+    trait[i] ~ dnorm(mu[i], tau) T(0,)
   }
-  }", file = "n_mean_lambda.txt")
-  
+}", file = "n_mean_lambda.txt")
   # Settings
-  parameters <- c("la", "Topt", "c")
+  parameters <- c("la", "Topt", "c", "sig")
   inits <- function(){list(
     # a and b in log space
     la = log(0.1), 
     Topt = 20, 
-    c = 0.6
+    c = 0.6, 
+    sig = 2
   )}
   ni <- 60000 
   nb <- 30000 
@@ -454,10 +447,10 @@ for(i in 1:b){
     N_param_list2[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
     N_param_list2[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
     # For each chain, store mean, median, and hdi bounds for Topt
-    N_param_list2[[2]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    N_param_list2[[2]][[i]][j, 2] <- median(samp[[j]][, 4])
-    N_param_list2[[2]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    N_param_list2[[2]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
+    N_param_list2[[2]][[i]][j, 1] <- mean(samp[[j]][, 5])
+    N_param_list2[[2]][[i]][j, 2] <- median(samp[[j]][, 5])
+    N_param_list2[[2]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
+    N_param_list2[[2]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
     # For each chain, store mean, median, and hdi bounds for c
     N_param_list2[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
     N_param_list2[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
@@ -468,6 +461,11 @@ for(i in 1:b){
     N_param_list2[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
     N_param_list2[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
     N_param_list2[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    # For each chain, store mean, median, and hdi bounds for sig
+    N_param_list2[[5]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    N_param_list2[[5]][[i]][j, 2] <- median(samp[[j]][, 4])
+    N_param_list2[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    N_param_list2[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
   df.rmse2.n <- samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
   # Create a grid for temperatures and iterations
@@ -476,7 +474,7 @@ for(i in 1:b){
   rmse.df2.n$value <- apply(rmse.df2.n, 1, function(row) {
     k <- row["iteration"]
     location <- row["point"]
-    (exp(df.rmse2.n[k, 3]) * (location - df.rmse2.n[k, 4])^2 + df.rmse2.n[k, 1])
+    (exp(df.rmse2.n[k, 3]) * (location - df.rmse2.n[k, 5])^2 + df.rmse2.n[k, 1])
   })
   # Calculate RMSE between the evaluated curve and the true curve
   true_curve <- f(xseq)   
@@ -501,7 +499,7 @@ xdf2_N <- expand.grid(point = xseq, iteration = 1:nrow(df.new2_N))
 xdf2_N$value <- apply(xdf2_N, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  (exp(df.new2_N[i, 3]) * (location - df.new2_N[i, 4])^2  + df.new2_N[i, 1])
+  (exp(df.new2_N[i, 3]) * (location - df.new2_N[i, 5])^2  + df.new2_N[i, 1])
 })
 # Apply truncation so that if the evaluated function gives a value smaller than epsilon,
 # it gets truncated to epsilon
@@ -560,10 +558,10 @@ ggsave("n.mean.life.exp.png", plot = N_plot2_med.inv, width = 5, height = 5)
 
 # Create a list to store histograms of the posterior distribution of each parameter
 N_hist_list2 <- vector("list", length = 4)
-parameter.names <- c("a", "Topt", "c", "Deviance")
+parameter.names.sig <- c("a", "Topt", "c", "Deviance", "Sigma")
 png("n.hist.mean.exp.png", width = 8, height = 6, units = "in", res = 250)
-par(mfrow = c(2, 2))
-for (i in 1:4) {
+par(mfrow = c(2, 3))
+for (i in 1:5) {
   # Extract the first column from each matrix in param_list[[i]]
   # This column is the mean of each param for each chain
   N_first_column_list2 <- lapply(N_param_list2[[i]], function(matrix) matrix[, 2])
@@ -572,19 +570,9 @@ for (i in 1:4) {
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(N_combined_vector2) - 1, max(N_combined_vector2) + 1, length = 1000)
   # Create a histogram and store it in the list
-  N_hist_list2[[i]] <- hist(N_combined_vector2, main = paste("Posterior Medians of Parameter", parameter.names[i]), 
+  N_hist_list2[[i]] <- hist(N_combined_vector2, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
                           xlab = "Posterior Median", col = cividis(12)[8], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = cividis(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
 
 }
 dev.off()
@@ -911,19 +899,6 @@ for (i in 1:5) {
   N_hist_list3[[i]] <- hist(N_combined_vector3, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
                           xlab = "Posterior Median", col = cividis(12)[8], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = cividis(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.5), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
 }
 dev.off()
 
@@ -1263,19 +1238,6 @@ for (i in 1:5) {
   N_hist_list4[[i]] <- hist(N_combined_vector4, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
                           xlab = "Posterior Median", col = cividis(12)[8], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = cividis(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col =cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.5), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
 }
 dev.off()
 
@@ -1617,19 +1579,6 @@ for (i in 1:5) {
   N_hist_list5[[i]] <- hist(N_combined_vector5, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
                           xlab = "Posterior Median", col = cividis(12)[8], border = "black", breaks = 10, freq = FALSE)
   abline(v = true_values[i], col = cividis(12)[1], lwd = 2)
-  # Add prior based on which parameter 
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.5), col = cividis(12)[12], lty = 2, lwd = 2)
-  }
 }
 dev.off()
 
@@ -1747,6 +1696,7 @@ save(N_param_list5,
      N_tab.inv.mean.lambda,
      rmse.range.inv.mean.n,
      file="inverse_mean_exp_narrow.RData")
+
 
 
 
