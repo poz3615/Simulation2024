@@ -243,16 +243,6 @@ for (i in 1:4) {
   Weibull_hist_list1[[i]] <- hist(Weibull_combined_vector1, main = paste("Posterior Medians of Parameter", parameter.names[i]), 
                           xlab = "Posterior Median", col = plasma(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = Weibull_true_values[i], col = plasma(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
 
 }
 dev.off()
@@ -380,7 +370,7 @@ save(Weibull_param_list1,
 rmse.range.mean.wb <- c()
 # Create list of matrices to store parameter summary statistics
 Weibull_param_list2 <- vector("list", length = 4)
-for (i in 1:4) {
+for (i in 1:5) {
   # Initialize the inner list
   Weibull_inner_list2 <- vector("list", length = w)
   # Populate the inner list
@@ -410,28 +400,32 @@ for(i in 1:w){
   sink("Weibull_mean_lambda.txt")
   cat("model{
   # Priors
-  la ~ dnorm(0, 1/10) 
-  Topt ~ dnorm(22, 1/10) 
-  c ~ dexp(0.5) # Has to be positive
+   la ~ dnorm(0, 1/10) 
+  Topt ~ dnorm(22, 1/10)
+  c ~ dexp(10) # Has to be positive
+  sig ~ dexp(0.5)
+  sig2 <- sig^2
+  tau <- 1/sig2
   # Likelihood
   for (i in 1:N.obs){
-    mu[i] <- exp(la) * (temp[i] - Topt)^2 + c
-    trait[i] ~ dexp(mu[i])
+    mu[i] <-  exp(la) * (temp[i] - Topt)^2 + c
+    trait[i] ~ dnorm(mu[i], tau) T(0,)
   }
-  }", file = "Weibull_mean_lambda.txt")
-  
+}", file = "Weibull_mean_lambda.txt")
   # Settings
-  parameters <- c("la", "Topt", "c")
+  parameters <- c("la", "Topt", "c", "sig")
   inits <- function(){list(
-    # a in log space
+    # a and b in log space
     la = log(0.1), 
     Topt = 20, 
-    c = 0.6
+    c = 0.6, 
+    sig = 2
   )}
   ni <- 60000 
   nb <- 30000 
   nt <- 8 
   nc <- 5 
+  
   data.raw.w <- Weibull_data.list[[i]]
   data <- df.mean 
   trait <- data$trait
@@ -459,10 +453,10 @@ for(i in 1:w){
     Weibull_param_list2[[1]][[i]][j, 3] <- hdi(samp[[j]][, 3])[1]
     Weibull_param_list2[[1]][[i]][j, 4] <- hdi(samp[[j]][, 3])[2]
     # For each chain, store mean, median, and hdi bounds for Topt
-    Weibull_param_list2[[2]][[i]][j, 1] <- mean(samp[[j]][, 4])
-    Weibull_param_list2[[2]][[i]][j, 2] <- median(samp[[j]][, 4])
-    Weibull_param_list2[[2]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
-    Weibull_param_list2[[2]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
+    Weibull_param_list2[[2]][[i]][j, 1] <- mean(samp[[j]][, 5])
+    Weibull_param_list2[[2]][[i]][j, 2] <- median(samp[[j]][, 5])
+    Weibull_param_list2[[2]][[i]][j, 3] <- hdi(samp[[j]][, 5])[1]
+    Weibull_param_list2[[2]][[i]][j, 4] <- hdi(samp[[j]][, 5])[2]
     # For each chain, store mean, median, and hdi bounds for c
     Weibull_param_list2[[3]][[i]][j, 1] <- mean(samp[[j]][, 1])
     Weibull_param_list2[[3]][[i]][j, 2] <- median(samp[[j]][, 1])
@@ -473,6 +467,11 @@ for(i in 1:w){
     Weibull_param_list2[[4]][[i]][j, 2] <- median(samp[[j]][, 2])
     Weibull_param_list2[[4]][[i]][j, 3] <- hdi(samp[[j]][, 2])[1]
     Weibull_param_list2[[4]][[i]][j, 4] <- hdi(samp[[j]][, 2])[2]
+    # For each chain, store mean, median, and hdi bounds for sig
+    Weibull_param_list2[[5]][[i]][j, 1] <- mean(samp[[j]][, 4])
+    Weibull_param_list2[[5]][[i]][j, 2] <- median(samp[[j]][, 4])
+    Weibull_param_list2[[5]][[i]][j, 3] <- hdi(samp[[j]][, 4])[1]
+    Weibull_param_list2[[5]][[i]][j, 4] <- hdi(samp[[j]][, 4])[2]
   }
   df.rmse2.wb <- samp[[1]][seq(1, nrow(samp[[1]]), 4), ]
   # Create a grid for temperatures and iterations
@@ -481,7 +480,7 @@ for(i in 1:w){
   rmse.df2.wb$value <- apply(rmse.df2.wb, 1, function(row) {
     k <- row["iteration"]
     location <- row["point"]
-    (exp(df.rmse2.wb[k, 3]) * (location - df.rmse2.wb[k, 4])^2 + df.rmse2.wb[k, 1])
+    (exp(df.rmse2.wb[k, 3]) * (location - df.rmse2.wb[k, 5])^2 + df.rmse2.wb[k, 1])
   })
   # Calculate RMSE between the evaluated curve and the true curve
   true_curve <- f(xseq)   
@@ -507,7 +506,7 @@ xdf2_W <- expand.grid(point = xseq, iteration = 1:nrow(df.new2_W))
 xdf2_W$value <- apply(xdf2_W, 1, function(row) {
   i <- row["iteration"]
   location <- row["point"]
-  exp(df.new2_W[i, 3]) *  (location - df.new2_W[i, 4])^2 + df.new2_W[i, 1]
+  exp(df.new2_W[i, 3]) *  (location - df.new2_W[i, 5])^2 + df.new2_W[i, 1]
 })
 # To keep consistent with exponential data
 xdf2_W <- xdf2_W|> mutate(trunc.inv = log(2)/value)
@@ -567,10 +566,10 @@ ggsave("mean.life.wb.png", plot = plot2_med.inv_W, width = 5, height = 5)
 
 # Create a list to store histograms of the posterior distribution of each parameter
 Weibull_hist_list2 <- vector("list", length = 4)
-parameter.names <- c("a", "Topt", "c", "Deviance")
+parameter.names.sig <- c("a", "Topt", "c", "Deviance", "Sigma")
 png("hist.mean.wb.png", width = 8, height = 6, units = "in", res = 250)
-par(mfrow = c(2, 2))
-for (i in 1:4) {
+par(mfrow = c(2, 3))
+for (i in 1:5) {
   # Extract the first column from each matrix in param_list[[i]]
   # This column is the mean of each param for each chain
   Weibull_first_column_list2 <- lapply(Weibull_param_list2[[i]], function(matrix) matrix[, 2])
@@ -579,19 +578,9 @@ for (i in 1:4) {
   # Sequence of x values to overlay prior distribution onto histograms
   x <- seq(min(Weibull_combined_vector2) - 50, max(Weibull_combined_vector2) + 1, length = 1000)
   # Create a histogram and store it in the list
-  Weibull_hist_list2[[i]] <- hist(Weibull_combined_vector2, main = paste("Posterior Medians of Parameter", parameter.names[i]), 
+  Weibull_hist_list2[[i]] <- hist(Weibull_combined_vector2, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
                           xlab = "Posterior Median", col = plasma(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = Weibull_true_values[i], col = plasma(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
  
 }
 dev.off()
@@ -922,19 +911,6 @@ for (i in 1:5) {
   Weibull_hist_list3[[i]] <- hist(Weibull_combined_vector3, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
                           xlab = "Posterior Median", col = plasma(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = Weibull_true_values[i], col = plasma(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
 }
 dev.off()
 
@@ -1276,19 +1252,6 @@ for (i in 1:5) {
   Weibull_hist_list4[[i]] <- hist(Weibull_combined_vector4, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
                           xlab = "Posterior Median", col = plasma(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = Weibull_true_values[i], col = plasma(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
 }
 dev.off()
 
@@ -1626,19 +1589,6 @@ for (i in 1:5) {
   Weibull_hist_list5[[i]] <- hist(Weibull_combined_vector5, main = paste("Posterior Medians of Parameter", parameter.names.sig[i]), 
                           xlab = "Posterior Median", col = plasma(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = Weibull_true_values[i], col = plasma(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
 }
 dev.off()
 
@@ -1965,19 +1915,6 @@ for (i in 1:5) {
   Weibull_hist_list6[[i]] <- hist(Weibull_combined_vector6, main = paste("Posterior Medians of Parameter", parameter.names.sh[i]), 
                                     xlab = "Posterior Median", col = plasma(12)[11], border = "black", breaks = 10, freq = FALSE)
   abline(v = Weibull_true_values[i], col = plasma(12)[1], lwd = 2)
-  # Add prior based on which parameter
-  if(i == 1){
-    lines(x, dnorm(x, 0, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 2){
-    lines(x, dnorm(x, 22, sqrt(10)), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 3){
-    lines(x, dexp(x, 0.5), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
-  if(i == 5){
-    lines(x, dexp(x, 0.001), col = plasma(12)[6], lty = 2, lwd = 2)
-  }
 }
 dev.off()
 
