@@ -26,9 +26,9 @@ load("individual_wb_wb_narrow.RData")
 
 ```{r plot.a.narrow}
 desired_order <- c("Inverse Mean Exp Data, Trunc Norm Model", "Mean Inverse Exp Data, Trunc Norm Model", 
-                      "Individual Inverse Exp Data, Trunc Norm Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+                      "Individual Inverse Exp Data, Trunc Norm Model", "Mean Exp Data, Trunc Norm Model", "Individual Exp Data, Exp Model")
 N_df.a <- data.frame(
-  x = factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Trunc Norm Model", 
+  x = factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Trunc Norm Model", "Individual Inverse Exp Data, Trunc Norm Model", 
                "Mean Inverse Exp Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model")), 
   Median = c(exp(median(unlist(lapply(N_param_list1[[1]], function(matrix) matrix[, 2])))), 
            exp(median(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 2])))), 
@@ -61,9 +61,9 @@ ggsave("n.a.comp.exp.png", plot = N_a.plot, width = 8, height = 5)
 
 ```{r plot.Topt.narrow}
 desired_order <- c("Inverse Mean Exp Data, Trunc Norm Model", "Mean Inverse Exp Data, Trunc Norm Model", 
-                      "Individual Inverse Exp Data, Trunc Norm Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+                      "Individual Inverse Exp Data, Trunc Norm Model", "Mean Exp Data, Trunc Norm Model", "Individual Exp Data, Exp Model")
 N_df.b <- data.frame(
-  x = factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Trunc Norm Model", 
+  x = factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Trunc Norm Model", "Individual Inverse Exp Data, Trunc Norm Model", 
                "Mean Inverse Exp Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model")), 
   Median = c(median(unlist(lapply(N_param_list1[[2]], function(matrix) matrix[, 2]))), 
            median(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 2]))), 
@@ -96,9 +96,9 @@ ggsave("n.Topt.comp.exp.png", plot = N_b.plot, width = 8, height = 5)
 
 ```{r plot.c.narrow}
 desired_order <- c("Inverse Mean Exp Data, Trunc Norm Model", "Mean Inverse Exp Data, Trunc Norm Model", 
-                      "Individual Inverse Exp Data, Trunc Norm Model", "Mean Exp Data, Exp Model", "Individual Exp Data, Exp Model")
+                      "Individual Inverse Exp Data, Trunc Norm Model", "Mean Exp Data, Trunc Norm Model", "Individual Exp Data, Exp Model")
 N_df.c <- data.frame(
-  x = factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Trunc Norm Model", 
+  x = factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Trunc Norm Model", "Individual Inverse Exp Data, Trunc Norm Model", 
                "Mean Inverse Exp Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model")), 
   Median = c((median(unlist(lapply(N_param_list1[[3]], function(matrix) matrix[, 2])))), 
            (median(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 2])))), 
@@ -235,10 +235,10 @@ log_N_c.plot
 
 ```{r plot.a.narrow.wb}
 desired_order.wb <- c("Inverse Mean WB Data, Trunc Norm Model", "Mean Inverse WB Data, Trunc Norm Model", 
-                      "Individual Inverse WB Data, Trunc Norm Model", "Mean WB Data, Exp Model", "Individual WB Data, Exp Model", "Individual WB Data, WB Model")
+                      "Individual Inverse WB Data, Trunc Norm Model", "Mean WB Data, Trunc Norm Model", "Individual WB Data, Exp Model", "Individual WB Data, WB Model")
 
 df.a.wb.n <- data.frame(
-  x = factor(c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model", 
+  x = factor(c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Trunc Norm Model", "Individual Inverse WB Data, Trunc Norm Model", 
                "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model")), 
   Median = c(exp(median(unlist(lapply(Weibull_N_param_list6[[1]], function(matrix) matrix[, 2])))),
              exp(median(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 2])))), 
@@ -264,19 +264,20 @@ a.wb.plot.n <- ggplot(df.a.wb.n, aes(x, Median)) +
   geom_point(col = plasma(3)[1]) + 
   geom_linerange(aes(ymin = lower, ymax = upper), col = plasma(3)[2]) +
   labs(x = "Method") +
-  geom_hline(yintercept = true.a, linetype = "dashed", color = "black")+
-  theme_classic()+
-  coord_flip()
+  geom_hline(yintercept = true.a, linetype = "dashed", color = "black") +
+  theme_classic() +
+  coord_flip() + 
+  ylim(0, 0.0025)
 a.wb.plot.n
 ggsave("n.a.comp.wb.png", plot = a.wb.plot.n, width = 8, height = 5)
 ```
 
 ```{r plot.Topt.narrow.wb}
 desired_order.wb <- c("Inverse Mean WB Data, Trunc Norm Model", "Mean Inverse WB Data, Trunc Norm Model", 
-                      "Individual Inverse WB Data, Trunc Norm Model", "Mean WB Data, Exp Model", "Individual WB Data, Exp Model", "Individual WB Data, WB Model")
+                      "Individual Inverse WB Data, Trunc Norm Model", "Mean WB Data, Trunc Norm Model", "Individual WB Data, Exp Model", "Individual WB Data, WB Model")
 
 df.b.wb.n <- data.frame(
-  x = factor(c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model", 
+  x = factor(c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Trunc Norm Model", "Individual Inverse WB Data, Trunc Norm Model", 
                "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model")), 
   Median = c(median(unlist(lapply(Weibull_N_param_list6[[2]], function(matrix) matrix[, 2]))),
              median(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 2]))), 
@@ -311,9 +312,9 @@ ggsave("n.Topt.comp.wb.png", plot = b.wb.plot.n, width = 8, height = 5)
 
 ```{r plot.c.narrow.wb}
 desired_order.wb <- c("Inverse Mean WB Data, Trunc Norm Model", "Mean Inverse WB Data, Trunc Norm Model", 
-                      "Individual Inverse WB Data, Trunc Norm Model", "Mean WB Data, Exp Model", "Individual WB Data, Exp Model", "Individual WB Data, WB Model")
+                      "Individual Inverse WB Data, Trunc Norm Model", "Mean WB Data, Trunc Norm Model", "Individual WB Data, Exp Model", "Individual WB Data, WB Model")
 df.c.wb.n <- data.frame(
-  x = factor(c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model", 
+  x = factor(c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Trunc Norm Model", "Individual Inverse WB Data, Trunc Norm Model", 
                "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model")), 
   Median = c((median(unlist(lapply(Weibull_N_param_list6[[3]], function(matrix) matrix[, 2])))),
              (median(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 2])))), 
@@ -725,7 +726,7 @@ for (df_index in 1:length(df_list.n)) {
   min_x_values.n <- numeric()
   min_values.n <- numeric()
   
-  if (df_index  == 1 || df_index  == 2) {
+  if (df_index  == 1) {
     a_col <- 3
     Topt_col <- 4
     c_col <- 1
@@ -761,7 +762,7 @@ double.box.df.n <- data.frame(
                1/min_values_list.n[[4]], 
                1/min_values_list.n[[5]], 
                15.433231), 
-  Method = factor(c(rep("Individual Exp Data, Exp Model", 938), rep("Mean Exp Data, Exp Model", 938), rep("Individual Inverse Exp Data, Trunc Norm Model", 938), 
+  Method = factor(c(rep("Individual Exp Data, Exp Model", 938), rep("Mean Exp Data, Trunc Norm Model", 938), rep("Individual Inverse Exp Data, Trunc Norm Model", 938), 
                rep("Mean Inverse Exp Data, Trunc Norm Model", 938), rep("Inverse Mean Exp Data, Trunc Norm Model", 938), "True Curve")
                )
 )
@@ -789,7 +790,7 @@ dub.n<- double.box.df.n |> group_by(Method) |> summarise(medianTopt = median(Top
          Middle.Topt = plot.x.n$middle, 
          Middle.Life = plot.y.n$middle)
 
-dub.n$Method <- factor(dub.n$Method, levels = c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Trunc Norm Model", 
+dub.n$Method <- factor(dub.n$Method, levels = c("Individual Exp Data, Exp Model", "Mean Exp Data, Trunc Norm Model", "Individual Inverse Exp Data, Trunc Norm Model", 
                "Mean Inverse Exp Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model", "True Curve"))
 medianTopt.True.n <- as.numeric(rep(dub.n[6, 2], 5))
 medianLife.True.n <- as.numeric(rep(dub.n[6, 3], 5))
@@ -797,7 +798,7 @@ medianLife.True.n <- as.numeric(rep(dub.n[6, 3], 5))
 colnames(plot.x.n) <- paste0("x.", gsub("y", "", colnames(plot.x.n)))
 colnames(plot.y.n) <- paste0("y.", gsub("y", "", colnames(plot.y.n)))
 df.n <- cbind(plot.x.n, plot.y.n)
-df.n$Method <- factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Trunc Norm Model", 
+df.n$Method <- factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Trunc Norm Model", "Individual Inverse Exp Data, Trunc Norm Model", 
                "Mean Inverse Exp Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model", "True Curve"))
 
 ggplot(data = dub.n[1:5, ], aes(fill = Method, color = Method)) +
@@ -813,7 +814,7 @@ ggplot(data = dub.n[1:5, ], aes(fill = Method, color = Method)) +
   geom_segment(aes(x = q1Topt, y = minLife, xend = q3Topt, yend = minLife)) + #lower end
   geom_segment(aes(x = q1Topt, y = maxLife, xend = q3Topt, yend = maxLife)) + #upper end
   theme_classic() +
-  facet_wrap(dub.n$Method[1:5], nrow = 2, scales = "free") +
+  #facet_wrap(dub.n$Method[1:5], nrow = 2, scales = "free") +
   geom_point(aes(x = medianTopt.True.n, y = medianLife.True.n), color = "black", show.legend = FALSE) +
   geom_vline(aes(xintercept = medianTopt.True.n), color = "black", linetype = "dashed") +
   geom_hline(aes(yintercept = medianLife.True.n), color = "black", linetype = "dashed") +
@@ -1009,7 +1010,7 @@ for (df_index.wb.n in 1:length(df_list.wb.n)) {
   min_x_values.wb.n <- numeric()
   min_values.wb.n <- numeric()
   
-  if (df_index.wb.n  == 2 || df_index.wb.n  == 3) {
+  if (df_index.wb.n  == 2) {
     a_col <- 3
     Topt_col <- 4
     c_col <- 1
@@ -1049,9 +1050,9 @@ double.box.df.wb.n <- data.frame(
                1/min_values_list.wb.n[[4]], 
                1/min_values_list.wb.n[[5]], 
                15.433231), 
-  Method = factor(c(rep("Individual WB Data, WB Model", 938), rep("Individual WB Data, Exp Model", 938), rep("Mean WB Data, Exp Model", 938), rep("Individual Inverse WB Data, Trunc Norm Model", 938), 
+  Method = factor(c(rep("Individual WB Data, WB Model", 938), rep("Individual WB Data, Exp Model", 938), rep("Mean WB Data, Trunc Norm Model", 938), rep("Individual Inverse WB Data, Trunc Norm Model", 938), 
                rep("Mean Inverse WB Data, Trunc Norm Model", 938), rep("Inverse Mean WB Data, Trunc Norm Model", 938), "True Curve"), 
-               levels = c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model", 
+               levels = c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Trunc Norm Model", "Individual Inverse WB Data, Trunc Norm Model", 
                "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", 
                 "True Curve")
                )
@@ -1068,7 +1069,7 @@ colnames(plot.x.wb.n) <- paste0("x.", gsub("y", "", colnames(plot.x.wb.n)))
 colnames(plot.y.wb.n) <- paste0("y.", gsub("y", "", colnames(plot.y.wb.n)))
 
 df.wb.n <- cbind(plot.x.wb.n, plot.y.wb.n)
-df.wb.n$Method <- factor(c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model", 
+df.wb.n$Method <- factor(c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Trunc Norm Model", "Individual Inverse WB Data, Trunc Norm Model", 
                "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", 
                 "True Curve"))
 
@@ -1087,12 +1088,14 @@ dub.wb.n <- double.box.df.wb.n |> group_by(Method) |> summarise(medianTopt = med
          minLife = q1Life - 1.5 * iqrLife, 
          Middle.Topt = plot.x.wb.n$middle, 
          Middle.Life = plot.y.wb.n$middle)
-dub.wb.n$Method <- factor(dub.wb.n$Method, levels = c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model", 
+dub.wb.n$Method <- factor(dub.wb.n$Method, levels = c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Trunc Norm Model", "Individual Inverse WB Data, Trunc Norm Model", 
                "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", 
                 "True Curve"))
 medianTopt.True.wb.n <- as.numeric(rep(dub.wb.n[7, 2], 6))
 medianLife.True.wb.n <- as.numeric(rep(dub.wb.n[7, 3], 6))
 
+dub.wb.n[4, 13] <- 0
+plot.x.wb.n[6,3] <- (plot.x.wb.n[6,2] + plot.x.wb.n[6,4])/2
 
 ggplot(data = dub.wb.n[1:6, ], aes(fill = Method, color = Method)) +
   scale_color_manual(values = plasma(6)) +
@@ -1110,11 +1113,12 @@ ggplot(data = dub.wb.n[1:6, ], aes(fill = Method, color = Method)) +
   geom_point(aes(x = medianTopt.True.wb.n, y = medianLife.True.wb.n), color = "black", show.legend = FALSE) +
   geom_vline(aes(xintercept = medianTopt.True.wb.n), color = "black", linetype = "dashed") +
   geom_hline(aes(yintercept = medianLife.True.wb.n), color = "black", linetype = "dashed") +
-  facet_wrap(dub.wb.n$Method[1:6], nrow = 2, scales = "free") +
+  #facet_wrap(dub.wb.n$Method[1:6], nrow = 2, scales = "free") +
   #theme(legend.position = "none") +
   labs(title = "Boxplot of Optimal Temperature and Maximum Lifetime", 
        x = "Optimal Temperature", 
-       y = "Maxium Lifetime")
+       y = "Maxium Lifetime") +
+  coord_cartesian(xlim = c(17, 23), ylim = c(5,20))
 ggsave("N_Topt_Life_WB.png", width = 8, height = 5)
 ```
 
@@ -1276,7 +1280,7 @@ for (df_index in 1:length(df_list.n)) {
   df <- df_list.n[[df_index]]
   x_values.n <- numeric()
   
-  if (df_index  == 1 || df_index  == 2) {
+  if (df_index  == 1) {
     a_col <- 3
     b_col <- 4
     c_col <- 1
@@ -1320,7 +1324,7 @@ for (i in seq_along(x_values_list.n)) {
 }
 double.box.df.ex.n <- rbind(double.box.df.ex.n, data.frame(Low = -6.935, 	 High = 51.542))
 
-double.box.df.ex.n$Method <- factor(c(rep("Individual Exp Data, Exp Model", 938), rep("Mean Exp Data, Exp Model", 938), rep("Individual Inverse Exp Data, Trunc Norm Model", 938), 
+double.box.df.ex.n$Method <- factor(c(rep("Individual Exp Data, Exp Model", 938), rep("Mean Exp Data, Trunc Norm Model", 938), rep("Individual Inverse Exp Data, Trunc Norm Model", 938), 
                rep("Mean Inverse Exp Data, Trunc Norm Model", 938), rep("Inverse Mean Exp Data, Trunc Norm Model", 938) , "True Curve" 
                )
 )
@@ -1350,7 +1354,7 @@ dub.ex.n<- double.box.df.ex.n |> group_by(Method) |> summarise(medianLow = media
          Middle.Low = plot.x.ex.n$middle, 
          Middle.High = plot.y.ex.n$middle)
 
-dub.ex.n$Method <-factor(dub.ex.n$Method, levels = c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Trunc Norm Model", 
+dub.ex.n$Method <-factor(dub.ex.n$Method, levels = c("Individual Exp Data, Exp Model", "Mean Exp Data, Trunc Norm Model", "Individual Inverse Exp Data, Trunc Norm Model", 
                "Mean Inverse Exp Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model", "True Curve"))
 
 medianLow.True.ex.n <- as.numeric(rep(dub.ex.n[6, 2], 5))
@@ -1359,7 +1363,7 @@ medianHigh.True.ex.n <- as.numeric(rep(dub.ex.n[6, 3], 5))
 colnames(plot.x.ex.n) <- paste0("x.", gsub("y", "", colnames(plot.x.ex.n)))
 colnames(plot.y.ex.n) <- paste0("y.", gsub("y", "", colnames(plot.y.ex.n)))
 df.ex.n <- cbind(plot.x.ex.n, plot.y.ex.n)
-df.ex.n$Method <- factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Trunc Norm Model", 
+df.ex.n$Method <- factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Trunc Norm Model", "Individual Inverse Exp Data, Trunc Norm Model", 
                "Mean Inverse Exp Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model", "True Curve"))
 
 
@@ -1376,7 +1380,7 @@ ggplot(data = dub.ex.n[1:5, ], aes(fill = Method, color = Method)) +
   geom_segment(aes(x = q1Low, y = minHigh, xend = q3Low, yend = minHigh)) + #lower end
   geom_segment(aes(x = q1Low, y = maxHigh, xend = q3Low, yend = maxHigh)) + #upper end
   theme_classic() +
-  facet_wrap(dub.ex.n$Method[1:5], nrow = 2, scales = "free") +
+  #facet_wrap(dub.ex.n$Method[1:5], nrow = 2, scales = "free") +
   geom_point(aes(x = medianLow.True.ex.n, y = medianHigh.True.ex.n), color = "black", show.legend = FALSE) +
   geom_vline(aes(xintercept = medianLow.True.ex.n), color = "black", linetype = "dashed") +
   geom_hline(aes(yintercept = medianHigh.True.ex.n), color = "black", linetype = "dashed") +
@@ -1460,7 +1464,7 @@ for (df_index.wb.n in 1:length(df_list.wb.n)) {
   df <- df_list.wb.n[[df_index.wb.n]]
   x_values.wb.n <- numeric()
   
-  if (df_index.wb.n  == 2 || df_index.wb.n  == 3) {
+  if (df_index.wb.n  == 2) {
     a_col <- 3
     b_col <- 4
     c_col <- 1
@@ -1504,9 +1508,9 @@ for (i in seq_along(x_values_list.wb.n)) {
 }
 double.box.df.ex.wb.n <- rbind(double.box.df.ex.wb.n, data.frame(Low = -6.935, 	 High = 51.542))
 
-double.box.df.ex.wb.n$Method <- factor(c(rep("Individual WB Data, WB Model", 938), rep("Individual WB Data, Exp Model", 938), rep("Mean WB Data, Exp Model", 938), rep("Individual Inverse WB Data, Trunc Norm Model", 938), 
+double.box.df.ex.wb.n$Method <- factor(c(rep("Individual WB Data, WB Model", 938), rep("Individual WB Data, Exp Model", 938), rep("Mean WB Data, Trunc Norm Model", 938), rep("Individual Inverse WB Data, Trunc Norm Model", 938), 
                rep("Mean Inverse WB Data, Trunc Norm Model", 938), rep("Inverse Mean WB Data, Trunc Norm Model", 938), "True Curve" 
-               ), levels = c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model", 
+               ), levels = c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Trunc Norm Model", "Individual Inverse WB Data, Trunc Norm Model", 
                "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", "True Curve")
 )
 
@@ -1535,7 +1539,7 @@ dub.ex.wb.n <- double.box.df.ex.wb.n |> group_by(Method) |> summarise(medianLow 
          Middle.Low = plot.x.ex.wb.n$middle, 
          Middle.High = plot.y.ex.wb.n$middle)
 
-dub.ex.wb.n$Method <-factor(dub.ex.wb.n$Method, levels = c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model", 
+dub.ex.wb.n$Method <-factor(dub.ex.wb.n$Method, levels = c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Trunc Norm Model", "Individual Inverse WB Data, Trunc Norm Model", 
                "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", "True Curve"))
 
 medianLow.True.ex.wb.n <- as.numeric(rep(dub.ex.wb.n[7, 2], 6))
@@ -1544,7 +1548,7 @@ medianHigh.True.ex.wb.n <- as.numeric(rep(dub.ex.wb.n[7, 3], 6))
 colnames(plot.x.ex.wb.n) <- paste0("x.", gsub("y", "", colnames(plot.x.ex.wb.n)))
 colnames(plot.y.ex.wb.n) <- paste0("y.", gsub("y", "", colnames(plot.y.ex.wb.n)))
 df.ex.wb.n <- cbind(plot.x.ex.wb.n, plot.y.ex.wb.n)
-df.ex.wb.n$Method <- factor(c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model", 
+df.ex.wb.n$Method <- factor(c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Trunc Norm Model", "Individual Inverse WB Data, Trunc Norm Model", 
                "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model", "True Curve"))
 
 ggplot(data = dub.ex.wb.n[1:6, ], aes(fill = Method, color = Method)) +
@@ -1560,7 +1564,7 @@ ggplot(data = dub.ex.wb.n[1:6, ], aes(fill = Method, color = Method)) +
   geom_segment(aes(x = q1Low, y = minHigh, xend = q3Low, yend = minHigh)) + #lower end
   geom_segment(aes(x = q1Low, y = maxHigh, xend = q3Low, yend = maxHigh)) + #upper end
   theme_classic() +
-  facet_wrap(dub.ex.wb.n$Method[1:6], nrow = 2, scales = "free") +
+  #facet_wrap(dub.ex.wb.n$Method[1:6], nrow = 2, scales = "free") +
   geom_point(aes(x = medianLow.True.ex.wb.n, y = medianHigh.True.ex.wb.n), color = "black", show.legend = FALSE) +
   geom_vline(aes(xintercept = medianLow.True.ex.wb.n), color = "black", linetype = "dashed") +
   geom_hline(aes(yintercept = medianHigh.True.ex.wb.n), color = "black", linetype = "dashed") +
@@ -1749,41 +1753,61 @@ df.mean.mean.exp.n <- data.frame(
     )
 
 mean.exp.13.n <- qqPlot(df.mean.mean.exp.n$trait[df.mean.mean.exp.n$T  == 13], 
-       distribution = "exp", 
-       param.list = list(rate = (exp(median(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 2])))) * (13 -
+       distribution = "normTrunc", 
+       param.list = list(mean = (exp(median(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 2])))) * (13 -
                                median(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 2]))))^2 +
-                               median(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
+                               median(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 2])))), 
+                       sd = 1/median(unlist(lapply(N_param_list2[[5]], function(matrix) matrix[, 2]))), 
+                       min = 0, 
+                       max = Inf), 
+       plot.it = FALSE)
 
 mean.exp.17.n <- qqPlot(df.mean.mean.exp.n$trait[df.mean.mean.exp.n$T  == 17], 
-       distribution = "exp", 
-       param.list = list(rate = (exp(median(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 2])))) * (17 -
+       distribution = "normTrunc", 
+       param.list = list(mean = (exp(median(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 2])))) * (17 -
                                median(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 2]))))^2 +
-                               median(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
+                               median(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 2])))), 
+                       sd = 1/median(unlist(lapply(N_param_list2[[5]], function(matrix) matrix[, 2]))), 
+                       min = 0, 
+                       max = Inf), 
+       plot.it = FALSE)
 
 mean.exp.21.n <- qqPlot(df.mean.mean.exp.n$trait[df.mean.mean.exp.n$T  == 21], 
-       distribution = "exp", 
-       param.list = list(rate = (exp(median(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 2])))) * (21 -
+       distribution = "normTrunc", 
+       param.list = list(mean = (exp(median(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 2])))) * (21 -
                                median(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 2]))))^2 +
-                               median(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
+                               median(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 2])))), 
+                       sd = 1/median(unlist(lapply(N_param_list2[[5]], function(matrix) matrix[, 2]))), 
+                       min = 0, 
+                       max = Inf), 
+       plot.it = FALSE)
 
 mean.exp.25.n <- qqPlot(df.mean.mean.exp.n$trait[df.mean.mean.exp.n$T  == 25], 
-       distribution = "exp", 
-       param.list = list(rate = (exp(median(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 2])))) * (25 -
+       distribution = "normTrunc", 
+       param.list = list(mean = (exp(median(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 2])))) * (25 -
                                median(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 2]))))^2 +
-                               median(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
+                               median(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 2])))), 
+                       sd = 1/median(unlist(lapply(N_param_list2[[5]], function(matrix) matrix[, 2]))), 
+                       min = 0, 
+                       max = Inf), 
+       plot.it = FALSE)
 
 mean.exp.29.n <- qqPlot(df.mean.mean.exp.n$trait[df.mean.mean.exp.n$T  == 29], 
-       distribution = "exp", 
-       param.list = list(rate = (exp(median(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 2])))) * (29 -
+       distribution = "normTrunc", 
+       param.list = list(mean = (exp(median(unlist(lapply(N_param_list2[[1]], function(matrix) matrix[, 2])))) * (29 -
                                median(unlist(lapply(N_param_list2[[2]], function(matrix) matrix[, 2]))))^2 +
-                               median(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
+                               median(unlist(lapply(N_param_list2[[3]], function(matrix) matrix[, 2])))), 
+                       sd = 1/median(unlist(lapply(N_param_list2[[5]], function(matrix) matrix[, 2]))), 
+                       min = 0, 
+                       max = Inf), 
+       plot.it = FALSE)
 
 
 png(file="n.mean.exp.qq.png",
     width = 8.5, height = 6, units = "in", res = 250)
-plot(mean.exp.13.n, pch = 20, xlim = c(0, 40), ylim = c(0, 40), col = plasma(5)[1], 
-     main = "QQ-Plot for Mean Exp Data and Exp Distribution, Narrow Interval", 
-       xlab = "Quantiles of Exponential with Posterior Median Rate Parameter", 
+plot(mean.exp.13.n, pch = 20, xlim = c(0, 1.5), ylim = c(0, 40), col = plasma(5)[1], 
+     main = "QQ-Plot for Mean Exp Data and Trunc Norm Distribution, Narrow Interval", 
+       xlab = "Quantiles of Truncated Normal with Posterior Median Parameters", 
        ylab = "Quantiles of Generated Data with True Parameters")
 points(mean.exp.17.n, pch = 20, col = plasma(5)[2])
 points(mean.exp.21.n, pch = 20, col = plasma(5)[3])
@@ -2018,37 +2042,37 @@ dev.off()
 ```{r QQPlot.Ind.WB.Data.Narrow}
 ind.wb.13.n <- qqPlot(Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]]$T  == 13], 
        distribution = "exp", 
-       param.list = list(rate = exp(exp(median(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 2])))) * (13 -
+       param.list = list(rate = (exp(median(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 2])))) * (13 -
                                (median(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
 
 ind.wb.17.n <- qqPlot(Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]]$T  == 17], 
        distribution = "exp", 
-       param.list = list(rate = exp(exp(median(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 2])))) * (17 -
+       param.list = list(rate = (exp(median(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 2])))) * (17 -
                                (median(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
 
 ind.wb.21.n <- qqPlot(Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]]$T  == 21], 
        distribution = "exp", 
-       param.list = list(rate = exp(exp(median(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 2])))) * (21 -
+       param.list = list(rate = (exp(median(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 2])))) * (21 -
                                (median(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
 
 ind.wb.25.n <- qqPlot(Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]]$T  == 25], 
        distribution = "exp", 
-       param.list = list(rate = exp(exp(median(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 2])))) * (25 -
+       param.list = list(rate = (exp(median(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 2])))) * (25 -
                                (median(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
 
 ind.wb.29.n <- qqPlot(Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]]$T  == 29], 
        distribution = "exp", 
-       param.list = list(rate = exp(exp(median(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 2])))) * (29 -
+       param.list = list(rate = (exp(median(unlist(lapply(Weibull_N_param_list1[[1]], function(matrix) matrix[, 2])))) * (29 -
                                (median(unlist(lapply(Weibull_N_param_list1[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list1[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
 
 png(file="n.ind.wb.qq.png",
     width = 7, height = 6, units = "in", res = 250)
-plot(ind.wb.13.n, xlim = c(0, 5), ylim = c(0, 35), pch = 20, col = plasma(5)[1], 
+plot(ind.wb.13.n, xlim = c(0, 85), ylim = c(0, 35), pch = 20, col = plasma(5)[1], 
        main = "QQ-Plot for WB Data and Exponential Distribution, Narrow Interval", 
        xlab = "Quantiles of Exponential with Posterior Median Rate Parameter", 
        ylab = "Quantiles of Generated Data with True Parameters")
@@ -2077,39 +2101,39 @@ df.mean.mean.wb.n <- data.frame(
 
 mean.wb.13.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 13], 
        distribution = "exp", 
-       param.list = list(rate = exp(exp(median(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 2])))) * (13 -
+       param.list = list(rate = (exp(median(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 2])))) * (13 -
                                (median(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
 
 mean.wb.17.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 17], 
        distribution = "exp", 
-       param.list = list(rate = exp(exp(median(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 2])))) * (17 -
+       param.list = list(rate = (exp(median(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 2])))) * (17 -
                                (median(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
 
 mean.wb.21.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 21], 
        distribution = "exp", 
-       param.list = list(rate = exp(exp(median(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 2])))) * (21 -
+       param.list = list(rate = (exp(median(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 2])))) * (21 -
                                (median(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
 
 mean.wb.25.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 25], 
        distribution = "exp", 
-       param.list = list(rate = exp(exp(median(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 2])))) * (25 -
+       param.list = list(rate = (exp(median(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 2])))) * (25 -
                                (median(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
 
 mean.wb.29.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 29], 
        distribution = "exp", 
-       param.list = list(rate = exp(exp(median(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 2])))) * (29 -
+       param.list = list(rate = (exp(median(unlist(lapply(Weibull_N_param_list2[[1]], function(matrix) matrix[, 2])))) * (29 -
                                (median(unlist(lapply(Weibull_N_param_list2[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list2[[3]], function(matrix) matrix[, 2]))))), plot.it = FALSE)
 
 png(file="n.mean.wb.qq.png",
     width = 7, height = 6, units = "in", res = 250)
-plot(mean.wb.13.n, pch = 20, xlim = c(0, 3), ylim = c(0, 30), col = plasma(5)[1], 
-     main = "QQ-Plot for Mean WB Data and Exp Distribution, Narrow Interval", 
-       xlab = "Quantiles of Exponential with Posterior Median Rate Parameter", 
+plot(mean.wb.13.n, pch = 20, xlim = c(0, 25), ylim = c(0, 30), col = plasma(5)[1], 
+     main = "QQ-Plot for Mean WB Data and Trunc Norm Distribution, Narrow Interval", 
+       xlab = "Quantiles of Truncated Normal with Posterior Median Parameters", 
        ylab = "Quantiles of Generated Data with True Parameters")
 points(mean.wb.17.n, pch = 20, col = plasma(5)[2])
 points(mean.wb.21.n, pch = 20, col = plasma(5)[3])
@@ -2124,7 +2148,7 @@ dev.off()
 ```{r QQPlot.Inv.WB.Data.Narrow}
 inv.wb.13.n <- qqPlot(1/Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]]$T  == 13], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 2])))) * (13 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 2])))) * (13 -
                                (median(unlist(lapply(Weibull_N_param_list3[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list3[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list3[[5]], function(matrix) matrix[, 2]))), 
@@ -2134,7 +2158,7 @@ inv.wb.13.n <- qqPlot(1/Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[10
 
 inv.wb.17.n <- qqPlot(1/Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]]$T  == 17], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 2])))) * (17 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 2])))) * (17 -
                                (median(unlist(lapply(Weibull_N_param_list3[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list3[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list3[[5]], function(matrix) matrix[, 2]))), 
@@ -2144,7 +2168,7 @@ inv.wb.17.n <- qqPlot(1/Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[10
 
 inv.wb.21.n <- qqPlot(1/Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]]$T  == 21], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 2])))) * (21 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 2])))) * (21 -
                                (median(unlist(lapply(Weibull_N_param_list3[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list3[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list3[[5]], function(matrix) matrix[, 2]))), 
@@ -2154,7 +2178,7 @@ inv.wb.21.n <- qqPlot(1/Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[10
 
 inv.wb.25.n <- qqPlot(1/Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]]$T  == 25], 
        distribution = "normTrunc",
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 2])))) * (25 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 2])))) * (25 -
                                (median(unlist(lapply(Weibull_N_param_list3[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list3[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list3[[5]], function(matrix) matrix[, 2]))), 
@@ -2164,7 +2188,7 @@ inv.wb.25.n <- qqPlot(1/Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[10
 
 inv.wb.29.n <- qqPlot(1/Weibull_N_data.list[[100]]$trait[Weibull_N_data.list[[100]]$T  == 29], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 2])))) * (29 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list3[[1]], function(matrix) matrix[, 2])))) * (29 -
                                (median(unlist(lapply(Weibull_N_param_list3[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list3[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list3[[5]], function(matrix) matrix[, 2]))), 
@@ -2183,7 +2207,7 @@ points(inv.wb.17.n, pch = 20, col = plasma(5)[2])
 points(inv.wb.21.n, pch = 20, col = plasma(5)[3])
 points(inv.wb.25.n, pch = 20, col = plasma(5)[4])
 points(inv.wb.29.n, pch = 20, col = plasma(5)[5])
-legend("topleft", legend = c("13", "17", "21", "25", "29"), 
+legend("bottomright", legend = c("13", "17", "21", "25", "29"), 
        pch = c(20, 20, 20, 20, 20), col = c(plasma(5)[1], plasma(5)[2], plasma(5)[3], plasma(5)[4], plasma(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
 dev.off()
@@ -2203,7 +2227,7 @@ df.mean.mean.wb.n <- data.frame(
 
 mean.inv.wb.13.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 13], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 2])))) * (13 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 2])))) * (13 -
                                (median(unlist(lapply(Weibull_N_param_list4[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list4[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list4[[5]], function(matrix) matrix[, 2]))), 
@@ -2213,7 +2237,7 @@ mean.inv.wb.13.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 13],
 
 mean.inv.wb.17.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 17], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 2])))) * (17 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 2])))) * (17 -
                                (median(unlist(lapply(Weibull_N_param_list4[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list4[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list4[[5]], function(matrix) matrix[, 2]))), 
@@ -2223,7 +2247,7 @@ mean.inv.wb.17.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 17],
 
 mean.inv.wb.21.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 21], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 2])))) * (21 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 2])))) * (21 -
                                (median(unlist(lapply(Weibull_N_param_list4[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list4[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list4[[5]], function(matrix) matrix[, 2]))), 
@@ -2233,7 +2257,7 @@ mean.inv.wb.21.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 21],
 
 mean.inv.wb.25.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 25], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 2])))) * (25 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 2])))) * (25 -
                                (median(unlist(lapply(Weibull_N_param_list4[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list4[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list4[[5]], function(matrix) matrix[, 2]))), 
@@ -2243,7 +2267,7 @@ mean.inv.wb.25.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 25],
 
 mean.inv.wb.29.n <- qqPlot(df.mean.mean.wb.n$trait[df.mean.mean.wb.n$T  == 29], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 2])))) * (29 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list4[[1]], function(matrix) matrix[, 2])))) * (29 -
                                (median(unlist(lapply(Weibull_N_param_list4[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list4[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list4[[5]], function(matrix) matrix[, 2]))), 
@@ -2282,7 +2306,7 @@ df.mean.inv.wb.n <- data.frame(
 
 inv.mean.wb.13.n <- qqPlot(df.mean.inv.wb.n$trait[df.mean.inv.wb.n$T  == 13], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 2])))) * (13 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 2])))) * (13 -
                                (median(unlist(lapply(Weibull_N_param_list5[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list5[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list5[[5]], function(matrix) matrix[, 2]))), 
@@ -2292,7 +2316,7 @@ inv.mean.wb.13.n <- qqPlot(df.mean.inv.wb.n$trait[df.mean.inv.wb.n$T  == 13],
 
 inv.mean.wb.17.n <- qqPlot(df.mean.inv.wb.n$trait[df.mean.inv.wb.n$T  == 17], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 2])))) * (17 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 2])))) * (17 -
                                (median(unlist(lapply(Weibull_N_param_list5[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list5[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list5[[5]], function(matrix) matrix[, 2]))), 
@@ -2302,7 +2326,7 @@ inv.mean.wb.17.n <- qqPlot(df.mean.inv.wb.n$trait[df.mean.inv.wb.n$T  == 17],
 
 inv.mean.wb.21.n <- qqPlot(df.mean.inv.wb.n$trait[df.mean.inv.wb.n$T  == 21], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 2])))) * (21 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 2])))) * (21 -
                                (median(unlist(lapply(Weibull_N_param_list5[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list5[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list5[[5]], function(matrix) matrix[, 2]))), 
@@ -2312,7 +2336,7 @@ inv.mean.wb.21.n <- qqPlot(df.mean.inv.wb.n$trait[df.mean.inv.wb.n$T  == 21],
 
 inv.mean.wb.25.n <- qqPlot(df.mean.inv.wb.n$trait[df.mean.inv.wb.n$T  == 25], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 2])))) * (25 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 2])))) * (25 -
                                (median(unlist(lapply(Weibull_N_param_list5[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list5[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list5[[5]], function(matrix) matrix[, 2]))), 
@@ -2322,7 +2346,7 @@ inv.mean.wb.25.n <- qqPlot(df.mean.inv.wb.n$trait[df.mean.inv.wb.n$T  == 25],
 
 inv.mean.wb.29.n <- qqPlot(df.mean.inv.wb.n$trait[df.mean.inv.wb.n$T  == 29], 
        distribution = "normTrunc", 
-       param.list = list(mean = exp(exp(median(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 2])))) * (29 -
+       param.list = list(mean = (exp(median(unlist(lapply(Weibull_N_param_list5[[1]], function(matrix) matrix[, 2])))) * (29 -
                                (median(unlist(lapply(Weibull_N_param_list5[[2]], function(matrix) matrix[, 2])))))^2 +
                                median(unlist(lapply(Weibull_N_param_list5[[3]], function(matrix) matrix[, 2])))), 
                        sd = 1/median(unlist(lapply(Weibull_N_param_list5[[5]], function(matrix) matrix[, 2]))), 
@@ -2340,7 +2364,7 @@ points(inv.mean.wb.17.n, pch = 20, col = plasma(5)[2])
 points(inv.mean.wb.21.n, pch = 20, col = plasma(5)[3])
 points(inv.mean.wb.25.n, pch = 20, col = plasma(5)[4])
 points(inv.mean.wb.29.n, pch = 20, col = plasma(5)[5])
-legend("topleft", legend = c("13", "17", "21", "25", "29"), 
+legend("bottomright", legend = c("13", "17", "21", "25", "29"), 
        pch = c(20, 20, 20, 20, 20), col = c(plasma(5)[1], plasma(5)[2], plasma(5)[3], plasma(5)[4], plasma(5)[5]))
 abline(a = 0, b = 1, lwd = 2, col = "black")
 dev.off()
@@ -2842,7 +2866,7 @@ N_data.rmse.wb |> ggplot(aes(x = Method, y = RMSE)) +
 
 ```{r RMSE.range.exp}
 rmse.range.df.n <- data.frame(
-  Method = factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Exp Model", "Individual Inverse Exp Data, Trunc Norm Model", 
+  Method = factor(c("Individual Exp Data, Exp Model", "Mean Exp Data, Trunc Norm Model", "Individual Inverse Exp Data, Trunc Norm Model", 
                "Mean Inverse Exp Data, Trunc Norm Model", "Inverse Mean Exp Data, Trunc Norm Model")), 
   Lower.RMSE = c(range(rmse.range.ind.n)[1],
                    range(rmse.range.mean.n)[1],
@@ -2888,7 +2912,7 @@ rmse.range.df.n |> ggplot(aes(x = Method)) +
 
 ```{r RMSE.range.wb}
 rmse.range.df.wb.n <- data.frame(
-  Method = factor(c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Exp Model", "Individual Inverse WB Data, Trunc Norm Model", 
+  Method = factor(c("Individual WB Data, WB Model", "Individual WB Data, Exp Model", "Mean WB Data, Trunc Norm Model", "Individual Inverse WB Data, Trunc Norm Model", 
                "Mean Inverse WB Data, Trunc Norm Model", "Inverse Mean WB Data, Trunc Norm Model")), 
   Lower.RMSE = c(range(rmse.range.ind.wb.wb.n)[1],
                  range(rmse.range.ind.wb.n)[1],
