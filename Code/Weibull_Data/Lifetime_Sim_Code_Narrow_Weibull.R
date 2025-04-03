@@ -91,16 +91,27 @@ for(i in 1:w){
   
   # Settings
   parameters <- c("la", "Topt", "c")
-  inits <- function(){list(
-    # a in log space
-    la = log(0.1), 
-    Topt = 20, 
-    c = 0.6
-  )}
+
   ni <- 60000 
   nb <- 30000 
   nt <- 8 
   nc <- 5 
+  
+  inits = vector('list', nc)
+  GenInits = function() {
+    la <- rnorm(1, 0, 10)
+    c <- rexp(1, 0.5)
+    Topt <- rnorm(1, 22, 10)
+    list(
+      la = la,             
+      c = c,
+      Topt = Topt
+    )
+  }
+  for(i in 1:nc){
+    inits[[i]] = GenInits()
+  }
+  
   data <- Weibull_N_data.list[[i]] 
   data.raw.w.n <- Weibull_N_data.list[[i]]
   trait <- data$trait
@@ -419,17 +430,27 @@ for(i in 1:w){
 }", file = "Weibull_n_mean_lambda.txt")
   # Settings
   parameters <- c("la", "Topt", "c", "sig")
-  inits <- function(){list(
-    # a and b in log space
-    la = log(0.1), 
-    Topt = 20, 
-    c = 0.6, 
-    sig = 2
-  )}
+
   ni <- 60000 
   nb <- 30000 
   nt <- 8 
   nc <- 5 
+  inits = vector('list', nc)
+  GenInits = function() {
+    la <- rnorm(1, 0, 10)
+    c <- rexp(1, 10)
+    Topt <- rnorm(1, 22, 10)
+    sig <- rexp(1, 0.5)
+    list(
+      la = la,             
+      c = c,
+      Topt = Topt,
+      sig = sig
+    )
+  }
+  for(i in 1:nc){
+    inits[[i]] = GenInits()
+  }
   
   data <- df.mean 
   data.raw.w.n <- Weibull_N_data.list[[i]]
@@ -745,17 +766,29 @@ for(i in 1:w){
   
   # Settings
   parameters <- c("la", "Topt", "c", "sig")
-  inits <- function(){list(
-    # a in log space
-    la = log(0.1), 
-    Topt = 20, 
-    c = 0.6, 
-    sig = 2
-  )}
+
   ni <- 60000 
   nb <- 30000 
   nt <- 8 
   nc <- 5 
+  
+  inits = vector('list', nc)
+  GenInits = function() {
+    la <- rnorm(1, 0, 10)
+    c <- rexp(1, 0.5)
+    Topt <- rnorm(1, 22, 10)
+    sig <- rexp(1, 0.5)
+    list(
+      la = la,             
+      c = c,
+      Topt = Topt,
+      sig = sig
+    )
+  }
+  for(i in 1:nc){
+    inits[[i]] = GenInits()
+  }
+  
   data <- Weibull_N_data.list[[i]] 
   data.raw.w.n <- Weibull_N_data.list[[i]]
   trait <- 1/(data$trait)
@@ -1087,18 +1120,28 @@ for(i in 1:w){
   
   # Settings
   parameters <- c("la", "Topt", "c", "sig")
-  inits <- function(){list(
-    # a in log space
-    la = log(0.1), 
-    Topt = 20, 
-    c = 0.6, 
-    sig = 2
-  )}
+
   ni <- 60000 
   nb <- 30000 
   nt <- 8 
   nc <- 5 
   
+  inits = vector('list', nc)
+  GenInits = function() {
+    la <- rnorm(1, 0, 10)
+    c <- rexp(1, 0.5)
+    Topt <- rnorm(1, 22, 10)
+    sig <- rexp(1, 0.5)
+    list(
+      la = la,             
+      c = c,
+      Topt = Topt,
+      sig = sig
+    )
+  }
+  for(i in 1:nc){
+    inits[[i]] = GenInits()
+  }
   
   # List data
   jag.data <- list(trait = trait, N.obs = N.obs, temp = temp)
@@ -1424,18 +1467,28 @@ for(i in 1:w){
   
   # Settings
   parameters <- c("la", "Topt", "c", "sig")
-  inits <- function(){list(
-    # a in log space
-    la = log(0.1), 
-    Topt = 20, 
-    c = 0.6, 
-    sig = 2
-  )}
+
   ni <- 60000 
   nb <- 30000 
   nt <- 8 
   nc <- 5 
   
+  inits = vector('list', nc)
+  GenInits = function() {
+    la <- rnorm(1, 0, 10)
+    c <- rexp(1, 0.5)
+    Topt <- rnorm(1, 22, 10)
+    sig <- rexp(1, 0.5)
+    list(
+      la = la,             
+      c = c,
+      Topt = Topt,
+      sig = sig
+    )
+  }
+  for(i in 1:nc){
+    inits[[i]] = GenInits()
+  }
   
   # List data
   jag.data <- list(trait = trait, N.obs = N.obs, temp = temp)
@@ -1747,17 +1800,29 @@ for(i in 1:w){
   
   # Settings
   parameters <- c("la", "Topt", "c", "shape")
-  inits <- function(){list(
-    # a in log space
-    la = log(0.1), 
-    Topt = 20, 
-    c = 0.6, 
-    shape = 3
-  )}
+
   ni <- 60000 
   nb <- 30000 
   nt <- 8 
   nc <- 5 
+  
+  inits = vector('list', nc)
+  GenInits = function() {
+    la <- rnorm(1, 0, 10)
+    c <- rexp(1, 0.5)
+    Topt <- rnorm(1, 22, 10)
+    shape <- rexp(1, 0.001)
+    list(
+      la = la,             
+      c = c,
+      Topt = Topt,
+      shape = shape
+    )
+  }
+  for(i in 1:nc){
+    inits[[i]] = GenInits()
+  }
+  
   data <- Weibull_N_data.list[[i]] 
   data.raw.w.n <- Weibull_N_data.list[[i]]
   trait <- data$trait
