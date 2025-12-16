@@ -1,4 +1,0 @@
-load("/Users/piperzimmerman/Desktop/Simulation2024/Code/Weibull_Data/Weibull_inverse.RData")
-ls
-ls()
-head(df.new3_W)
